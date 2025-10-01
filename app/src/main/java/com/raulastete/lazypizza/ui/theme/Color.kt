@@ -2,10 +2,12 @@ package com.raulastete.lazypizza.ui.theme
 
 import androidx.compose.ui.graphics.Color
 
-val Purple80 = Color(0xFFD0BCFF)
-val PurpleGrey80 = Color(0xFFCCC2DC)
-val Pink80 = Color(0xFFEFB8C8)
-
-val Purple40 = Color(0xFF6650a4)
-val PurpleGrey40 = Color(0xFF625b71)
-val Pink40 = Color(0xFF7D5260)
+val Orange = Color(0xFFF36B50)
+val OrangeLight = Color(0xFFF9966F)
+val WhisperGray = Color(0xFFE6E7ED)
+val PlatinumWhite = Color(0xFFF0F3F6)
+val LightGray = Color(0xFFE6E7ED)
+val White = Color(0xFFFFFFFF)
+val MediumDesaturatedBlue = Color(0xFF627686)
+val VeryDarkNavy = Color(0xFF03131F)
+val NearWhite = Color(0xFFFAFBFC)
