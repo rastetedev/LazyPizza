@@ -37,7 +37,7 @@ fun GenericProductCard(
     ) {
         Row(
             modifier = Modifier
-                .padding(1.dp)
+                .padding(3.dp)
                 .height(IntrinsicSize.Max),
             verticalAlignment = Alignment.CenterVertically
         ) {

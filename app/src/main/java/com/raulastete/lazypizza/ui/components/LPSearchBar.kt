@@ -5,7 +5,11 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
+import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
+import androidx.compose.material3.OutlinedTextField
+import androidx.compose.material3.OutlinedTextFieldDefaults
+import androidx.compose.material3.SearchBar
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TextFieldDefaults
@@ -20,6 +24,7 @@ import androidx.compose.ui.unit.dp
 import com.raulastete.lazypizza.R
 import com.raulastete.lazypizza.ui.theme.AppTheme
 
+@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LPSearchBar(
     modifier: Modifier = Modifier,
@@ -27,7 +32,7 @@ fun LPSearchBar(
     onQueryChange: (String) -> Unit,
     placeholder: String = "Search for delicious food...",
 ) {
-    TextField(
+    OutlinedTextField(
         value = query,
         onValueChange = onQueryChange,
         modifier = modifier.height(56.dp),
@@ -40,9 +45,12 @@ fun LPSearchBar(
         },
         textStyle = AppTheme.typography.body1Regular,
         singleLine = true,
-        colors = TextFieldDefaults.colors(
+        colors = OutlinedTextFieldDefaults.colors(
             unfocusedContainerColor = AppTheme.colorScheme.surfaceHigher,
             focusedContainerColor = AppTheme.colorScheme.surfaceHigher,
+            unfocusedBorderColor = AppTheme.colorScheme.surfaceHigher,
+            focusedBorderColor = AppTheme.colorScheme.surfaceHigher,
+            cursorColor = AppTheme.colorScheme.primary
         ),
         shape = RoundedCornerShape(28.dp),
         leadingIcon = {
@@ -56,6 +64,7 @@ fun LPSearchBar(
             keyboardType = KeyboardType.Text
         )
     )
+
 }
 
 @Preview
@@ -64,12 +73,16 @@ private fun LPSearchBarPreview() {
     AppTheme {
         Column {
             LPSearchBar(
-                modifier = Modifier.fillMaxWidth().height(56.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
                 query = "",
                 onQueryChange = {}
             )
             LPSearchBar(
-                modifier = Modifier.fillMaxWidth().height(56.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(56.dp),
                 query = "Margherita",
                 onQueryChange = {}
             )

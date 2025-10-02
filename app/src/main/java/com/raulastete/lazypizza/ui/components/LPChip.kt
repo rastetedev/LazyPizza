@@ -30,6 +30,7 @@ fun LPChip(
         colors = AssistChipDefaults.assistChipColors(
             containerColor = Color.Transparent,
         ),
+        elevation = null,
         border = BorderStroke(width = 1.dp, color = AppTheme.colorScheme.outline)
     )
 }
