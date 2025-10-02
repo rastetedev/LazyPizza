@@ -1,7 +1,9 @@
 package com.raulastete.lazypizza.presentation.product_detail.components
 
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -11,10 +13,10 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
+import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
@@ -33,17 +35,22 @@ fun ToppingCard(
     onClickIncreaseCount: () -> Unit
 ) {
 
-    Card(
-        modifier = modifier,
-        onClick = onClick,
-        border = BorderStroke(
-            width = 1.dp,
-            color = if (count == 0) AppTheme.colorScheme.textSecondary else AppTheme.colorScheme.primary
-        ),
-        shape = AppTheme.shape.card,
-        colors = CardDefaults.cardColors(
-            containerColor = AppTheme.colorScheme.surfaceHigher
-        )
+    Box(
+        modifier = modifier
+            .clickable(
+                onClick = onClick,
+                interactionSource = remember { MutableInteractionSource() },
+                indication = ripple(color = AppTheme.colorScheme.primary8)
+            )
+            .background(
+                color = AppTheme.colorScheme.surfaceHigher,
+                shape = AppTheme.shape.card
+            )
+            .border(
+                width = 1.dp,
+                color = if (count == 0) AppTheme.colorScheme.outline else AppTheme.colorScheme.primary,
+                shape = AppTheme.shape.card
+            )
     ) {
         Column(
             modifier = Modifier.padding(12.dp),
