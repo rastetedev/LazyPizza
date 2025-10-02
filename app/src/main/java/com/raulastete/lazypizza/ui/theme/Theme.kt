@@ -21,7 +21,7 @@ private val lightColorSchema = LPColorScheme(
     surfaceHighest = PlatinumWhite,
     outline = WhisperGray,
     outline50 = WhisperGray.copy(alpha = 0.5f),
-    primaryGradient = Brush.linearGradient(colors = listOf(OrangeLight, Orange)),
+    primaryGradient = Brush.linearGradient(colors = listOf(Orange, OrangeLight)),
     primary = Orange,
     primary8 = Orange.copy(alpha = 0.08f)
 )
@@ -92,7 +92,8 @@ private val typography = LPTypography(
 
 private val shape = LPShape(
     card = RoundedCornerShape(12.dp),
-    button = RoundedCornerShape(100.dp)
+    button = RoundedCornerShape(100.dp),
+    small = RoundedCornerShape(8.dp)
 )
 
 @Composable

@@ -38,7 +38,8 @@ data class LPTypography(
 
 data class LPShape(
     val card: Shape,
-    val button: Shape
+    val button: Shape,
+    val small: Shape
 )
 
 val LocalAppColorScheme = staticCompositionLocalOf {
@@ -77,6 +78,7 @@ val LocalAppTypography = staticCompositionLocalOf {
 val LocalAppShape = staticCompositionLocalOf {
     LPShape(
         card = RectangleShape,
-        button = RectangleShape
+        button = RectangleShape,
+        small = RectangleShape
     )
 }
