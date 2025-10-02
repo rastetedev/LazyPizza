@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -22,6 +21,7 @@ import com.raulastete.lazypizza.R
 import com.raulastete.lazypizza.ui.components.GenericProductCard
 import com.raulastete.lazypizza.ui.components.LPGhostButton
 import com.raulastete.lazypizza.ui.components.LPIconButton
+import com.raulastete.lazypizza.ui.components.ProductQuantityControl
 import com.raulastete.lazypizza.ui.theme.AppTheme
 
 @OptIn(ExperimentalSharedTransitionApi::class)
@@ -143,27 +143,12 @@ private fun ColumnScope.NonZeroItemsContent(
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Row {
-            LPIconButton(
-                icon = R.drawable.ic_minus,
-                iconTint = AppTheme.colorScheme.textSecondary,
-                onClick = onClickDecreaseCount
-            )
-
-            Text(
-                text = count.toString(),
-                textAlign = TextAlign.Center,
-                modifier = Modifier.width(52.dp),
-                style = AppTheme.typography.title2,
-                color = AppTheme.colorScheme.textPrimary
-            )
-
-            LPIconButton(
-                icon = R.drawable.ic_plus,
-                iconTint = AppTheme.colorScheme.textSecondary,
-                onClick = onClickIncreaseCount
-            )
-        }
+        ProductQuantityControl(
+            modifier = Modifier.weight(1f),
+            count = count,
+            onClickDecreaseCount = onClickDecreaseCount,
+            onClickIncreaseCount = onClickIncreaseCount
+        )
 
         Spacer(Modifier.weight(1f))
 
