@@ -67,4 +67,7 @@ dependencies {
     implementation(libs.koin.core)
     implementation(libs.koin.android)
     implementation(libs.koin.compose)
+
+    implementation(libs.coil.compose)
+    implementation(libs.coil.network.okhttp)
 }

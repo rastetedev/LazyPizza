@@ -14,13 +14,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
-import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import coil3.compose.AsyncImage
 import com.raulastete.lazypizza.presentation.product_detail.model.ToppingUi
 import com.raulastete.lazypizza.ui.components.ProductQuantityControl
 import com.raulastete.lazypizza.ui.theme.AppTheme
@@ -39,7 +39,7 @@ fun ToppingCard(
                 onClick = onClick,
                 enabled = toppingUi.isNotSelected,
                 interactionSource = remember { MutableInteractionSource() },
-                indication = ripple(color = AppTheme.colorScheme.primary8)
+                indication = null
             )
             .background(
                 color = AppTheme.colorScheme.surfaceHigher,
@@ -93,7 +93,10 @@ private fun ProductImage(imageUrl: String) {
             .background(color = AppTheme.colorScheme.primary8, shape = CircleShape),
         contentAlignment = Alignment.Center
     ) {
-        //TODO: Load Image
+        AsyncImage(
+            model = imageUrl,
+            contentDescription = null,
+        )
     }
 
 }
