@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.presentation.product_detail
+package com.raulastete.lazypizza.presentation.pizza_detail
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -33,16 +33,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.raulastete.lazypizza.R
-import com.raulastete.lazypizza.presentation.product_detail.components.ToppingCard
-import com.raulastete.lazypizza.presentation.product_detail.model.ToppingUi
+import com.raulastete.lazypizza.presentation.pizza_detail.components.ToppingCard
+import com.raulastete.lazypizza.presentation.pizza_detail.model.ToppingUi
 import com.raulastete.lazypizza.ui.components.FadingEdgeVerticalList
 import com.raulastete.lazypizza.ui.components.LPPrimaryButton
 import com.raulastete.lazypizza.ui.theme.AppTheme
 import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ProductDetailScreen(
-    viewModel: ProductDetailViewModel = koinViewModel<ProductDetailViewModel>()
+fun PizzaDetailScreen(
+    viewModel: PizzaDetailViewModel = koinViewModel<PizzaDetailViewModel>()
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
@@ -57,7 +57,7 @@ fun ProductDetailScreen(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun ProductDetailScreenContent(
-    uiState: ProductDetailUiState,
+    uiState: PizzaDetailUiState,
     onSelectTopping: (String) -> Unit,
     onIncreaseToppingQuantity: (String) -> Unit,
     onDecreaseToppingQuantity: (String) -> Unit,
@@ -214,7 +214,7 @@ private fun ToppingSections(
 private fun ProductDetailScreenContentPreview() {
     AppTheme {
         ProductDetailScreenContent(
-            uiState = ProductDetailUiState(),
+            uiState = PizzaDetailUiState(),
             onSelectTopping = {},
             onIncreaseToppingQuantity = {},
             onDecreaseToppingQuantity = {}

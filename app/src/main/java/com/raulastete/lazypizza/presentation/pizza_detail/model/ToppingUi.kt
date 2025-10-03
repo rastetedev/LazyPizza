@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.presentation.product_detail.model
+package com.raulastete.lazypizza.presentation.pizza_detail.model
 
 import com.raulastete.lazypizza.domain.entity.Topping
 import kotlin.String

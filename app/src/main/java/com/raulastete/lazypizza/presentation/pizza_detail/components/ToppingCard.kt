@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.presentation.product_detail.components
+package com.raulastete.lazypizza.presentation.pizza_detail.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -21,7 +21,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
-import com.raulastete.lazypizza.presentation.product_detail.model.ToppingUi
+import com.raulastete.lazypizza.presentation.pizza_detail.model.ToppingUi
 import com.raulastete.lazypizza.ui.components.ProductQuantityControl
 import com.raulastete.lazypizza.ui.theme.AppTheme
 
@@ -56,22 +56,12 @@ fun ToppingCard(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            ProductImage(imageUrl = toppingUi.imageUrl)
+            ToppingImage(imageUrl = toppingUi.imageUrl)
             Spacer(Modifier.height(12.dp))
-            Text(
-                text = toppingUi.name,
-                style = AppTheme.typography.body3Regular,
-                color = AppTheme.colorScheme.textSecondary
-            )
+            ToppingName(name = toppingUi.name)
             Spacer(Modifier.height(12.dp))
             if (toppingUi.isNotSelected)
-                Text(
-                    modifier = Modifier.fillMaxWidth(),
-                    textAlign = TextAlign.Center,
-                    text = "$${toppingUi.price}",
-                    style = AppTheme.typography.title2,
-                    color = AppTheme.colorScheme.textPrimary
-                )
+                ToppingPrice(price = toppingUi.price)
             else {
                 ProductQuantityControl(
                     modifier = Modifier.fillMaxWidth(),
@@ -85,8 +75,27 @@ fun ToppingCard(
 }
 
 @Composable
-private fun ProductImage(imageUrl: String) {
+private fun ToppingName(name: String) {
+    Text(
+        text = name,
+        style = AppTheme.typography.body3Regular,
+        color = AppTheme.colorScheme.textSecondary
+    )
+}
 
+@Composable
+private fun ToppingPrice(price: Double) {
+    Text(
+        modifier = Modifier.fillMaxWidth(),
+        textAlign = TextAlign.Center,
+        text = "$${price}",
+        style = AppTheme.typography.title2,
+        color = AppTheme.colorScheme.textPrimary
+    )
+}
+
+@Composable
+private fun ToppingImage(imageUrl: String) {
     Box(
         Modifier
             .size(64.dp)
@@ -98,5 +107,4 @@ private fun ProductImage(imageUrl: String) {
             contentDescription = null,
         )
     }
-
 }
