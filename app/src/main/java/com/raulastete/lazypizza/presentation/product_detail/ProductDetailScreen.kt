@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -23,9 +24,6 @@ import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -33,21 +31,37 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.raulastete.lazypizza.R
 import com.raulastete.lazypizza.presentation.product_detail.components.ToppingCard
+import com.raulastete.lazypizza.presentation.product_detail.model.ToppingUi
 import com.raulastete.lazypizza.ui.components.FadingEdgeVerticalList
 import com.raulastete.lazypizza.ui.components.LPPrimaryButton
 import com.raulastete.lazypizza.ui.theme.AppTheme
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun ProductDetailScreen() {
+fun ProductDetailScreen(
+    viewModel: ProductDetailViewModel = koinViewModel<ProductDetailViewModel>()
+) {
 
-    ProductDetailScreenContent()
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    ProductDetailScreenContent(
+        uiState = uiState,
+        onSelectTopping = viewModel::selectTopping,
+        onIncreaseToppingQuantity = viewModel::increaseToppingQuantity,
+        onDecreaseToppingQuantity = viewModel::decreaseToppingQuantity,
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ProductDetailScreenContent() {
+private fun ProductDetailScreenContent(
+    uiState: ProductDetailUiState,
+    onSelectTopping: (String) -> Unit,
+    onIncreaseToppingQuantity: (String) -> Unit,
+    onDecreaseToppingQuantity: (String) -> Unit,
+) {
     Box(
         Modifier
             .fillMaxSize()
@@ -63,7 +77,13 @@ private fun ProductDetailScreenContent() {
                     onClick = {}
                 )
             }
-            ToppingSections(modifier = Modifier.weight(1f))
+            ToppingSections(
+                modifier = Modifier.weight(1f),
+                toppings = uiState.toppings,
+                onSelectTopping = onSelectTopping,
+                onIncreaseToppingQuantity = onIncreaseToppingQuantity,
+                onDecreaseToppingQuantity = onDecreaseToppingQuantity,
+            )
         }
         LPPrimaryButton(
             modifier = Modifier
@@ -134,10 +154,13 @@ private fun ProductHeader() {
 
 @Composable
 private fun ToppingSections(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    toppings: List<ToppingUi>,
+    onSelectTopping: (String) -> Unit,
+    onIncreaseToppingQuantity: (String) -> Unit,
+    onDecreaseToppingQuantity: (String) -> Unit,
 ) {
 
-    var toppingCount1 by remember { mutableStateOf(0) }
     val lazyGridState = rememberLazyGridState()
 
     Column(
@@ -166,20 +189,18 @@ private fun ToppingSections(
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 contentPadding = PaddingValues(bottom = 64.dp)
             ) {
-                items(9) {
+                items(toppings) {
                     ToppingCard(
                         modifier = Modifier.weight(1f),
-                        productName = "Extra Cheese",
-                        price = "$1",
-                        count = toppingCount1,
+                        toppingUi = it,
                         onClick = {
-                            toppingCount1 = 1
+                            onSelectTopping(it.id)
                         },
                         onClickIncreaseCount = {
-                            toppingCount1 += 1
+                            onIncreaseToppingQuantity(it.id)
                         },
                         onClickDecreaseCount = {
-                            toppingCount1 -= 1
+                            onDecreaseToppingQuantity(it.id)
                         }
                     )
                 }
@@ -192,6 +213,11 @@ private fun ToppingSections(
 @Composable
 private fun ProductDetailScreenContentPreview() {
     AppTheme {
-        ProductDetailScreenContent()
+        ProductDetailScreenContent(
+            uiState = ProductDetailUiState(),
+            onSelectTopping = {},
+            onIncreaseToppingQuantity = {},
+            onDecreaseToppingQuantity = {}
+        )
     }
 }

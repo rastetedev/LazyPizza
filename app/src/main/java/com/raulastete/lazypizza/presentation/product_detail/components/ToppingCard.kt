@@ -21,24 +21,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import com.raulastete.lazypizza.presentation.product_detail.model.ToppingUi
 import com.raulastete.lazypizza.ui.components.ProductQuantityControl
 import com.raulastete.lazypizza.ui.theme.AppTheme
 
 @Composable
 fun ToppingCard(
     modifier: Modifier = Modifier,
-    productName: String,
-    price: String,
-    count: Int,
+    toppingUi: ToppingUi,
     onClick: () -> Unit,
     onClickDecreaseCount: () -> Unit,
     onClickIncreaseCount: () -> Unit
 ) {
-
     Box(
         modifier = modifier
             .clickable(
                 onClick = onClick,
+                enabled = toppingUi.isNotSelected,
                 interactionSource = remember { MutableInteractionSource() },
                 indication = ripple(color = AppTheme.colorScheme.primary8)
             )
@@ -48,7 +47,7 @@ fun ToppingCard(
             )
             .border(
                 width = 1.dp,
-                color = if (count == 0) AppTheme.colorScheme.outline else AppTheme.colorScheme.primary,
+                color = if (toppingUi.isNotSelected) AppTheme.colorScheme.outline else AppTheme.colorScheme.primary,
                 shape = AppTheme.shape.card
             )
     ) {
@@ -57,37 +56,36 @@ fun ToppingCard(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            ProductImage("")
+            ProductImage(imageUrl = toppingUi.imageUrl)
             Spacer(Modifier.height(12.dp))
             Text(
-                text = productName,
+                text = toppingUi.name,
                 style = AppTheme.typography.body3Regular,
                 color = AppTheme.colorScheme.textSecondary
             )
             Spacer(Modifier.height(12.dp))
-            if (count == 0)
+            if (toppingUi.isNotSelected)
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
-                    text = price,
+                    text = "$${toppingUi.price}",
                     style = AppTheme.typography.title2,
                     color = AppTheme.colorScheme.textPrimary
                 )
             else {
                 ProductQuantityControl(
                     modifier = Modifier.fillMaxWidth(),
-                    count = count,
+                    count = toppingUi.count,
                     onClickDecreaseCount = onClickDecreaseCount,
                     onClickIncreaseCount = onClickIncreaseCount
                 )
             }
-
         }
     }
 }
 
 @Composable
-private fun ProductImage(image: String) {
+private fun ProductImage(imageUrl: String) {
 
     Box(
         Modifier
