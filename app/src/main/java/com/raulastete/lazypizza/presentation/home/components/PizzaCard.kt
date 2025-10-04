@@ -13,18 +13,19 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.raulastete.lazypizza.presentation.home.model.PizzaUi
 import com.raulastete.lazypizza.ui.components.GenericProductCard
 import com.raulastete.lazypizza.ui.theme.AppTheme
 
 @Composable
 fun PizzaCard(
     modifier: Modifier = Modifier,
-    image: String,
+    pizzaUi: PizzaUi,
     onClick: (Int) -> Unit
 ) {
 
     GenericProductCard(
-        image = image,
+        image = pizzaUi.imageUrl,
         modifier = modifier,
         onClick = { onClick(0) }
     ) {
@@ -38,7 +39,7 @@ fun PizzaCard(
             Column {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = "Margherita",
+                    text = pizzaUi.name,
                     textAlign = TextAlign.Start,
                     overflow = TextOverflow.Ellipsis,
                     style = AppTheme.typography.body1Medium,
@@ -46,7 +47,7 @@ fun PizzaCard(
                 )
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = "Tomato sauce, mozarella, fresh olive olive olive",
+                    text = pizzaUi.description,
                     style = AppTheme.typography.body3Regular,
                     color = AppTheme.colorScheme.textSecondary,
                     textAlign = TextAlign.Start,
@@ -58,7 +59,7 @@ fun PizzaCard(
 
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "$8.99",
+                text = "${pizzaUi.price}",
                 textAlign = TextAlign.Start,
                 style = AppTheme.typography.title1Semibold,
                 color = AppTheme.colorScheme.textPrimary
@@ -71,7 +72,15 @@ fun PizzaCard(
 @Composable
 private fun PizzaCardPreview() {
     AppTheme {
-        PizzaCard(Modifier.fillMaxWidth(), image = "") {
+        PizzaCard(
+            Modifier.fillMaxWidth(),
+            pizzaUi = PizzaUi(
+                name = "Margherita",
+                price = 10.0,
+                description = "This is my pizza description",
+                imageUrl = ""
+            )
+        ) {
 
         }
     }

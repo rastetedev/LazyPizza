@@ -14,79 +14,32 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.raulastete.lazypizza.presentation.home.components.CategoryListRow
 import com.raulastete.lazypizza.presentation.home.components.CountableProductCard
 import com.raulastete.lazypizza.presentation.home.components.PizzaCard
+import com.raulastete.lazypizza.presentation.home.model.CountableProductUi
+import com.raulastete.lazypizza.presentation.home.model.PizzaUi
 import com.raulastete.lazypizza.ui.components.LPSearchBar
 import com.raulastete.lazypizza.ui.components.LPTopbar
 import com.raulastete.lazypizza.ui.theme.AppTheme
-
-enum class ProductContentType {
-    PIZZA_ITEM,
-    GENERIC_ITEM
-}
+import org.koin.androidx.compose.koinViewModel
 
 @Composable
-fun HomeScreen() {
-    HomeScreenContent()
+fun HomeScreen(
+    viewModel: HomeViewModel = koinViewModel<HomeViewModel>()
+) {
+    val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+    HomeScreenContent(uiState = uiState)
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun HomeScreenContent() {
-    val productMap = mapOf<String, List<String>>(
-        "PIZZA" to listOf(
-            "Margherita",
-            "Pepperoni",
-            "Hawaiian",
-            "Supreme",
-            "BBQ Chicken",
-            "Veggie Delight"
-        ),
-        "DRINKS" to listOf(
-            "Cola",
-            "Lemonade",
-            "Iced Tea",
-            "Orange Juice",
-            "Mineral Water",
-            "Craft Beer"
-        ),
-        "SAUCES" to listOf(
-            "Garlic Dip",
-            "Spicy Marinara",
-            "Ranch Dressing",
-            "Blue Cheese Dip",
-            "Pesto Sauce",
-            "Hot Honey"
-        ),
-        "DESSERTS" to listOf(
-            "Chocolate Lava Cake",
-            "Tiramisu",
-            "Cheesecake",
-            "Brownie with Ice Cream",
-            "Panna Cotta",
-            "Cinnamon Sticks"
-        ),
-        "SALADS" to listOf(
-            "Caesar Salad",
-            "Greek Salad",
-            "Caprese Salad",
-            "Garden Salad",
-            "Cobb Salad",
-            "Spinach and Strawberry Salad"
-        ),
-        "APPETIZERS" to listOf(
-            "Garlic Bread",
-            "Mozzarella Sticks",
-            "Chicken Wings",
-            "Bruschetta",
-            "Onion Rings",
-            "Stuffed Mushrooms"
-        )
-    )
+private fun HomeScreenContent(uiState: HomeUiState) {
 
     Scaffold(
         containerColor = AppTheme.colorScheme.surface
@@ -107,7 +60,7 @@ private fun HomeScreenContent() {
             )
             Spacer(Modifier.height(8.dp))
             CategoryListRow(
-                categories = listOf("Pizza", "Drinks", "Sauces", "Ice Cream")
+                categories = uiState.data.keys.toList()
             ) {
 
             }
@@ -116,7 +69,7 @@ private fun HomeScreenContent() {
                 Modifier.fillMaxSize(),
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                productMap.forEach { (category, productList) ->
+                uiState.data.forEach { (category, productList) ->
                     stickyHeader(key = category) {
                         CategoryHeader(category)
                     }
@@ -125,22 +78,24 @@ private fun HomeScreenContent() {
                         items = productList,
                         key = { product -> "${category}_${product}" },
                         contentType = {
-                            if (category == "PIZZA") {
-                                ProductContentType.PIZZA_ITEM
+                            if (category.uppercase() == "PIZZA") {
+                                PizzaUi::class
                             } else {
-                                ProductContentType.GENERIC_ITEM
+                                CountableProductUi::class
                             }
                         }
                     ) {
-                        if (category == "PIZZA") {
-                            PizzaCard(image = "", modifier = Modifier.fillMaxWidth()) { }
+                        if (category.uppercase() == "PIZZA") {
+                            PizzaCard(
+                                modifier = Modifier.fillMaxWidth(),
+                                pizzaUi = it as PizzaUi
+                            ) {
+                                //TODO: Navigate to PizzaDetail
+                            }
                         } else {
                             CountableProductCard(
                                 modifier = Modifier.fillMaxWidth(),
-                                name = it,
-                                price = "$1.00",
-                                totalPrice = "$0.00",
-                                count = 0,
+                                countableProductUi = it as CountableProductUi,
                                 onClickAddToCart = {},
                                 onClickDecreaseCount = {},
                                 onClickIncreaseCount = {},
@@ -169,15 +124,12 @@ fun CategoryHeader(name: String) {
     )
 }
 
-@Composable
-private fun CategorySection(category: String, products: List<String>) {
-
-}
-
 @Preview(showBackground = true)
 @Composable
 private fun HomeScreenContentPreview() {
     AppTheme {
-        HomeScreenContent()
+        HomeScreenContent(
+            uiState = HomeUiState()
+        )
     }
 }

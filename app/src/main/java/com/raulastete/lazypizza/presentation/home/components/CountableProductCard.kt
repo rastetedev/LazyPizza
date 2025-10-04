@@ -18,6 +18,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.raulastete.lazypizza.R
+import com.raulastete.lazypizza.presentation.home.model.CountableProductUi
 import com.raulastete.lazypizza.ui.components.GenericProductCard
 import com.raulastete.lazypizza.ui.components.LPGhostButton
 import com.raulastete.lazypizza.ui.components.LPIconButton
@@ -28,10 +29,7 @@ import com.raulastete.lazypizza.ui.theme.AppTheme
 @Composable
 fun CountableProductCard(
     modifier: Modifier = Modifier,
-    name: String,
-    count: Int,
-    price: String,
-    totalPrice: String,
+    countableProductUi: CountableProductUi,
     onClickAddToCart: () -> Unit,
     onClickIncreaseCount: () -> Unit,
     onClickDecreaseCount: () -> Unit,
@@ -49,18 +47,18 @@ fun CountableProductCard(
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            if (count == 0) {
+            if (countableProductUi.isNotSelected) {
                 ZeroItemsContent(
-                    name = name,
-                    price = price,
+                    name = countableProductUi.name,
+                    price = "$${countableProductUi.price}",
                     onClickAddToCart = onClickAddToCart,
                 )
             } else {
                 NonZeroItemsContent(
-                    name = name,
-                    price = price,
-                    totalPrice = totalPrice,
-                    count = count,
+                    name = countableProductUi.name,
+                    price = "$${countableProductUi.price}",
+                    totalPrice = countableProductUi.totalPrice,
+                    count = countableProductUi.count,
                     onClickIncreaseCount = onClickIncreaseCount,
                     onClickDecreaseCount = onClickDecreaseCount,
                     onClickRemoveFromCart = onClickRemoveFromCart,
@@ -174,10 +172,12 @@ private fun PizzaCardPreview() {
         Column {
             CountableProductCard(
                 modifier = Modifier.fillMaxWidth(),
-                name = "Margharita",
-                price = "$1.00",
-                totalPrice = "$2.00",
-                count = 2,
+                countableProductUi = CountableProductUi(
+                    name = "Margharita",
+                    price = 1.00,
+                    count = 2,
+                    imageUrl = ""
+                ),
                 onClickAddToCart = {},
                 onClickDecreaseCount = {},
                 onClickIncreaseCount = {},
@@ -186,10 +186,12 @@ private fun PizzaCardPreview() {
 
             CountableProductCard(
                 modifier = Modifier.fillMaxWidth(),
-                name = "Margharita",
-                price = "$1.00",
-                totalPrice = "$0.00",
-                count = 0,
+                countableProductUi = CountableProductUi(
+                    name = "Margharita",
+                    price = 1.00,
+                    count = 0,
+                    imageUrl = ""
+                ),
                 onClickAddToCart = {},
                 onClickDecreaseCount = {},
                 onClickIncreaseCount = {},
