@@ -37,7 +37,7 @@ fun CountableProductCard(
 ) {
 
     GenericProductCard(
-        image = "",
+        imageUrl = countableProductUi.imageUrl,
         modifier = modifier,
     ) {
         Column(
@@ -173,6 +173,7 @@ private fun PizzaCardPreview() {
             CountableProductCard(
                 modifier = Modifier.fillMaxWidth(),
                 countableProductUi = CountableProductUi(
+                    id = "",
                     name = "Margharita",
                     price = 1.00,
                     count = 2,
@@ -187,6 +188,7 @@ private fun PizzaCardPreview() {
             CountableProductCard(
                 modifier = Modifier.fillMaxWidth(),
                 countableProductUi = CountableProductUi(
+                    id = "",
                     name = "Margharita",
                     price = 1.00,
                     count = 0,

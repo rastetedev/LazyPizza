@@ -60,7 +60,7 @@ private fun HomeScreenContent(uiState: HomeUiState) {
             )
             Spacer(Modifier.height(8.dp))
             CategoryListRow(
-                categories = uiState.data.keys.toList()
+                categories = uiState.categoryNameList
             ) {
 
             }
@@ -70,22 +70,22 @@ private fun HomeScreenContent(uiState: HomeUiState) {
                 verticalArrangement = Arrangement.spacedBy(8.dp)
             ) {
                 uiState.data.forEach { (category, productList) ->
-                    stickyHeader(key = category) {
-                        CategoryHeader(category)
+                    stickyHeader(key = category.id) {
+                        CategoryHeader(category.name)
                     }
 
                     items(
                         items = productList,
-                        key = { product -> "${category}_${product}" },
+                        key = { it.id },
                         contentType = {
-                            if (category.uppercase() == "PIZZA") {
+                            if (category.isPizza) {
                                 PizzaUi::class
                             } else {
                                 CountableProductUi::class
                             }
                         }
                     ) {
-                        if (category.uppercase() == "PIZZA") {
+                        if (category.isPizza) {
                             PizzaCard(
                                 modifier = Modifier.fillMaxWidth(),
                                 pizzaUi = it as PizzaUi
@@ -113,7 +113,7 @@ private fun HomeScreenContent(uiState: HomeUiState) {
 @Composable
 fun CategoryHeader(name: String) {
     Text(
-        text = name,
+        text = name.uppercase(),
         style = AppTheme.typography.label2Semibold,
         color = AppTheme.colorScheme.textSecondary,
         modifier = Modifier

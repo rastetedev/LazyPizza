@@ -1,6 +1,7 @@
 package com.raulastete.lazypizza.data.remote.dto
 
 import com.google.firebase.database.PropertyName
+import com.raulastete.lazypizza.domain.entity.Product
 
 data class ProductDto(
     @get:PropertyName("id") @set:PropertyName("id")
@@ -16,3 +17,13 @@ data class ProductDto(
     @get:PropertyName("imageUrl") @set:PropertyName("imageUrl")
     var imageUrl: String = ""
 )
+
+fun ProductDto.toDomain() =
+    Product(
+        id = id,
+        name = name,
+        description = description,
+        price = price,
+        categoryId = category,
+        imageUrl = imageUrl
+    )

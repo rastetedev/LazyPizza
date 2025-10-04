@@ -17,11 +17,12 @@ import androidx.compose.ui.unit.dp
 import com.raulastete.lazypizza.ui.theme.AppTheme
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.height
+import coil3.compose.AsyncImage
 
 @Composable
 fun GenericProductCard(
     modifier: Modifier = Modifier,
-    image: String,
+    imageUrl: String,
     onClick: (() -> Unit)? = null,
     content: @Composable RowScope.() -> Unit
 ) {
@@ -63,7 +64,7 @@ fun GenericProductCard(
                     ),
                 contentAlignment = Alignment.Center
             ) {
-                //TODO: Use Coil to load image URL
+                AsyncImage(model = imageUrl, contentDescription = null)
             }
 
             content()

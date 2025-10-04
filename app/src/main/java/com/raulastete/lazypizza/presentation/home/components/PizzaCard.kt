@@ -23,9 +23,8 @@ fun PizzaCard(
     pizzaUi: PizzaUi,
     onClick: (Int) -> Unit
 ) {
-
     GenericProductCard(
-        image = pizzaUi.imageUrl,
+        imageUrl = pizzaUi.imageUrl,
         modifier = modifier,
         onClick = { onClick(0) }
     ) {
@@ -59,7 +58,7 @@ fun PizzaCard(
 
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "${pizzaUi.price}",
+                text = "$${pizzaUi.price}",
                 textAlign = TextAlign.Start,
                 style = AppTheme.typography.title1Semibold,
                 color = AppTheme.colorScheme.textPrimary
@@ -75,6 +74,7 @@ private fun PizzaCardPreview() {
         PizzaCard(
             Modifier.fillMaxWidth(),
             pizzaUi = PizzaUi(
+                id = "",
                 name = "Margherita",
                 price = 10.0,
                 description = "This is my pizza description",

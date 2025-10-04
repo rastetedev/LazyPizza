@@ -1,18 +1,26 @@
 package com.raulastete.lazypizza.presentation.home.model
 
-sealed interface ProductUi
+sealed interface ProductUi {
+    val id: String
+    val imageUrl: String
+
+    val name: String
+    val price: Double
+}
 
 data class PizzaUi(
-    val imageUrl: String,
-    val name: String,
+    override val id: String,
+    override val imageUrl: String,
+    override val name: String,
+    override val price: Double,
     val description: String,
-    val price: Double
 ) : ProductUi
 
 data class CountableProductUi(
-    val imageUrl: String,
-    val name: String,
-    val price: Double,
+    override val id: String,
+    override val imageUrl: String,
+    override val name: String,
+    override val price: Double,
     val count: Int
 ) : ProductUi {
     val isNotSelected = count < 1

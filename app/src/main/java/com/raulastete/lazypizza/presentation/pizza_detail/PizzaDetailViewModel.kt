@@ -33,8 +33,8 @@ class PizzaDetailViewModel(
                     Log.e("Product Detail", exception.message, exception)
                 }
                 .collectLatest { data ->
-                    _uiState.update {
-                        it.copy(
+                    _uiState.update { state ->
+                        state.copy(
                             toppings = data.map { it.toUi() }
                         )
                     }
