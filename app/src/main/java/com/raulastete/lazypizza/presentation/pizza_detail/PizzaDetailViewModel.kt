@@ -1,9 +1,12 @@
 package com.raulastete.lazypizza.presentation.pizza_detail
 
 import android.util.Log
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.raulastete.lazypizza.domain.MenuRepository
+import com.raulastete.lazypizza.presentation.home.model.PizzaUi
+import com.raulastete.lazypizza.presentation.navigation.Routes.PizzaDetail.Companion.PIZZA_ID_ARG
 import com.raulastete.lazypizza.presentation.pizza_detail.model.ToppingUi
 import com.raulastete.lazypizza.presentation.pizza_detail.model.toUi
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -16,14 +19,44 @@ import kotlinx.coroutines.launch
 import kotlin.collections.map
 
 class PizzaDetailViewModel(
-    private val menuRepository: MenuRepository
+    private val menuRepository: MenuRepository,
+    savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow<PizzaDetailUiState>(PizzaDetailUiState())
+    private val _uiState = MutableStateFlow(PizzaDetailUiState())
     val uiState: StateFlow<PizzaDetailUiState> = _uiState.asStateFlow()
 
     init {
+        fetchPizzaDetail(savedStateHandle)
         fetchToppings()
+    }
+
+    private fun fetchPizzaDetail(savedStateHandle: SavedStateHandle) {
+        val productId = savedStateHandle.get<String>(PIZZA_ID_ARG)
+        productId?.let {
+            viewModelScope.launch {
+                menuRepository.getProductById(productId)
+                    .catch { exception ->
+                        Log.e("Product Detail", exception.message, exception)
+                    }
+                    .collectLatest { data ->
+                        data?.let { product ->
+                            _uiState.update { state ->
+                                state.copy(
+                                    pizzaUi =
+                                        PizzaUi(
+                                            id = product.id,
+                                            imageUrl = product.imageUrl,
+                                            name = product.name,
+                                            description = product.description,
+                                            price = product.price
+                                        )
+                                )
+                            }
+                        }
+                    }
+            }
+        }
     }
 
     private fun fetchToppings() {
@@ -88,5 +121,6 @@ class PizzaDetailViewModel(
 
 data class PizzaDetailUiState(
     val isLoading: Boolean = false,
+    val pizzaUi: PizzaUi? = null,
     val toppings: List<ToppingUi> = emptyList()
 )

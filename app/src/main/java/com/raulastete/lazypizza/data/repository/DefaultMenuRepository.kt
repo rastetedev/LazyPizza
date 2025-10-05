@@ -44,4 +44,11 @@ class DefaultMenuRepository(
             }
         }
     }
+
+    override fun getProductById(productId: String): Flow<Product?> {
+        return remoteDataSource.getProductById(productId).map {
+            it?.toDomain()
+        }
+
+    }
 }

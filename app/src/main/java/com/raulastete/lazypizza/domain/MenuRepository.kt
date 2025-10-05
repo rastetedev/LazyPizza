@@ -9,4 +9,5 @@ interface MenuRepository {
 
     fun getProductsByCategory(): Flow<Map<Category, List<Product>>>
     fun getToppings(): Flow<List<Topping>>
+    fun getProductById(productId: String): Flow<Product?>
 }

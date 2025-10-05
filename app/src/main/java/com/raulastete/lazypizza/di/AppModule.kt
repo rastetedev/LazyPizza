@@ -22,6 +22,6 @@ val appModule = module {
     single<MenuRepository> {
         DefaultMenuRepository(remoteDataSource = get())
     }
-    viewModel { PizzaDetailViewModel(menuRepository = get()) }
+    viewModel { PizzaDetailViewModel(menuRepository = get(), savedStateHandle = get()) }
     viewModel { HomeViewModel(menuRepository = get()) }
 }

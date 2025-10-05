@@ -32,7 +32,9 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import coil3.compose.AsyncImage
 import com.raulastete.lazypizza.R
+import com.raulastete.lazypizza.presentation.home.model.PizzaUi
 import com.raulastete.lazypizza.presentation.pizza_detail.components.ToppingCard
 import com.raulastete.lazypizza.presentation.pizza_detail.model.ToppingUi
 import com.raulastete.lazypizza.ui.components.FadingEdgeVerticalList
@@ -42,12 +44,14 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun PizzaDetailScreen(
-    viewModel: PizzaDetailViewModel = koinViewModel<PizzaDetailViewModel>()
+    viewModel: PizzaDetailViewModel = koinViewModel<PizzaDetailViewModel>(),
+    navigateBack: () -> Unit
 ) {
 
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
     ProductDetailScreenContent(
         uiState = uiState,
+        navigateBack = navigateBack,
         onSelectTopping = viewModel::selectTopping,
         onIncreaseToppingQuantity = viewModel::increaseToppingQuantity,
         onDecreaseToppingQuantity = viewModel::decreaseToppingQuantity,
@@ -58,6 +62,7 @@ fun PizzaDetailScreen(
 @Composable
 private fun ProductDetailScreenContent(
     uiState: PizzaDetailUiState,
+    navigateBack: () -> Unit,
     onSelectTopping: (String) -> Unit,
     onIncreaseToppingQuantity: (String) -> Unit,
     onDecreaseToppingQuantity: (String) -> Unit,
@@ -68,13 +73,15 @@ private fun ProductDetailScreenContent(
     ) {
         Column {
             Box {
-                ProductHeader()
+                ProductHeader(
+                    uiState.pizzaUi
+                )
                 BackButton(
                     modifier = Modifier
                         .statusBarsPadding()
                         .padding(horizontal = 10.dp, vertical = 8.dp)
                         .align(alignment = Alignment.TopStart),
-                    onClick = {}
+                    onClick = navigateBack
                 )
             }
             ToppingSections(
@@ -113,14 +120,19 @@ private fun BackButton(modifier: Modifier, onClick: () -> Unit) {
 }
 
 @Composable
-private fun ProductHeader() {
+private fun ProductHeader(pizzaUi: PizzaUi?) {
     Column(Modifier.background(AppTheme.colorScheme.background)) {
         Box(
             Modifier
                 .fillMaxWidth()
-                .fillMaxHeight(0.35f)
+                .fillMaxHeight(0.35f),
+            contentAlignment = Alignment.BottomCenter
         ) {
-
+            AsyncImage(
+                model = pizzaUi?.imageUrl,
+                contentDescription = null,
+                modifier = Modifier.fillMaxHeight()
+            )
         }
         Spacer(Modifier.height(20.dp))
         Column(
@@ -133,7 +145,7 @@ private fun ProductHeader() {
                 .padding(16.dp)
         ) {
             Text(
-                "Margherita",
+                pizzaUi?.name.orEmpty(),
                 style = AppTheme.typography.title1Semibold,
                 color = AppTheme.colorScheme.textPrimary,
                 modifier = Modifier.fillMaxWidth(),
@@ -141,7 +153,7 @@ private fun ProductHeader() {
             )
             Spacer(Modifier.height(4.dp))
             Text(
-                "Tomato sauce, mozzarella, fresh basil, olive oil",
+                pizzaUi?.description.orEmpty(),
                 style = AppTheme.typography.body3Regular,
                 color = AppTheme.colorScheme.textSecondary,
                 modifier = Modifier.fillMaxWidth(),
@@ -215,6 +227,7 @@ private fun ProductDetailScreenContentPreview() {
     AppTheme {
         ProductDetailScreenContent(
             uiState = PizzaDetailUiState(),
+            navigateBack = {},
             onSelectTopping = {},
             onIncreaseToppingQuantity = {},
             onDecreaseToppingQuantity = {}

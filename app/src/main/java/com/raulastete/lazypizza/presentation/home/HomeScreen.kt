@@ -31,15 +31,23 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = koinViewModel<HomeViewModel>()
+    viewModel: HomeViewModel = koinViewModel<HomeViewModel>(),
+    navigateToPizzaDetail: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
-    HomeScreenContent(uiState = uiState)
+
+    HomeScreenContent(
+        uiState = uiState,
+        navigateToPizzaDetail = navigateToPizzaDetail
+    )
 }
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun HomeScreenContent(uiState: HomeUiState) {
+private fun HomeScreenContent(
+    uiState: HomeUiState,
+    navigateToPizzaDetail: (String) -> Unit
+) {
 
     Scaffold(
         containerColor = AppTheme.colorScheme.surface
@@ -90,7 +98,7 @@ private fun HomeScreenContent(uiState: HomeUiState) {
                                 modifier = Modifier.fillMaxWidth(),
                                 pizzaUi = it as PizzaUi
                             ) {
-                                //TODO: Navigate to PizzaDetail
+                                navigateToPizzaDetail(it.id)
                             }
                         } else {
                             CountableProductCard(
@@ -129,7 +137,8 @@ fun CategoryHeader(name: String) {
 private fun HomeScreenContentPreview() {
     AppTheme {
         HomeScreenContent(
-            uiState = HomeUiState()
+            uiState = HomeUiState(),
+            navigateToPizzaDetail = {}
         )
     }
 }

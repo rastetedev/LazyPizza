@@ -21,12 +21,12 @@ import com.raulastete.lazypizza.ui.theme.AppTheme
 fun PizzaCard(
     modifier: Modifier = Modifier,
     pizzaUi: PizzaUi,
-    onClick: (Int) -> Unit
+    onClick: () -> Unit
 ) {
     GenericProductCard(
         imageUrl = pizzaUi.imageUrl,
         modifier = modifier,
-        onClick = { onClick(0) }
+        onClick = onClick
     ) {
         Column(
             Modifier
