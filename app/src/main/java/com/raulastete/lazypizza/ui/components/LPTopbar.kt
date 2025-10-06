@@ -25,7 +25,7 @@ import com.raulastete.lazypizza.ui.theme.AppTheme
 @Composable
 fun LPTopbar(
     modifier: Modifier,
-    backgroundColor: Color = AppTheme.colorScheme.surface
+    backgroundColor: Color = AppTheme.colorScheme.background
 ) {
     Row(
         modifier = modifier

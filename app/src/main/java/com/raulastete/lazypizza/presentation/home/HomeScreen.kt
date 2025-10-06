@@ -5,6 +5,7 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -55,26 +56,29 @@ private fun HomeScreenContent(
 ) {
 
     Scaffold(
-        containerColor = AppTheme.colorScheme.surface
+        containerColor = AppTheme.colorScheme.background
     ) { contentPadding ->
         Column(
             Modifier
                 .padding(contentPadding)
-                .padding(horizontal = 16.dp)
+
         ) {
             LPTopbar(modifier = Modifier.fillMaxWidth())
 
             Spacer(Modifier.height(8.dp))
 
             LPSearchBar(
-                modifier = Modifier.fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
                 query = uiState.searchQuery,
                 onQueryChange = {
                     onQuerySearch(it)
                 }
             )
+
             Spacer(Modifier.height(8.dp))
+
             CategoryListRow(
+                modifier = Modifier.padding(horizontal = 16.dp),
                 categories = uiState.categoryNameList
             ) {
 
@@ -92,7 +96,8 @@ private fun HomeScreenContent(
             } else {
                 LazyColumn(
                     Modifier.fillMaxSize(),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                    contentPadding = PaddingValues(horizontal = 16.dp)
                 ) {
                     uiState.data.forEach { (category, productList) ->
                         stickyHeader(key = category.id) {
@@ -143,7 +148,7 @@ fun CategoryHeader(name: String) {
         color = AppTheme.colorScheme.textSecondary,
         modifier = Modifier
             .fillMaxWidth()
-            .background(AppTheme.colorScheme.surface)
+            .background(AppTheme.colorScheme.background)
             .padding(vertical = 12.dp)
 
     )

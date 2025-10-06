@@ -18,6 +18,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -41,6 +42,7 @@ fun ToppingCard(
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null
             )
+            .shadow(elevation = 2.dp, shape = AppTheme.shape.card)
             .background(
                 color = AppTheme.colorScheme.surfaceHigher,
                 shape = AppTheme.shape.card

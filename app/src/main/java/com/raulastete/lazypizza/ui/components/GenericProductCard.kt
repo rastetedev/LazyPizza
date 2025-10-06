@@ -34,6 +34,9 @@ fun GenericProductCard(
         colors = CardDefaults.cardColors(
             containerColor = AppTheme.colorScheme.surfaceHigher,
             disabledContainerColor = AppTheme.colorScheme.surfaceHigher
+        ),
+        elevation = CardDefaults.elevatedCardElevation(
+            defaultElevation = 4.dp
         )
     ) {
         Row(
