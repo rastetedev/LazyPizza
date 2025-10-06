@@ -12,6 +12,7 @@ import com.raulastete.lazypizza.ui.theme.AppTheme
 fun ProductQuantityControl(
     modifier: Modifier = Modifier,
     count: Int,
+    isIncreaseButtonEnabled: Boolean = true,
     onClickIncreaseCount: () -> Unit,
     onClickDecreaseCount: () -> Unit,
 ) {
@@ -33,6 +34,7 @@ fun ProductQuantityControl(
         LPIconButton(
             icon = R.drawable.ic_plus,
             iconTint = AppTheme.colorScheme.textSecondary,
+            enabled = isIncreaseButtonEnabled,
             onClick = onClickIncreaseCount
         )
     }

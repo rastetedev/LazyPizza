@@ -19,11 +19,13 @@ import com.raulastete.lazypizza.ui.theme.AppTheme
 fun LPIconButton(
     @DrawableRes icon: Int,
     iconTint: Color = AppTheme.colorScheme.primary,
+    enabled: Boolean = true,
     onClick: () -> Unit,
 ) {
     OutlinedIconButton(
         modifier = Modifier.size(22.dp),
         onClick = onClick,
+        enabled = enabled,
         border = BorderStroke(
             width = 1.dp,
             color = AppTheme.colorScheme.outline50,
@@ -34,7 +36,7 @@ fun LPIconButton(
             imageVector = ImageVector.vectorResource(icon),
             contentDescription = null,
             modifier = Modifier.size(14.dp),
-            tint = iconTint
+            tint = if(enabled) iconTint else iconTint.copy(alpha = 0.2f)
         )
     }
 }

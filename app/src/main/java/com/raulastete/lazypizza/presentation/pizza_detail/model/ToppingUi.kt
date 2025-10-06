@@ -12,6 +12,11 @@ data class ToppingUi(
 ) {
     val isNotSelected = count == 0
     val isSelected = count > 0
+    val canIncreaseQuantity = count < MAX_QUANTITY_ALLOWED_PER_TOPPING
+
+    companion object {
+        const val MAX_QUANTITY_ALLOWED_PER_TOPPING = 3
+    }
 }
 
 fun Topping.toUi() = ToppingUi(

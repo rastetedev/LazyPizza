@@ -68,6 +68,7 @@ fun ToppingCard(
                 ProductQuantityControl(
                     modifier = Modifier.fillMaxWidth(),
                     count = toppingUi.count,
+                    isIncreaseButtonEnabled = toppingUi.canIncreaseQuantity,
                     onClickDecreaseCount = onClickDecreaseCount,
                     onClickIncreaseCount = onClickIncreaseCount
                 )
