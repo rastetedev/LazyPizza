@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.presentation.navigation
+package com.raulastete.lazypizza.ui.navigation
 
 import kotlinx.serialization.Serializable
 
