@@ -6,6 +6,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
+import com.raulastete.lazypizza.ui.DeviceMode
 
 data class LPColorScheme(
     val textPrimary: Color,
@@ -80,3 +81,5 @@ val LocalAppShape = staticCompositionLocalOf {
         small = RectangleShape
     )
 }
+
+val LocalDeviceMode = staticCompositionLocalOf<DeviceMode> { error("No DeviceMode provided") }

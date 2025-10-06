@@ -12,7 +12,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.lazy.LazyColumn
+import androidx.compose.foundation.lazy.LazyListScope
 import androidx.compose.foundation.lazy.LazyListState
+import androidx.compose.foundation.lazy.grid.GridCells.Fixed
+import androidx.compose.foundation.lazy.grid.LazyGridScope
+import androidx.compose.foundation.lazy.grid.LazyGridState
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.material3.CircularProgressIndicator
@@ -33,12 +40,16 @@ import com.raulastete.lazypizza.presentation.home.components.PizzaCard
 import com.raulastete.lazypizza.presentation.home.model.CountableProductUi
 import com.raulastete.lazypizza.presentation.home.model.PizzaUi
 import com.raulastete.lazypizza.presentation.home.model.ProductUi
+import com.raulastete.lazypizza.ui.DeviceMode
 import com.raulastete.lazypizza.ui.components.LPSearchBar
 import com.raulastete.lazypizza.ui.components.LPTopbar
 import com.raulastete.lazypizza.ui.theme.AppTheme
+import com.raulastete.lazypizza.ui.theme.LocalDeviceMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel
+import kotlin.collections.component1
+import kotlin.collections.component2
 
 @Composable
 fun HomeScreen(
@@ -62,17 +73,17 @@ private fun HomeScreenContent(
     navigateToPizzaDetail: (String) -> Unit
 ) {
     val lazyListState = rememberLazyListState()
-
+    val lazyGridState = rememberLazyGridState()
     val coroutineScope = rememberCoroutineScope()
+
+    val deviceMode = LocalDeviceMode.current
 
     Column(
         Modifier
             .background(AppTheme.colorScheme.background)
             .statusBarsPadding()
     ) {
-        LPTopbar(
-            modifier = Modifier.fillMaxWidth()
-        )
+        LPTopbar(modifier = Modifier.fillMaxWidth())
 
         Spacer(Modifier.height(8.dp))
 
@@ -81,9 +92,7 @@ private fun HomeScreenContent(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp),
             query = uiState.searchQuery,
-            onQueryChange = {
-                onQuerySearch(it)
-            }
+            onQueryChange = onQuerySearch
         )
 
         Spacer(Modifier.height(8.dp))
@@ -91,79 +100,59 @@ private fun HomeScreenContent(
         CategoryListRow(
             modifier = Modifier.padding(horizontal = 16.dp),
             categories = uiState.categoryNameList
-        ) {
+        ) { categoryName ->
             navigateToStickyHeader(
-                categoryName = it,
+                categoryName = categoryName,
                 menu = uiState.data,
                 lazyListState = lazyListState,
-                coroutineScope = coroutineScope
+                lazyGridState = lazyGridState,
+                coroutineScope = coroutineScope,
+                deviceMode = deviceMode
             )
         }
 
         when {
             uiState.isLoading -> {
-                Box(
-                    Modifier.fillMaxSize(),
-                    contentAlignment = Alignment.Center
-                ) {
-                    CircularProgressIndicator()
-                }
+                ContentLoading()
             }
 
             uiState.showEmptyDataMessage -> {
-                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                    Text(
-                        "No results. Try something else.",
-                        style = AppTheme.typography.title3,
-                        color = AppTheme.colorScheme.textSecondary,
-                        textAlign = TextAlign.Center
-                    )
-                }
+                EmptyMessage()
             }
 
             else -> {
-                LazyColumn(
-                    modifier = Modifier.fillMaxSize(),
-                    state = lazyListState,
-                    verticalArrangement = Arrangement.spacedBy(8.dp),
-                ) {
-                    uiState.data.forEach { (category, productList) ->
-                        stickyHeader(key = category.id) {
-                            CategoryHeader(category.name)
-                        }
+                when {
+                    // TODO: Refactor product cards for grid layout responsiveness.
+                    //  - PROBLEM: In PhoneLandscape mode, the 2-column grid makes the cards too narrow,
+                    //    causing button text (e.g., "Add") to wrap to a second line, which harms the UI.
+                    //  - TASK: Adjust the design of `CountableProductCard` and `PizzaCard` to be more responsive.
+                    //  - GOAL: Once fixed, modify this logic so that `PhoneLandscape` can also use the `LazyVerticalGrid`.
 
-                        items(
-                            items = productList,
-                            key = { it.id },
-                            contentType = {
-                                if (category.isPizza) {
-                                    PizzaUi::class
-                                } else {
-                                    CountableProductUi::class
-                                }
-                            }
+                    deviceMode.isPhone() -> {
+                        LazyColumn(
+                            modifier = Modifier.fillMaxSize(),
+                            state = lazyListState,
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
                         ) {
-                            if (category.isPizza) {
-                                PizzaCard(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 16.dp),
-                                    pizzaUi = it as PizzaUi
-                                ) {
-                                    navigateToPizzaDetail(it.id)
-                                }
-                            } else {
-                                CountableProductCard(
-                                    modifier = Modifier
-                                        .fillMaxWidth()
-                                        .padding(horizontal = 16.dp),
-                                    countableProductUi = it as CountableProductUi,
-                                    onClickAddToCart = {},
-                                    onClickDecreaseCount = {},
-                                    onClickIncreaseCount = {},
-                                    onClickRemoveFromCart = {}
-                                )
-                            }
+                            ProductList(
+                                uiState = uiState,
+                                navigateToPizzaDetail = navigateToPizzaDetail
+                            )
+                        }
+                    }
+
+                    else -> {
+                        LazyVerticalGrid(
+                            modifier = Modifier.fillMaxSize(),
+                            state = lazyGridState,
+                            columns = Fixed(2),
+                            verticalArrangement = Arrangement.spacedBy(8.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                        ) {
+                            ProductList(
+                                uiState = uiState,
+                                navigateToPizzaDetail = navigateToPizzaDetail
+                            )
                         }
                     }
                 }
@@ -173,7 +162,114 @@ private fun HomeScreenContent(
 }
 
 @Composable
-fun CategoryHeader(name: String) {
+private fun ContentLoading() {
+    Box(
+        Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) { CircularProgressIndicator() }
+}
+
+@Composable
+private fun EmptyMessage() {
+    Box(
+        Modifier.fillMaxSize(),
+        contentAlignment = Alignment.Center
+    ) {
+        Text(
+            "No results. Try something else.",
+            style = AppTheme.typography.title3,
+            color = AppTheme.colorScheme.textSecondary,
+            textAlign = TextAlign.Center
+        )
+    }
+}
+
+@Composable
+private fun ProductItem(
+    product: ProductUi,
+    navigateToPizzaDetail: (String) -> Unit,
+    modifier: Modifier = Modifier
+) {
+    when (product) {
+        is PizzaUi -> PizzaCard(
+            modifier = modifier,
+            pizzaUi = product
+        ) {
+            navigateToPizzaDetail(product.id)
+        }
+
+        is CountableProductUi -> CountableProductCard(
+            modifier = modifier,
+            countableProductUi = product,
+            onClickAddToCart = {},
+            onClickDecreaseCount = {},
+            onClickIncreaseCount = {},
+            onClickRemoveFromCart = {}
+        )
+    }
+}
+
+private fun LazyListScope.ProductList(
+    uiState: HomeUiState,
+    navigateToPizzaDetail: (String) -> Unit
+) {
+    uiState.data.forEach { (category, productList) ->
+        stickyHeader(key = category.id) {
+            CategoryHeader(category.name)
+        }
+
+        items(
+            items = productList,
+            key = { it.id },
+            contentType = {
+                if (category.isPizza) {
+                    PizzaUi::class
+                } else {
+                    CountableProductUi::class
+                }
+            }
+        ) { product ->
+            ProductItem(
+                product = product,
+                navigateToPizzaDetail = navigateToPizzaDetail,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            )
+        }
+    }
+}
+
+private fun LazyGridScope.ProductList(
+    uiState: HomeUiState,
+    navigateToPizzaDetail: (String) -> Unit
+) {
+    uiState.data.forEach { (category, productList) ->
+        stickyHeader(key = category.id) {
+            CategoryHeader(category.name)
+        }
+
+        items(
+            items = productList,
+            key = { it.id },
+            contentType = {
+                if (category.isPizza) PizzaUi::class
+                else CountableProductUi::class
+            }
+        ) { product ->
+            ProductItem(
+                product = product,
+                navigateToPizzaDetail = navigateToPizzaDetail,
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+            )
+        }
+    }
+}
+
+@Composable
+private fun CategoryHeader(name: String) {
     Text(
         text = name.uppercase(),
         style = AppTheme.typography.label2Semibold,
@@ -187,25 +283,32 @@ fun CategoryHeader(name: String) {
     )
 }
 
-fun navigateToStickyHeader(
+private fun navigateToStickyHeader(
     categoryName: String,
     menu: Map<Category, List<ProductUi>>,
+    deviceMode: DeviceMode,
     lazyListState: LazyListState,
+    lazyGridState: LazyGridState,
     coroutineScope: CoroutineScope
 ) {
-    val headerIndex = menu
-        .keys
-        .indexOfFirst { it.name == categoryName }
-    if (headerIndex != -1) {
-        var absoluteIndex = 0
-        menu.entries.take(headerIndex)
-            .forEach { entry ->
-                absoluteIndex += 1 // header
-                absoluteIndex += entry.value.size // items
+    val headerIndex = menu.keys.indexOfFirst { it.name == categoryName }
+    if (headerIndex == -1) return
+
+    var absoluteIndex = 0
+    menu.entries.take(headerIndex).forEach { entry ->
+        absoluteIndex += 1 // 1 por el header
+        absoluteIndex += entry.value.size // N por los ítems
+    }
+
+    coroutineScope.launch {
+        when (deviceMode) {
+            DeviceMode.PhonePortrait, DeviceMode.PhoneLandscape -> {
+                lazyListState.animateScrollToItem(absoluteIndex)
             }
 
-        coroutineScope.launch {
-            lazyListState.animateScrollToItem(absoluteIndex)
+            DeviceMode.TabletPortrait, DeviceMode.TabletLandscape -> {
+                lazyGridState.animateScrollToItem(absoluteIndex)
+            }
         }
     }
 }
