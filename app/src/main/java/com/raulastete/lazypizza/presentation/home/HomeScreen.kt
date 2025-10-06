@@ -15,6 +15,7 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -99,57 +100,70 @@ private fun HomeScreenContent(
             )
         }
 
-        if (uiState.showEmptyDataMessage && uiState.isLoading.not()) {
-            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-                Text(
-                    "No results. Try something else.",
-                    style = AppTheme.typography.title3,
-                    color = AppTheme.colorScheme.textSecondary,
-                    textAlign = TextAlign.Center
-                )
+        when {
+            uiState.isLoading -> {
+                Box(
+                    Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    CircularProgressIndicator()
+                }
             }
-        } else {
-            LazyColumn(
-                modifier = Modifier.fillMaxSize(),
-                state = lazyListState,
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-            ) {
-                uiState.data.forEach { (category, productList) ->
-                    stickyHeader(key = category.id) {
-                        CategoryHeader(category.name)
-                    }
 
-                    items(
-                        items = productList,
-                        key = { it.id },
-                        contentType = {
-                            if (category.isPizza) {
-                                PizzaUi::class
-                            } else {
-                                CountableProductUi::class
-                            }
+            uiState.showEmptyDataMessage -> {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(
+                        "No results. Try something else.",
+                        style = AppTheme.typography.title3,
+                        color = AppTheme.colorScheme.textSecondary,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            }
+
+            else -> {
+                LazyColumn(
+                    modifier = Modifier.fillMaxSize(),
+                    state = lazyListState,
+                    verticalArrangement = Arrangement.spacedBy(8.dp),
+                ) {
+                    uiState.data.forEach { (category, productList) ->
+                        stickyHeader(key = category.id) {
+                            CategoryHeader(category.name)
                         }
-                    ) {
-                        if (category.isPizza) {
-                            PizzaCard(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp),
-                                pizzaUi = it as PizzaUi
-                            ) {
-                                navigateToPizzaDetail(it.id)
+
+                        items(
+                            items = productList,
+                            key = { it.id },
+                            contentType = {
+                                if (category.isPizza) {
+                                    PizzaUi::class
+                                } else {
+                                    CountableProductUi::class
+                                }
                             }
-                        } else {
-                            CountableProductCard(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(horizontal = 16.dp),
-                                countableProductUi = it as CountableProductUi,
-                                onClickAddToCart = {},
-                                onClickDecreaseCount = {},
-                                onClickIncreaseCount = {},
-                                onClickRemoveFromCart = {}
-                            )
+                        ) {
+                            if (category.isPizza) {
+                                PizzaCard(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp),
+                                    pizzaUi = it as PizzaUi
+                                ) {
+                                    navigateToPizzaDetail(it.id)
+                                }
+                            } else {
+                                CountableProductCard(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .padding(horizontal = 16.dp),
+                                    countableProductUi = it as CountableProductUi,
+                                    onClickAddToCart = {},
+                                    onClickDecreaseCount = {},
+                                    onClickIncreaseCount = {},
+                                    onClickRemoveFromCart = {}
+                                )
+                            }
                         }
                     }
                 }

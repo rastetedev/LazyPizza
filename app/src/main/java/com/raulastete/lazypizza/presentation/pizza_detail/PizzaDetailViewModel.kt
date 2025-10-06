@@ -14,64 +14,59 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.collections.map
 
 class PizzaDetailViewModel(
     private val menuRepository: MenuRepository,
     savedStateHandle: SavedStateHandle
 ) : ViewModel() {
 
-    private val _uiState = MutableStateFlow(PizzaDetailUiState())
+    private val _uiState = MutableStateFlow(PizzaDetailUiState(isLoading = true))
     val uiState: StateFlow<PizzaDetailUiState> = _uiState.asStateFlow()
 
     init {
-        fetchPizzaDetail(savedStateHandle)
-        fetchToppings()
-    }
-
-    private fun fetchPizzaDetail(savedStateHandle: SavedStateHandle) {
         val productId = savedStateHandle.get<String>(PIZZA_ID_ARG)
-        productId?.let {
+        if (productId != null) {
             viewModelScope.launch {
-                menuRepository.getProductById(productId)
-                    .catch { exception ->
-                        Log.e("Product Detail", exception.message, exception)
-                    }
-                    .collectLatest { data ->
-                        data?.let { product ->
-                            _uiState.update { state ->
-                                state.copy(
-                                    pizzaUi =
-                                        PizzaUi(
-                                            id = product.id,
-                                            imageUrl = product.imageUrl,
-                                            name = product.name,
-                                            description = product.description,
-                                            price = product.price
-                                        )
-                                )
-                            }
-                        }
-                    }
-            }
-        }
-    }
 
-    private fun fetchToppings() {
-        viewModelScope.launch {
-            menuRepository.getToppings()
-                .catch { exception ->
-                    Log.e("Product Detail", exception.message, exception)
-                }
-                .collectLatest { data ->
-                    _uiState.update { state ->
-                        state.copy(
-                            toppings = data.map { it.toUi() }
+                val pizzaFlow = menuRepository.getProductById(productId)
+                    .catch { exception ->
+                        Log.e("PizzaDetailViewModel", "Error fetching pizza detail", exception)
+                        emit(null) // Emit null on error to not break the combine
+                    }
+
+
+                val toppingsFlow = menuRepository.getToppings()
+                    .catch { exception ->
+                        Log.e("PizzaDetailViewModel", "Error fetching toppings", exception)
+                        emit(emptyList()) // Emit empty list on error
+                    }
+
+                combine(pizzaFlow, toppingsFlow) { product, toppings ->
+                    Pair(product, toppings)
+                }.collectLatest { (product, toppings) ->
+                    _uiState.update {
+                        it.copy(
+                            isLoading = false,
+                            pizzaUi = product?.let { p ->
+                                PizzaUi(
+                                    id = p.id,
+                                    imageUrl = p.imageUrl,
+                                    name = p.name,
+                                    description = p.description,
+                                    price = p.price
+                                )
+                            },
+                            toppings = toppings.map { t -> t.toUi() }
                         )
                     }
                 }
+            }
+        } else {
+            // Handle case where pizzaId is null
+            _uiState.update { it.copy(isLoading = false) }
         }
     }
 

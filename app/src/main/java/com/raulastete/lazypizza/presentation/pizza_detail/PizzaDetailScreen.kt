@@ -17,6 +17,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.Icon
@@ -69,37 +70,42 @@ private fun ProductDetailScreenContent(
 ) {
     Box(
         Modifier
-            .fillMaxSize()
+            .fillMaxSize(),
+        contentAlignment = Alignment.Center
     ) {
-        Column {
-            Box {
-                ProductHeader(
-                    uiState.pizzaUi
-                )
-                BackButton(
-                    modifier = Modifier
-                        .statusBarsPadding()
-                        .padding(horizontal = 10.dp, vertical = 8.dp)
-                        .align(alignment = Alignment.TopStart),
-                    onClick = navigateBack
+        if(uiState.isLoading){
+            CircularProgressIndicator()
+        } else {
+            Column {
+                Box {
+                    ProductHeader(
+                        uiState.pizzaUi
+                    )
+                    BackButton(
+                        modifier = Modifier
+                            .statusBarsPadding()
+                            .padding(horizontal = 10.dp, vertical = 8.dp)
+                            .align(alignment = Alignment.TopStart),
+                        onClick = navigateBack
+                    )
+                }
+                ToppingSections(
+                    modifier = Modifier.weight(1f),
+                    toppings = uiState.toppings,
+                    onSelectTopping = onSelectTopping,
+                    onIncreaseToppingQuantity = onIncreaseToppingQuantity,
+                    onDecreaseToppingQuantity = onDecreaseToppingQuantity,
                 )
             }
-            ToppingSections(
-                modifier = Modifier.weight(1f),
-                toppings = uiState.toppings,
-                onSelectTopping = onSelectTopping,
-                onIncreaseToppingQuantity = onIncreaseToppingQuantity,
-                onDecreaseToppingQuantity = onDecreaseToppingQuantity,
-            )
+            LPPrimaryButton(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 32.dp),
+                text = "Add to Cart for $12.99"
+            ) { }
         }
-        LPPrimaryButton(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 32.dp),
-            text = "Add to Cart for $12.99"
-        ) { }
     }
 }
 

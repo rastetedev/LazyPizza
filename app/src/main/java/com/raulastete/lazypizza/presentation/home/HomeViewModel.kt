@@ -33,6 +33,7 @@ class HomeViewModel(
 
     private fun fetchProductsByCategory() {
         viewModelScope.launch {
+            _uiState.update { it.copy(isLoading = true) }
             menuRepository.getProductsByCategory()
                 .catch { exception ->
                     Log.e("Home", exception.message, exception)
@@ -41,14 +42,13 @@ class HomeViewModel(
 
                     completeData = transformToUiModel(data)
 
-                    _uiState.update { it.copy(data = completeData) }
+                    _uiState.update { it.copy(data = completeData, isLoading = false) }
                 }
         }
     }
 
     private fun transformToUiModel(data: Map<Category, List<Product>>): Map<Category, List<ProductUi>> {
         return data.map { (category, products) ->
-
             val products = if (category.id == PIZZA_CATEGORY_ID) {
                 products.map { product ->
                     PizzaUi(
@@ -76,12 +76,13 @@ class HomeViewModel(
 
     fun search(query: String) {
         if (query.isEmpty()) _uiState.update { it.copy(searchQuery = "", data = completeData) }
-
         _uiState.update { it.copy(searchQuery = query) }
         filterData(query)
     }
 
     private fun filterData(query: String) {
+        _uiState.update { it.copy(isLoading = true) }
+
         val filteredData = completeData
             .map { (category, products) ->
                 category to products.filter { product ->
@@ -92,9 +93,21 @@ class HomeViewModel(
             .toMap()
 
         if (filteredData.values.isNotEmpty()) {
-            _uiState.update { it.copy(data = filteredData, showEmptyDataMessage = false) }
+            _uiState.update {
+                it.copy(
+                    data = filteredData,
+                    showEmptyDataMessage = false,
+                    isLoading = false
+                )
+            }
         } else {
-            _uiState.update { it.copy(data = emptyMap(), showEmptyDataMessage = true) }
+            _uiState.update {
+                it.copy(
+                    data = emptyMap(),
+                    showEmptyDataMessage = true,
+                    isLoading = false
+                )
+            }
         }
     }
 }
