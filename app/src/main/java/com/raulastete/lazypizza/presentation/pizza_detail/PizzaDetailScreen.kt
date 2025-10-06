@@ -103,7 +103,7 @@ private fun ProductDetailScreenContent(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
                     .padding(bottom = 32.dp),
-                text = "Add to Cart for $12.99"
+                text = "Add to Cart for $${uiState.formattedTotalPrice}"
             ) { }
         }
     }

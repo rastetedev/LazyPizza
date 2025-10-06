@@ -11,6 +11,7 @@ data class ToppingUi(
     val count: Int
 ) {
     val isNotSelected = count == 0
+    val isSelected = count > 0
 }
 
 fun Topping.toUi() = ToppingUi(

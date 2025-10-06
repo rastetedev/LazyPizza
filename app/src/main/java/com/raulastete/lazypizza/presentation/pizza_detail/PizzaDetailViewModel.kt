@@ -88,6 +88,7 @@ class PizzaDetailViewModel(
         _uiState.update { currentState ->
             val updatedToppings = currentState.toppings.map { topping ->
                 if (topping.id == toppingId) {
+                    if (topping.count >= 3) return@map topping
                     topping.copy(count = topping.count + 1)
                 } else {
                     topping
@@ -118,4 +119,11 @@ data class PizzaDetailUiState(
     val isLoading: Boolean = false,
     val pizzaUi: PizzaUi? = null,
     val toppings: List<ToppingUi> = emptyList()
-)
+) {
+    val totalPrice: Double = pizzaUi?.price?.let { pizzaPrice ->
+        val toppingsPrice = toppings.filter { it.isSelected }.sumOf { it.price * it.count }
+        pizzaPrice + toppingsPrice
+    } ?: 0.0
+
+    val formattedTotalPrice: String = String.format("%.2f", totalPrice)
+}
