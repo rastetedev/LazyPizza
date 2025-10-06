@@ -3,6 +3,7 @@ package com.raulastete.lazypizza.presentation.home
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -15,7 +16,9 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
@@ -38,6 +41,7 @@ fun HomeScreen(
 
     HomeScreenContent(
         uiState = uiState,
+        onQuerySearch = viewModel::search,
         navigateToPizzaDetail = navigateToPizzaDetail
     )
 }
@@ -46,6 +50,7 @@ fun HomeScreen(
 @Composable
 private fun HomeScreenContent(
     uiState: HomeUiState,
+    onQuerySearch: (String) -> Unit,
     navigateToPizzaDetail: (String) -> Unit
 ) {
 
@@ -63,8 +68,10 @@ private fun HomeScreenContent(
 
             LPSearchBar(
                 modifier = Modifier.fillMaxWidth(),
-                query = "",
-                onQueryChange = {}
+                query = uiState.searchQuery,
+                onQueryChange = {
+                    onQuerySearch(it)
+                }
             )
             Spacer(Modifier.height(8.dp))
             CategoryListRow(
@@ -73,47 +80,57 @@ private fun HomeScreenContent(
 
             }
 
-            LazyColumn(
-                Modifier.fillMaxSize(),
-                verticalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-                uiState.data.forEach { (category, productList) ->
-                    stickyHeader(key = category.id) {
-                        CategoryHeader(category.name)
-                    }
-
-                    items(
-                        items = productList,
-                        key = { it.id },
-                        contentType = {
-                            if (category.isPizza) {
-                                PizzaUi::class
-                            } else {
-                                CountableProductUi::class
-                            }
+            if (uiState.showEmptyDataMessage && uiState.isLoading.not()) {
+                Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                    Text(
+                        "No results. Try something else.",
+                        style = AppTheme.typography.title3,
+                        color = AppTheme.colorScheme.textSecondary,
+                        textAlign = TextAlign.Center
+                    )
+                }
+            } else {
+                LazyColumn(
+                    Modifier.fillMaxSize(),
+                    verticalArrangement = Arrangement.spacedBy(8.dp)
+                ) {
+                    uiState.data.forEach { (category, productList) ->
+                        stickyHeader(key = category.id) {
+                            CategoryHeader(category.name)
                         }
-                    ) {
-                        if (category.isPizza) {
-                            PizzaCard(
-                                modifier = Modifier.fillMaxWidth(),
-                                pizzaUi = it as PizzaUi
-                            ) {
-                                navigateToPizzaDetail(it.id)
+
+                        items(
+                            items = productList,
+                            key = { it.id },
+                            contentType = {
+                                if (category.isPizza) {
+                                    PizzaUi::class
+                                } else {
+                                    CountableProductUi::class
+                                }
                             }
-                        } else {
-                            CountableProductCard(
-                                modifier = Modifier.fillMaxWidth(),
-                                countableProductUi = it as CountableProductUi,
-                                onClickAddToCart = {},
-                                onClickDecreaseCount = {},
-                                onClickIncreaseCount = {},
-                                onClickRemoveFromCart = {}
-                            )
+                        ) {
+                            if (category.isPizza) {
+                                PizzaCard(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    pizzaUi = it as PizzaUi
+                                ) {
+                                    navigateToPizzaDetail(it.id)
+                                }
+                            } else {
+                                CountableProductCard(
+                                    modifier = Modifier.fillMaxWidth(),
+                                    countableProductUi = it as CountableProductUi,
+                                    onClickAddToCart = {},
+                                    onClickDecreaseCount = {},
+                                    onClickIncreaseCount = {},
+                                    onClickRemoveFromCart = {}
+                                )
+                            }
                         }
                     }
                 }
             }
-
         }
     }
 }
@@ -138,6 +155,7 @@ private fun HomeScreenContentPreview() {
     AppTheme {
         HomeScreenContent(
             uiState = HomeUiState(),
+            onQuerySearch = {},
             navigateToPizzaDetail = {}
         )
     }
