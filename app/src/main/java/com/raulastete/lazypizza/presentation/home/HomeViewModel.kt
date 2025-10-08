@@ -70,7 +70,9 @@ class HomeViewModel(
                     )
                 }
             }
-            category to products
+            category.copy(
+                name = category.name.uppercase(),
+            ) to products
         }.toMap()
     }
 
@@ -78,6 +80,78 @@ class HomeViewModel(
         if (query.isEmpty()) _uiState.update { it.copy(searchQuery = "", data = completeData) }
         _uiState.update { it.copy(searchQuery = query) }
         filterData(query)
+    }
+
+    fun addGenericProductToCard(productId: String) {
+        _uiState.update { state ->
+            val updatedData = state.data.map { (category, productList) ->
+                val updatedProductList = productList
+                    .map { product ->
+                        if (product.id == productId) {
+                            (product as CountableProductUi).copy(count = product.count + 1)
+                        } else {
+                            product
+                        }
+                    }
+                category to updatedProductList
+            }.toMap()
+
+            state.copy(data = updatedData)
+        }
+    }
+
+    fun removeGenericProductFromCard(productId: String) {
+        _uiState.update { state ->
+            val updatedData = state.data.map { (category, productList) ->
+                val updatedProductList = productList
+                    .map { product ->
+                        if (product.id == productId) {
+                            (product as CountableProductUi).copy(count = 0)
+                        } else {
+                            product
+                        }
+                    }
+                category to updatedProductList
+            }.toMap()
+
+            state.copy(data = updatedData)
+        }
+    }
+
+    fun increaseGenericProductCount(productId: String) {
+        _uiState.update { state ->
+            val updatedData = state.data.map { (category, productList) ->
+                val updatedProductList = productList
+                    .map { product ->
+                        if (product.id == productId) {
+                            (product as CountableProductUi).copy(count = product.count + 1)
+                        } else {
+                            product
+                        }
+                    }
+                category to updatedProductList
+            }.toMap()
+
+            state.copy(data = updatedData)
+        }
+    }
+
+    fun decreaseGenericProductCount(productId: String) {
+        _uiState.update { state ->
+            val updatedData = state.data.map { (category, productList) ->
+                val updatedProductList = productList
+                    .map { product ->
+                        if (product.id == productId) {
+                            (product as CountableProductUi).copy(count = product.count - 1)
+                        } else {
+                            product
+                        }
+                    }
+                category to updatedProductList
+            }.toMap()
+
+            state.copy(data = updatedData)
+        }
     }
 
     private fun filterData(query: String) {
@@ -119,6 +193,10 @@ data class HomeUiState(
     val showEmptyDataMessage: Boolean = false,
 ) {
     val categoryNameList = data.keys
-        .map { it.name }
+        .map {
+            it.name
+                .lowercase()
+                .replaceFirstChar { firstLetter -> firstLetter.uppercase() }
+        }
         .toList()
 }

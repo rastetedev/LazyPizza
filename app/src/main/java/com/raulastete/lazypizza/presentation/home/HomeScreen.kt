@@ -18,7 +18,7 @@ import androidx.compose.foundation.lazy.grid.GridCells.Fixed
 import androidx.compose.foundation.lazy.grid.LazyGridScope
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
+import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
@@ -61,6 +61,10 @@ fun HomeScreen(
     HomeScreenContent(
         uiState = uiState,
         onQuerySearch = viewModel::search,
+        addGenericProductToCard = viewModel::addGenericProductToCard,
+        removeGenericProductFromCard = viewModel::removeGenericProductFromCard,
+        increaseGenericProductCount = viewModel::increaseGenericProductCount,
+        decreaseGenericProductCount = viewModel::decreaseGenericProductCount,
         navigateToPizzaDetail = navigateToPizzaDetail
     )
 }
@@ -70,7 +74,12 @@ fun HomeScreen(
 private fun HomeScreenContent(
     uiState: HomeUiState,
     onQuerySearch: (String) -> Unit,
-    navigateToPizzaDetail: (String) -> Unit
+    navigateToPizzaDetail: (String) -> Unit,
+    addGenericProductToCard: (String) -> Unit,
+    removeGenericProductFromCard: (String) -> Unit,
+    increaseGenericProductCount: (String) -> Unit,
+    decreaseGenericProductCount: (String) -> Unit
+
 ) {
     val lazyListState = rememberLazyListState()
     val lazyGridState = rememberLazyGridState()
@@ -122,13 +131,7 @@ private fun HomeScreenContent(
 
             else -> {
                 when {
-                    // TODO: Refactor product cards for grid layout responsiveness.
-                    //  - PROBLEM: In PhoneLandscape mode, the 2-column grid makes the cards too narrow,
-                    //    causing button text (e.g., "Add") to wrap to a second line, which harms the UI.
-                    //  - TASK: Adjust the design of `CountableProductCard` and `PizzaCard` to be more responsive.
-                    //  - GOAL: Once fixed, modify this logic so that `PhoneLandscape` can also use the `LazyVerticalGrid`.
-
-                    deviceMode.isPhone() -> {
+                    deviceMode is DeviceMode.PhonePortrait -> {
                         LazyColumn(
                             modifier = Modifier.fillMaxSize(),
                             state = lazyListState,
@@ -136,7 +139,11 @@ private fun HomeScreenContent(
                         ) {
                             ProductList(
                                 uiState = uiState,
-                                navigateToPizzaDetail = navigateToPizzaDetail
+                                navigateToPizzaDetail = navigateToPizzaDetail,
+                                addGenericProductToCard = addGenericProductToCard,
+                                removeGenericProductFromCard = removeGenericProductFromCard,
+                                increaseGenericProductCount = increaseGenericProductCount,
+                                decreaseGenericProductCount = decreaseGenericProductCount
                             )
                         }
                     }
@@ -151,7 +158,11 @@ private fun HomeScreenContent(
                         ) {
                             ProductList(
                                 uiState = uiState,
-                                navigateToPizzaDetail = navigateToPizzaDetail
+                                navigateToPizzaDetail = navigateToPizzaDetail,
+                                addGenericProductToCard = addGenericProductToCard,
+                                removeGenericProductFromCard = removeGenericProductFromCard,
+                                increaseGenericProductCount = increaseGenericProductCount,
+                                decreaseGenericProductCount = decreaseGenericProductCount
                             )
                         }
                     }
@@ -186,9 +197,13 @@ private fun EmptyMessage() {
 
 @Composable
 private fun ProductItem(
+    modifier: Modifier = Modifier,
     product: ProductUi,
     navigateToPizzaDetail: (String) -> Unit,
-    modifier: Modifier = Modifier
+    addGenericProductToCard: (String) -> Unit,
+    removeGenericProductFromCard: (String) -> Unit,
+    increaseGenericProductCount: (String) -> Unit,
+    decreaseGenericProductCount: (String) -> Unit
 ) {
     when (product) {
         is PizzaUi -> PizzaCard(
@@ -201,17 +216,29 @@ private fun ProductItem(
         is CountableProductUi -> CountableProductCard(
             modifier = modifier,
             countableProductUi = product,
-            onClickAddToCart = {},
-            onClickDecreaseCount = {},
-            onClickIncreaseCount = {},
-            onClickRemoveFromCart = {}
+            onClickAddToCart = {
+                addGenericProductToCard(product.id)
+            },
+            onClickDecreaseCount = {
+                decreaseGenericProductCount(product.id)
+            },
+            onClickIncreaseCount = {
+                increaseGenericProductCount(product.id)
+            },
+            onClickRemoveFromCart = {
+                removeGenericProductFromCard(product.id)
+            }
         )
     }
 }
 
 private fun LazyListScope.ProductList(
     uiState: HomeUiState,
-    navigateToPizzaDetail: (String) -> Unit
+    navigateToPizzaDetail: (String) -> Unit,
+    addGenericProductToCard : (String) -> Unit,
+    removeGenericProductFromCard : (String) -> Unit,
+    increaseGenericProductCount : (String) -> Unit,
+    decreaseGenericProductCount : (String) -> Unit
 ) {
     uiState.data.forEach { (category, productList) ->
         stickyHeader(key = category.id) {
@@ -234,7 +261,11 @@ private fun LazyListScope.ProductList(
                 navigateToPizzaDetail = navigateToPizzaDetail,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
+                    .padding(horizontal = 16.dp),
+                addGenericProductToCard = addGenericProductToCard,
+                removeGenericProductFromCard = removeGenericProductFromCard,
+                increaseGenericProductCount = increaseGenericProductCount,
+                decreaseGenericProductCount = decreaseGenericProductCount
             )
         }
     }
@@ -242,27 +273,41 @@ private fun LazyListScope.ProductList(
 
 private fun LazyGridScope.ProductList(
     uiState: HomeUiState,
-    navigateToPizzaDetail: (String) -> Unit
+    navigateToPizzaDetail: (String) -> Unit,
+    addGenericProductToCard : (String) -> Unit,
+    removeGenericProductFromCard : (String) -> Unit,
+    increaseGenericProductCount : (String) -> Unit,
+    decreaseGenericProductCount : (String) -> Unit
 ) {
     uiState.data.forEach { (category, productList) ->
         stickyHeader(key = category.id) {
             CategoryHeader(category.name)
         }
 
-        items(
+        itemsIndexed(
             items = productList,
-            key = { it.id },
-            contentType = {
-                if (category.isPizza) PizzaUi::class
-                else CountableProductUi::class
+            key = { index, item -> item.id },
+            contentType = { index, item ->
+                if (category.isPizza) {
+                    PizzaUi::class
+                } else {
+                    CountableProductUi::class
+                }
             }
-        ) { product ->
+        ) { index, product ->
             ProductItem(
                 product = product,
                 navigateToPizzaDetail = navigateToPizzaDetail,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
+                    .padding(
+                        start = if (index % 2 == 0) 16.dp else 0.dp,
+                        end = if (index % 2 == 0) 0.dp else 16.dp
+                    ),
+                addGenericProductToCard = addGenericProductToCard,
+                removeGenericProductFromCard = removeGenericProductFromCard,
+                increaseGenericProductCount = increaseGenericProductCount,
+                decreaseGenericProductCount = decreaseGenericProductCount
             )
         }
     }
@@ -271,7 +316,7 @@ private fun LazyGridScope.ProductList(
 @Composable
 private fun CategoryHeader(name: String) {
     Text(
-        text = name.uppercase(),
+        text = name,
         style = AppTheme.typography.label2Semibold,
         color = AppTheme.colorScheme.textSecondary,
         modifier = Modifier
@@ -291,7 +336,7 @@ private fun navigateToStickyHeader(
     lazyGridState: LazyGridState,
     coroutineScope: CoroutineScope
 ) {
-    val headerIndex = menu.keys.indexOfFirst { it.name == categoryName }
+    val headerIndex = menu.keys.indexOfFirst { it.name == categoryName.uppercase() }
     if (headerIndex == -1) return
 
     var absoluteIndex = 0
@@ -320,7 +365,11 @@ private fun HomeScreenContentPreview() {
         HomeScreenContent(
             uiState = HomeUiState(),
             onQuerySearch = {},
-            navigateToPizzaDetail = {}
+            navigateToPizzaDetail = {},
+            addGenericProductToCard = {},
+            removeGenericProductFromCard = {},
+            increaseGenericProductCount = {},
+            decreaseGenericProductCount = {}
         )
     }
 }

@@ -142,7 +142,6 @@ private fun ColumnScope.NonZeroItemsContent(
         verticalAlignment = Alignment.CenterVertically
     ) {
         ProductQuantityControl(
-            modifier = Modifier.weight(1f),
             count = count,
             onClickDecreaseCount = onClickDecreaseCount,
             onClickIncreaseCount = onClickIncreaseCount

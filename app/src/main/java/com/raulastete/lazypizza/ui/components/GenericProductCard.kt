@@ -16,7 +16,10 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.raulastete.lazypizza.ui.theme.AppTheme
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.material3.Text
+import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.AsyncImage
 
 @Composable
@@ -39,32 +42,25 @@ fun GenericProductCard(
             defaultElevation = 4.dp
         )
     ) {
+
+        val imageContainerShape = RoundedCornerShape(
+            topStart = 12.dp,
+            bottomStart = 12.dp,
+            topEnd = 0.dp,
+            bottomEnd = 0.dp
+        )
+
         Row(
             modifier = Modifier
-                .padding(3.dp)
+                .padding(2.dp)
                 .height(IntrinsicSize.Max),
             verticalAlignment = Alignment.CenterVertically
         ) {
             Box(
                 Modifier
                     .size(120.dp)
-                    .background(
-                        color = AppTheme.colorScheme.surfaceHighest,
-                        shape = RoundedCornerShape(
-                            topStart = 12.dp,
-                            bottomStart = 12.dp,
-                            topEnd = 0.dp,
-                            bottomEnd = 0.dp
-                        )
-                    )
-                    .clip(
-                        shape = RoundedCornerShape(
-                            topStart = 12.dp,
-                            bottomStart = 12.dp,
-                            topEnd = 0.dp,
-                            bottomEnd = 0.dp
-                        )
-                    ),
+                    .clip(shape = imageContainerShape)
+                    .background(color = AppTheme.colorScheme.surfaceHighest),
                 contentAlignment = Alignment.Center
             ) {
                 AsyncImage(model = imageUrl, contentDescription = null)
@@ -72,5 +68,19 @@ fun GenericProductCard(
 
             content()
         }
+    }
+}
+
+@Composable
+@Preview
+fun GenericProductCardPreview() {
+    AppTheme {
+        GenericProductCard(
+            modifier = Modifier.fillMaxWidth(),
+            imageUrl = "",
+            content = {
+                Text(text = "Pizza")
+            }
+        )
     }
 }

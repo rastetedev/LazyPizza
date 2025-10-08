@@ -3,7 +3,6 @@ package com.raulastete.lazypizza.presentation.home.components
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Text
@@ -30,9 +29,7 @@ fun PizzaCard(
     ) {
         Column(
             Modifier
-                .weight(1f)
-                .fillMaxHeight()
-                .padding(horizontal = 16.dp, vertical = 12.dp),
+                .padding(horizontal = 12.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
             Column {
@@ -40,6 +37,8 @@ fun PizzaCard(
                     modifier = Modifier.fillMaxWidth(),
                     text = pizzaUi.name,
                     textAlign = TextAlign.Start,
+                    maxLines = 1,
+                    minLines = 1,
                     overflow = TextOverflow.Ellipsis,
                     style = AppTheme.typography.body1Medium,
                     color = AppTheme.colorScheme.textPrimary
@@ -50,7 +49,9 @@ fun PizzaCard(
                     style = AppTheme.typography.body3Regular,
                     color = AppTheme.colorScheme.textSecondary,
                     textAlign = TextAlign.Start,
-                    minLines = 2
+                    maxLines = 2,
+                    minLines = 2,
+                    overflow = TextOverflow.Ellipsis
                 )
             }
 

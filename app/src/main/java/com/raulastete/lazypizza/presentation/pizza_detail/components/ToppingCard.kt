@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember
@@ -21,6 +22,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.raulastete.lazypizza.presentation.pizza_detail.model.ToppingUi
 import com.raulastete.lazypizza.ui.components.ProductQuantityControl
@@ -82,7 +84,12 @@ private fun ToppingName(name: String) {
     Text(
         text = name,
         style = AppTheme.typography.body3Regular,
-        color = AppTheme.colorScheme.textSecondary
+        color = AppTheme.colorScheme.textSecondary,
+        maxLines = 1,
+        autoSize = TextAutoSize.StepBased(
+            minFontSize = 10.sp,
+            maxFontSize = AppTheme.typography.body3Regular.fontSize
+        )
     )
 }
 

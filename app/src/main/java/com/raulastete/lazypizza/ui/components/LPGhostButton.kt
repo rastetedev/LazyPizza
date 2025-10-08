@@ -7,6 +7,7 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentWidth
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.Text
 import androidx.compose.material3.ripple
 import androidx.compose.runtime.Composable
@@ -16,6 +17,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.raulastete.lazypizza.ui.theme.AppTheme
 
 @Composable
@@ -45,8 +47,13 @@ fun LPGhostButton(
     ) {
         Text(
             text = text,
+            autoSize = TextAutoSize.StepBased(
+                minFontSize = 12.sp,
+                maxFontSize = AppTheme.typography.title3.fontSize,
+            ),
             style = AppTheme.typography.title3,
-            color = AppTheme.colorScheme.primary
+            color = AppTheme.colorScheme.primary,
+            maxLines = 1
         )
     }
 }
