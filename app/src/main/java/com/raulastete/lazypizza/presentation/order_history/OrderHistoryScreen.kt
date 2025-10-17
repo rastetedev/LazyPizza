@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.presentation.cart
+package com.raulastete.lazypizza.presentation.order_history
 
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -14,43 +14,42 @@ import com.raulastete.lazypizza.presentation.ui.components.MessageFullScreen
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 
 @Composable
-fun CartScreen(navigateToMenu: () -> Unit) {
-    CartScreenContent(
-        navigateToMenu = navigateToMenu
+fun OrderHistoryScreen(navigateToLogin: () -> Unit) {
+    OrderHistoryContent(
+        navigateToLogin = navigateToLogin
     )
 }
 
 @Composable
-private fun CartScreenContent(
-    navigateToMenu: () -> Unit
+private fun OrderHistoryContent(
+    navigateToLogin: () -> Unit
 ) {
     Scaffold(
         topBar = {
             LPCenterTopbar(
                 modifier = Modifier.fillMaxWidth(),
-                title = stringResource(R.string.cart_screen)
+                title = stringResource(R.string.order_history_screen)
             )
         }
     ) { paddingValues ->
 
         MessageFullScreen(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            title = stringResource(R.string.cart_empty_title),
-            subtitle = stringResource(R.string.cart_empty_subtitle),
-            buttonText = stringResource(R.string.cart_empty_button),
-            onClick = navigateToMenu
-        )
+            modifier = Modifier.fillMaxSize().padding(paddingValues),
+            title = stringResource(R.string.not_signed_in_title),
+            subtitle = stringResource(R.string.not_signed_in_subtitle),
+            buttonText = stringResource(R.string.login_button)
+        ) {
+            navigateToLogin()
+        }
     }
 }
 
 @Preview(showBackground = true)
 @Composable
-private fun CartScreenContentPreview() {
+private fun OrderHistoryScreenContentPreview() {
     AppTheme {
-        CartScreenContent(
-            navigateToMenu = {}
+        OrderHistoryContent(
+            navigateToLogin = {}
         )
     }
 }
