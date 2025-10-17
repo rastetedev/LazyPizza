@@ -29,6 +29,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.vectorResource
@@ -85,16 +86,28 @@ private fun ProductDetailScreenContent(
             CircularProgressIndicator()
         }
     } else {
-        if (deviceMode == DeviceMode.PhonePortrait || deviceMode == DeviceMode.TabletLandscape) {
-            SmallWidthMode(
+
+        when (deviceMode) {
+            DeviceMode.PhoneLandscape, DeviceMode.TabletLandscape -> {
+                TwoColumnMode(
+                    uiState = uiState,
+                    navigateBack = navigateBack,
+                    onSelectTopping = onSelectTopping,
+                    onIncreaseToppingQuantity = onIncreaseToppingQuantity,
+                    onDecreaseToppingQuantity = onDecreaseToppingQuantity
+                )
+            }
+
+            DeviceMode.PhonePortrait -> SingleColumnPhoneMode(
                 uiState = uiState,
                 navigateBack = navigateBack,
                 onSelectTopping = onSelectTopping,
                 onIncreaseToppingQuantity = onIncreaseToppingQuantity,
                 onDecreaseToppingQuantity = onDecreaseToppingQuantity
             )
-        } else {
-            TwoColumnMode(
+
+
+            DeviceMode.TabletPortrait -> SingleColumnTabletMode(
                 uiState = uiState,
                 navigateBack = navigateBack,
                 onSelectTopping = onSelectTopping,
@@ -106,7 +119,7 @@ private fun ProductDetailScreenContent(
 }
 
 @Composable
-private fun SmallWidthMode(
+private fun SingleColumnPhoneMode(
     uiState: PizzaDetailUiState,
     navigateBack: () -> Unit,
     onSelectTopping: (String) -> Unit,
@@ -141,7 +154,7 @@ private fun SmallWidthMode(
                     pizzaUi = uiState.pizzaUi
                 )
             }
-            ToppingSections(
+            ToppingsSection(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
@@ -164,6 +177,63 @@ private fun SmallWidthMode(
 }
 
 @Composable
+private fun SingleColumnTabletMode(
+    uiState: PizzaDetailUiState,
+    navigateBack: () -> Unit,
+    onSelectTopping: (String) -> Unit,
+    onIncreaseToppingQuantity: (String) -> Unit,
+    onDecreaseToppingQuantity: (String) -> Unit,
+) {
+
+    Column(Modifier.background(AppTheme.colorScheme.surfaceHigher)) {
+        Column(
+            Modifier
+                .background(AppTheme.colorScheme.background)
+        ) {
+            BackButton(
+                modifier = Modifier
+                    .statusBarsPadding()
+                    .padding(start = 10.dp, top = 8.dp),
+                onClick = navigateBack
+            )
+            PizzaImage(
+                modifier = Modifier.fillMaxWidth(),
+                imageUrl = uiState.pizzaUi?.imageUrl
+            )
+            PizzaInfo(
+                Modifier
+                    .fillMaxWidth()
+                    .background(
+                        color = AppTheme.colorScheme.surfaceHigher,
+                        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
+                    )
+                    .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
+                    .padding(16.dp),
+                pizzaUi = uiState.pizzaUi
+            )
+        }
+        ToppingsSection(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(16.dp)
+                .weight(1f),
+            toppings = uiState.toppings,
+            listPadding = PaddingValues(bottom = 64.dp),
+            onSelectTopping = onSelectTopping,
+            onIncreaseToppingQuantity = onIncreaseToppingQuantity,
+            onDecreaseToppingQuantity = onDecreaseToppingQuantity,
+        )
+        LPPrimaryButton(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .padding(bottom = 32.dp),
+            text = "Add to Cart for $${uiState.formattedTotalPrice}"
+        ) { }
+    }
+}
+
+@Composable
 private fun TwoColumnMode(
     uiState: PizzaDetailUiState,
     navigateBack: () -> Unit,
@@ -171,68 +241,60 @@ private fun TwoColumnMode(
     onIncreaseToppingQuantity: (String) -> Unit,
     onDecreaseToppingQuantity: (String) -> Unit,
 ) {
-    Column(
+    Row(
         Modifier
-            .background(color = AppTheme.colorScheme.background),
+            .background(color = AppTheme.colorScheme.background)
+            .statusBarsPadding(),
     ) {
-        BackButton(
-            modifier = Modifier
-                .statusBarsPadding()
-                .padding(start = 10.dp, top = 8.dp),
-            onClick = navigateBack
-        )
-        Spacer(Modifier.weight(1f))
-        Row(
-            verticalAlignment = Alignment.CenterVertically
-        ) {
-            Column(
+        Column(Modifier.weight(1f)) {
+            BackButton(
+                modifier = Modifier
+                    .padding(start = 10.dp, top = 8.dp),
+                onClick = navigateBack
+            )
+            PizzaImage(
+                modifier = Modifier.fillMaxWidth(),
+                imageUrl = uiState.pizzaUi?.imageUrl
+            )
+            Spacer(Modifier.height(20.dp))
+            PizzaInfo(
                 Modifier
-                    .weight(1f),
-            ) {
-                Column {
-                    PizzaImage(
-                        modifier = Modifier.fillMaxWidth(),
-                        imageUrl = uiState.pizzaUi?.imageUrl
-                    )
-                    Spacer(Modifier.height(20.dp))
-                    PizzaInfo(
-                        Modifier
-                            .fillMaxWidth()
-                            .padding(16.dp),
-                        pizzaUi = uiState.pizzaUi
-                    )
-                }
-            }
-
-            Column(
-                Modifier
-                    .weight(1f)
-                    .background(
-                        color = AppTheme.colorScheme.surfaceHigher,
-                        shape = RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)
-                    ),
-                verticalArrangement = Arrangement.Center
-            ) {
-                ToppingSections(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(16.dp),
-                    toppings = uiState.toppings,
-                    listPadding = PaddingValues(bottom = 16.dp),
-                    onSelectTopping = onSelectTopping,
-                    onIncreaseToppingQuantity = onIncreaseToppingQuantity,
-                    onDecreaseToppingQuantity = onDecreaseToppingQuantity,
-                )
-                LPPrimaryButton(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .padding(bottom = 32.dp),
-                    text = "Add to Cart for $${uiState.formattedTotalPrice}"
-                ) { }
-            }
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                pizzaUi = uiState.pizzaUi
+            )
         }
-        Spacer(Modifier.weight(1f))
+        Box(
+            Modifier
+                .weight(1f)
+                .background(
+                    color = AppTheme.colorScheme.surfaceHigher,
+                    shape = RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)
+                )
+                .shadow(
+                    elevation = 2.dp,
+                    shape = RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)
+                ),
+        ) {
+            ToppingsSection(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(16.dp),
+                toppings = uiState.toppings,
+                listPadding = PaddingValues(bottom = 64.dp),
+                onSelectTopping = onSelectTopping,
+                onIncreaseToppingQuantity = onIncreaseToppingQuantity,
+                onDecreaseToppingQuantity = onDecreaseToppingQuantity
+            )
+            LPPrimaryButton(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp)
+                    .padding(bottom = 32.dp),
+                text = "Add to Cart for $${uiState.formattedTotalPrice}"
+            ) { }
+        }
     }
 
 }
@@ -262,7 +324,7 @@ private fun PizzaImage(modifier: Modifier = Modifier, imageUrl: String?) {
         AsyncImage(
             model = imageUrl,
             contentDescription = null,
-            modifier = Modifier.size(240.dp),
+            modifier = Modifier.size(200.dp),
             contentScale = ContentScale.FillHeight,
             alignment = Alignment.BottomCenter
         )
@@ -293,13 +355,13 @@ private fun PizzaInfo(modifier: Modifier, pizzaUi: PizzaUi?) {
 }
 
 @Composable
-private fun ToppingSections(
+private fun ToppingsSection(
     modifier: Modifier = Modifier,
     toppings: List<ToppingUi>,
     listPadding: PaddingValues,
     onSelectTopping: (String) -> Unit,
     onIncreaseToppingQuantity: (String) -> Unit,
-    onDecreaseToppingQuantity: (String) -> Unit,
+    onDecreaseToppingQuantity: (String) -> Unit
 ) {
 
     val lazyGridState = rememberLazyGridState()

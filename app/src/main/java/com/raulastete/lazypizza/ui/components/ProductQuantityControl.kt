@@ -1,9 +1,11 @@
 package com.raulastete.lazypizza.ui.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
@@ -18,7 +20,11 @@ fun ProductQuantityControl(
     onClickIncreaseCount: () -> Unit,
     onClickDecreaseCount: () -> Unit,
 ) {
-    Row(modifier = modifier) {
+    Row(
+        modifier = modifier,
+        horizontalArrangement = Arrangement.Center,
+        verticalAlignment = Alignment.CenterVertically
+    ) {
         LPIconButton(
             icon = R.drawable.ic_minus,
             iconTint = AppTheme.colorScheme.textSecondary,
@@ -28,7 +34,8 @@ fun ProductQuantityControl(
         Text(
             text = count.toString(),
             textAlign = TextAlign.Center,
-            modifier = Modifier.widthIn(min = 50.dp, max = 80.dp),
+            modifier = Modifier
+                .widthIn(min = 40.dp, max = 80.dp),
             style = AppTheme.typography.title2,
             maxLines = 1,
             color = AppTheme.colorScheme.textPrimary
