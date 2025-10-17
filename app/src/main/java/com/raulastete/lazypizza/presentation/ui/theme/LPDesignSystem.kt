@@ -25,6 +25,7 @@ data class LPColorScheme(
 
 data class LPTypography(
     val title1Semibold: TextStyle,
+    val title1Medium: TextStyle,
     val title2: TextStyle,
     val title3: TextStyle,
     val label2Semibold: TextStyle,
@@ -62,6 +63,7 @@ val LocalAppColorScheme = staticCompositionLocalOf {
 val LocalAppTypography = staticCompositionLocalOf {
     LPTypography(
         title1Semibold = TextStyle(),
+        title1Medium = TextStyle(),
         title2 = TextStyle(),
         title3 = TextStyle(),
         label2Semibold = TextStyle(),

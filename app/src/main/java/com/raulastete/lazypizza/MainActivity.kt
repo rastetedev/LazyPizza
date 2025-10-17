@@ -13,6 +13,7 @@ import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.raulastete.lazypizza.presentation.cart.CartScreen
 import com.raulastete.lazypizza.presentation.home.HomeScreen
 import com.raulastete.lazypizza.presentation.ui.navigation.Routes
 import com.raulastete.lazypizza.presentation.pizza_detail.PizzaDetailScreen
@@ -57,6 +58,12 @@ class MainActivity : ComponentActivity() {
                         composable<Routes.PizzaDetail> {
                             PizzaDetailScreen {
                                 navController.navigateUp()
+                            }
+                        }
+
+                        composable<Routes.Cart> {
+                            CartScreen {
+                                //Navigate to Menu
                             }
                         }
                     }

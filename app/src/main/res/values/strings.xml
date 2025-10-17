@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">LazyPizza</string>
+
+    <string name="cart_screen">Cart</string>
+    <string name="cart_empty_title">Your Cart Is Empty</string>
+    <string name="cart_empty_subtitle">Head back to the menu and grab a pizza you love.</string>
+    <string name="cart_empty_button">Back to Menu</string>
 </resources>

@@ -33,6 +33,12 @@ private val typography = LPTypography(
         fontSize = 24.sp,
         lineHeight = 28.sp
     ),
+    title1Medium = TextStyle(
+        fontFamily = InstrumentSans,
+        fontWeight = FontWeight.Medium,
+        fontSize = 24.sp,
+        lineHeight = 28.sp
+    ),
     title2 = TextStyle(
         fontFamily = InstrumentSans,
         fontWeight = FontWeight.SemiBold,

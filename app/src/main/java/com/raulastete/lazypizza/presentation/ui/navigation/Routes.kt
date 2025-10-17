@@ -12,4 +12,7 @@ sealed class Routes {
             const val PIZZA_ID_ARG = "pizzaId"
         }
     }
+
+    @Serializable
+    data object Cart
 }
