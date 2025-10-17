@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.ui.theme
+package com.raulastete.lazypizza.presentation.ui.theme
 
 import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Brush
@@ -6,7 +6,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.text.TextStyle
-import com.raulastete.lazypizza.ui.DeviceMode
+import com.raulastete.lazypizza.presentation.ui.DeviceMode
 
 data class LPColorScheme(
     val textPrimary: Color,

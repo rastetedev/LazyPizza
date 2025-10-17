@@ -25,8 +25,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.raulastete.lazypizza.presentation.pizza_detail.model.ToppingUi
-import com.raulastete.lazypizza.ui.components.ProductQuantityControl
-import com.raulastete.lazypizza.ui.theme.AppTheme
+import com.raulastete.lazypizza.presentation.ui.components.ProductQuantityControl
+import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 
 @Composable
 fun ToppingCard(

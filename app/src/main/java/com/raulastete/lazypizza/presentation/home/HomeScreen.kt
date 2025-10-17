@@ -41,11 +41,11 @@ import com.raulastete.lazypizza.presentation.home.components.PizzaCard
 import com.raulastete.lazypizza.presentation.home.model.CountableProductUi
 import com.raulastete.lazypizza.presentation.home.model.PizzaUi
 import com.raulastete.lazypizza.presentation.home.model.ProductUi
-import com.raulastete.lazypizza.ui.DeviceMode
-import com.raulastete.lazypizza.ui.components.LPSearchBar
-import com.raulastete.lazypizza.ui.components.LPTopbar
-import com.raulastete.lazypizza.ui.theme.AppTheme
-import com.raulastete.lazypizza.ui.theme.LocalDeviceMode
+import com.raulastete.lazypizza.presentation.ui.DeviceMode
+import com.raulastete.lazypizza.presentation.ui.components.LPSearchBar
+import com.raulastete.lazypizza.presentation.ui.components.LPTopbar
+import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
+import com.raulastete.lazypizza.presentation.ui.theme.LocalDeviceMode
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
 import org.koin.androidx.compose.koinViewModel

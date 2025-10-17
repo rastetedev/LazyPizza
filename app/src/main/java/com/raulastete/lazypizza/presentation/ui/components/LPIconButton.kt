@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.ui.components
+package com.raulastete.lazypizza.presentation.ui.components
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
@@ -13,7 +13,7 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.raulastete.lazypizza.R
-import com.raulastete.lazypizza.ui.theme.AppTheme
+import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 
 @Composable
 fun LPIconButton(

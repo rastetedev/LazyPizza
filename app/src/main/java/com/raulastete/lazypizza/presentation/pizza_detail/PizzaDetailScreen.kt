@@ -42,11 +42,11 @@ import com.raulastete.lazypizza.R
 import com.raulastete.lazypizza.presentation.home.model.PizzaUi
 import com.raulastete.lazypizza.presentation.pizza_detail.components.ToppingCard
 import com.raulastete.lazypizza.presentation.pizza_detail.model.ToppingUi
-import com.raulastete.lazypizza.ui.DeviceMode
-import com.raulastete.lazypizza.ui.components.FadingEdgeVerticalList
-import com.raulastete.lazypizza.ui.components.LPPrimaryButton
-import com.raulastete.lazypizza.ui.theme.AppTheme
-import com.raulastete.lazypizza.ui.theme.LocalDeviceMode
+import com.raulastete.lazypizza.presentation.ui.DeviceMode
+import com.raulastete.lazypizza.presentation.ui.components.FadingEdgeVerticalList
+import com.raulastete.lazypizza.presentation.ui.components.LPPrimaryButton
+import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
+import com.raulastete.lazypizza.presentation.ui.theme.LocalDeviceMode
 import org.koin.androidx.compose.koinViewModel
 
 @Composable

@@ -14,11 +14,11 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.raulastete.lazypizza.presentation.home.HomeScreen
-import com.raulastete.lazypizza.ui.navigation.Routes
+import com.raulastete.lazypizza.presentation.ui.navigation.Routes
 import com.raulastete.lazypizza.presentation.pizza_detail.PizzaDetailScreen
-import com.raulastete.lazypizza.ui.DeviceModeManager
-import com.raulastete.lazypizza.ui.theme.AppTheme
-import com.raulastete.lazypizza.ui.theme.LocalDeviceMode
+import com.raulastete.lazypizza.presentation.ui.DeviceModeManager
+import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
+import com.raulastete.lazypizza.presentation.ui.theme.LocalDeviceMode
 
 class MainActivity : ComponentActivity() {
     @OptIn(ExperimentalMaterial3WindowSizeClassApi::class)

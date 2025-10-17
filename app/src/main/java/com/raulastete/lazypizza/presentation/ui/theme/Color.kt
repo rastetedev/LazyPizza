@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.ui.theme
+package com.raulastete.lazypizza.presentation.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

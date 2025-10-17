@@ -13,8 +13,8 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.raulastete.lazypizza.presentation.home.model.PizzaUi
-import com.raulastete.lazypizza.ui.components.GenericProductCard
-import com.raulastete.lazypizza.ui.theme.AppTheme
+import com.raulastete.lazypizza.presentation.ui.components.GenericProductCard
+import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 
 @Composable
 fun PizzaCard(

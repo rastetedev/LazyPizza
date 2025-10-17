@@ -19,11 +19,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.raulastete.lazypizza.R
 import com.raulastete.lazypizza.presentation.home.model.CountableProductUi
-import com.raulastete.lazypizza.ui.components.GenericProductCard
-import com.raulastete.lazypizza.ui.components.LPGhostButton
-import com.raulastete.lazypizza.ui.components.LPIconButton
-import com.raulastete.lazypizza.ui.components.ProductQuantityControl
-import com.raulastete.lazypizza.ui.theme.AppTheme
+import com.raulastete.lazypizza.presentation.ui.components.GenericProductCard
+import com.raulastete.lazypizza.presentation.ui.components.LPGhostButton
+import com.raulastete.lazypizza.presentation.ui.components.LPIconButton
+import com.raulastete.lazypizza.presentation.ui.components.ProductQuantityControl
+import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable

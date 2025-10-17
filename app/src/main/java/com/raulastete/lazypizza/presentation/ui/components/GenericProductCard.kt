@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.ui.components
+package com.raulastete.lazypizza.presentation.ui.components
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -14,7 +14,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
-import com.raulastete.lazypizza.ui.theme.AppTheme
+import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height

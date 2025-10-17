@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.ui.components
+package com.raulastete.lazypizza.presentation.ui.components
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.AssistChipDefaults
@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.raulastete.lazypizza.ui.theme.AppTheme
+import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 
 @Composable
 fun LPChip(

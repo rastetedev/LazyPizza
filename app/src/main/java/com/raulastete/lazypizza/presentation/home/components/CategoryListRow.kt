@@ -9,8 +9,8 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.raulastete.lazypizza.ui.components.LPChip
-import com.raulastete.lazypizza.ui.theme.AppTheme
+import com.raulastete.lazypizza.presentation.ui.components.LPChip
+import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 
 @Composable
 fun CategoryListRow(

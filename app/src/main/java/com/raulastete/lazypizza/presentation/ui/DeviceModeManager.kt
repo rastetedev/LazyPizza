@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.ui
+package com.raulastete.lazypizza.presentation.ui
 
 import android.content.res.Configuration
 import android.content.res.Configuration.ORIENTATION_LANDSCAPE
@@ -36,8 +36,4 @@ sealed interface DeviceMode {
     object PhoneLandscape : DeviceMode
     object TabletPortrait : DeviceMode
     object TabletLandscape : DeviceMode
-
-    fun isPhone() = this is PhonePortrait || this is PhoneLandscape
-
-
 }

@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.ui.components
+package com.raulastete.lazypizza.presentation.ui.components
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.fadeIn
