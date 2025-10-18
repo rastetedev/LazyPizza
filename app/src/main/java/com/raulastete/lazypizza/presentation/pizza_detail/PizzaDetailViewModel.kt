@@ -5,7 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.raulastete.lazypizza.domain.MenuRepository
-import com.raulastete.lazypizza.presentation.home.model.PizzaUi
+import com.raulastete.lazypizza.presentation.menu.model.PizzaUi
 import com.raulastete.lazypizza.presentation.ui.navigation.Routes.PizzaDetail.Companion.PIZZA_ID_ARG
 import com.raulastete.lazypizza.presentation.pizza_detail.model.ToppingUi
 import com.raulastete.lazypizza.presentation.pizza_detail.model.toUi

@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.presentation.home.model
+package com.raulastete.lazypizza.presentation.menu.model
 
 sealed interface ProductUi {
     val id: String

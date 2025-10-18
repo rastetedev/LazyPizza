@@ -66,6 +66,8 @@ dependencies {
     implementation(platform(libs.firebase.bom))
     implementation(libs.firebase.database)
 
+    implementation(libs.androidx.compose.material3.adaptive.navigation.suite)
+
     implementation(platform(libs.koin.bom))
     implementation(libs.koin.core)
     implementation(libs.koin.android)

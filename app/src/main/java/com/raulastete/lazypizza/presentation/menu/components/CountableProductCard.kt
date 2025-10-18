@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.presentation.home.components
+package com.raulastete.lazypizza.presentation.menu.components
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.layout.Arrangement
@@ -18,7 +18,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.raulastete.lazypizza.R
-import com.raulastete.lazypizza.presentation.home.model.CountableProductUi
+import com.raulastete.lazypizza.presentation.menu.model.CountableProductUi
 import com.raulastete.lazypizza.presentation.ui.components.GenericProductCard
 import com.raulastete.lazypizza.presentation.ui.components.LPGhostButton
 import com.raulastete.lazypizza.presentation.ui.components.LPIconButton

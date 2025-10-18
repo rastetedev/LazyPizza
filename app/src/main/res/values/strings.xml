@@ -9,4 +9,7 @@
     <string name="not_signed_in_title">Not Signed In</string>
     <string name="not_signed_in_subtitle">Please sign in to view your order history.</string>
     <string name="login_button">Sign In</string>
+    <string name="menu_nav_item">Menu</string>
+    <string name="cart_nav_item">Cart</string>
+    <string name="order_history_nav_item">History</string>
 </resources>

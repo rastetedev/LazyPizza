@@ -10,14 +10,8 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.remember
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
-import androidx.navigation.compose.NavHost
-import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import com.raulastete.lazypizza.presentation.cart.CartScreen
-import com.raulastete.lazypizza.presentation.home.HomeScreen
-import com.raulastete.lazypizza.presentation.ui.navigation.Routes
-import com.raulastete.lazypizza.presentation.pizza_detail.PizzaDetailScreen
 import com.raulastete.lazypizza.presentation.ui.DeviceModeManager
+import com.raulastete.lazypizza.presentation.ui.navigation.AppRoot
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 import com.raulastete.lazypizza.presentation.ui.theme.LocalDeviceMode
 
@@ -45,28 +39,7 @@ class MainActivity : ComponentActivity() {
                 CompositionLocalProvider(
                     LocalDeviceMode provides currentDeviceMode,
                 ) {
-                    val navController = rememberNavController()
-                    NavHost(navController = navController, startDestination = Routes.Home) {
-                        composable<Routes.Home> {
-                            HomeScreen(
-                                navigateToPizzaDetail = { pizzaId ->
-                                    navController.navigate(Routes.PizzaDetail(pizzaId))
-                                }
-                            )
-                        }
-
-                        composable<Routes.PizzaDetail> {
-                            PizzaDetailScreen {
-                                navController.navigateUp()
-                            }
-                        }
-
-                        composable<Routes.Cart> {
-                            CartScreen {
-                                //Navigate to Menu
-                            }
-                        }
-                    }
+                    AppRoot()
                 }
             }
         }

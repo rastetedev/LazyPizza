@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.presentation.home
+package com.raulastete.lazypizza.presentation.menu
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
@@ -7,9 +7,9 @@ import com.raulastete.lazypizza.domain.MenuRepository
 import com.raulastete.lazypizza.domain.entity.Category
 import com.raulastete.lazypizza.domain.entity.Category.Companion.PIZZA_CATEGORY_ID
 import com.raulastete.lazypizza.domain.entity.Product
-import com.raulastete.lazypizza.presentation.home.model.CountableProductUi
-import com.raulastete.lazypizza.presentation.home.model.PizzaUi
-import com.raulastete.lazypizza.presentation.home.model.ProductUi
+import com.raulastete.lazypizza.presentation.menu.model.CountableProductUi
+import com.raulastete.lazypizza.presentation.menu.model.PizzaUi
+import com.raulastete.lazypizza.presentation.menu.model.ProductUi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
@@ -18,11 +18,11 @@ import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.collections.map
 
-class HomeViewModel(
+class MenuViewModel(
     private val menuRepository: MenuRepository
 ) : ViewModel() {
 
-    private var _uiState = MutableStateFlow(HomeUiState())
+    private var _uiState = MutableStateFlow(MenuUiState())
     val uiState = _uiState.asStateFlow()
 
     private var completeData: Map<Category, List<ProductUi>> = emptyMap()
@@ -186,7 +186,7 @@ class HomeViewModel(
     }
 }
 
-data class HomeUiState(
+data class MenuUiState(
     val isLoading: Boolean = false,
     val searchQuery: String = "",
     val data: Map<Category, List<ProductUi>> = emptyMap(),

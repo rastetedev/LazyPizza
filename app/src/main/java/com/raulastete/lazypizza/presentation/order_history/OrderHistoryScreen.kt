@@ -30,7 +30,8 @@ private fun OrderHistoryContent(
                 modifier = Modifier.fillMaxWidth(),
                 title = stringResource(R.string.order_history_screen)
             )
-        }
+        },
+        containerColor = AppTheme.colorScheme.background
     ) { paddingValues ->
 
         MessageFullScreen(

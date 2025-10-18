@@ -30,7 +30,8 @@ private fun CartScreenContent(
                 modifier = Modifier.fillMaxWidth(),
                 title = stringResource(R.string.cart_screen)
             )
-        }
+        },
+        containerColor = AppTheme.colorScheme.background
     ) { paddingValues ->
 
         MessageFullScreen(

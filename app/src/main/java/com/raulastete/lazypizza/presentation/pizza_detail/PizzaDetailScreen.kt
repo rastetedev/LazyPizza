@@ -39,7 +39,7 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.raulastete.lazypizza.R
-import com.raulastete.lazypizza.presentation.home.model.PizzaUi
+import com.raulastete.lazypizza.presentation.menu.model.PizzaUi
 import com.raulastete.lazypizza.presentation.pizza_detail.components.ToppingCard
 import com.raulastete.lazypizza.presentation.pizza_detail.model.ToppingUi
 import com.raulastete.lazypizza.presentation.ui.DeviceMode

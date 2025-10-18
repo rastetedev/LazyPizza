@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.presentation.home
+package com.raulastete.lazypizza.presentation.menu
 
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.background
@@ -35,12 +35,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.raulastete.lazypizza.domain.entity.Category
-import com.raulastete.lazypizza.presentation.home.components.CategoryListRow
-import com.raulastete.lazypizza.presentation.home.components.CountableProductCard
-import com.raulastete.lazypizza.presentation.home.components.PizzaCard
-import com.raulastete.lazypizza.presentation.home.model.CountableProductUi
-import com.raulastete.lazypizza.presentation.home.model.PizzaUi
-import com.raulastete.lazypizza.presentation.home.model.ProductUi
+import com.raulastete.lazypizza.presentation.menu.components.CategoryListRow
+import com.raulastete.lazypizza.presentation.menu.components.CountableProductCard
+import com.raulastete.lazypizza.presentation.menu.components.PizzaCard
+import com.raulastete.lazypizza.presentation.menu.model.CountableProductUi
+import com.raulastete.lazypizza.presentation.menu.model.PizzaUi
+import com.raulastete.lazypizza.presentation.menu.model.ProductUi
 import com.raulastete.lazypizza.presentation.ui.DeviceMode
 import com.raulastete.lazypizza.presentation.ui.components.LPSearchBar
 import com.raulastete.lazypizza.presentation.ui.components.LPTopbar
@@ -53,13 +53,13 @@ import kotlin.collections.component1
 import kotlin.collections.component2
 
 @Composable
-fun HomeScreen(
-    viewModel: HomeViewModel = koinViewModel<HomeViewModel>(),
+fun MenuScreen(
+    viewModel: MenuViewModel = koinViewModel<MenuViewModel>(),
     navigateToPizzaDetail: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    HomeScreenContent(
+    MenuScreenContent(
         uiState = uiState,
         onQuerySearch = viewModel::search,
         addGenericProductToCard = viewModel::addGenericProductToCard,
@@ -72,8 +72,8 @@ fun HomeScreen(
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-private fun HomeScreenContent(
-    uiState: HomeUiState,
+private fun MenuScreenContent(
+    uiState: MenuUiState,
     onQuerySearch: (String) -> Unit,
     navigateToPizzaDetail: (String) -> Unit,
     addGenericProductToCard: (String) -> Unit,
@@ -236,7 +236,7 @@ private fun ProductItem(
 }
 
 private fun LazyListScope.ProductList(
-    uiState: HomeUiState,
+    uiState: MenuUiState,
     navigateToPizzaDetail: (String) -> Unit,
     addGenericProductToCard : (String) -> Unit,
     removeGenericProductFromCard : (String) -> Unit,
@@ -275,7 +275,7 @@ private fun LazyListScope.ProductList(
 }
 
 private fun LazyGridScope.ProductList(
-    uiState: HomeUiState,
+    uiState: MenuUiState,
     navigateToPizzaDetail: (String) -> Unit,
     addGenericProductToCard : (String) -> Unit,
     removeGenericProductFromCard : (String) -> Unit,
@@ -363,10 +363,10 @@ private fun navigateToStickyHeader(
 
 @Preview(showBackground = true)
 @Composable
-private fun HomeScreenContentPreview() {
+private fun MenuScreenContentPreview() {
     AppTheme {
-        HomeScreenContent(
-            uiState = HomeUiState(),
+        MenuScreenContent(
+            uiState = MenuUiState(),
             onQuerySearch = {},
             navigateToPizzaDetail = {},
             addGenericProductToCard = {},

@@ -51,6 +51,12 @@ private val typography = LPTypography(
         fontSize = 15.sp,
         lineHeight = 22.sp
     ),
+    title4 = TextStyle(
+        fontFamily = InstrumentSans,
+        fontWeight = FontWeight.Medium,
+        fontSize = 11.sp,
+        lineHeight = 16.sp
+    ),
     label2Semibold = TextStyle(
         fontFamily = InstrumentSans,
         fontWeight = FontWeight.SemiBold,
@@ -94,7 +100,6 @@ private val typography = LPTypography(
         lineHeight = 16.sp
     ),
 )
-
 
 private val shape = LPShape(
     card = RoundedCornerShape(12.dp),

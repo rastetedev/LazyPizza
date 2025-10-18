@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.presentation.home.components
+package com.raulastete.lazypizza.presentation.menu.components
 
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.width
