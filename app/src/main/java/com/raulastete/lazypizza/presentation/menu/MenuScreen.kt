@@ -1,6 +1,7 @@
 package com.raulastete.lazypizza.presentation.menu
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -23,6 +24,7 @@ import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,10 +32,14 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.raulastete.lazypizza.R
 import com.raulastete.lazypizza.domain.entity.Category
 import com.raulastete.lazypizza.presentation.menu.components.CategoryListRow
 import com.raulastete.lazypizza.presentation.ui.components.product.GeneralProductCard
@@ -93,7 +99,17 @@ private fun MenuScreenContent(
     ) {
         LPTopbar(modifier = Modifier.fillMaxWidth())
 
-        Spacer(Modifier.height(8.dp))
+        Image(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .clip(RoundedCornerShape(8.dp)),
+            painter = painterResource(R.drawable.banner),
+            contentDescription = null,
+            contentScale = ContentScale.FillWidth
+        )
+
+        Spacer(Modifier.height(16.dp))
 
         LPSearchBar(
             modifier = Modifier
