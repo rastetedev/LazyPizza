@@ -1,7 +1,6 @@
 package com.raulastete.lazypizza.presentation.menu.components
 
-import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.runtime.Composable
@@ -18,20 +17,16 @@ fun CategoryListRow(
     categories: List<String>,
     onCategorySelected: (String) -> Unit,
 ) {
-
     LazyRow(
         modifier = modifier,
-        verticalAlignment = Alignment.CenterVertically
+        verticalAlignment = Alignment.CenterVertically,
+        horizontalArrangement = Arrangement.spacedBy(8.dp)
     ) {
         itemsIndexed(categories) { index, category ->
             LPChip(
                 text = category,
                 onClick = { onCategorySelected(category) }
             )
-
-            if (index < categories.size - 1) {
-                Spacer(modifier = Modifier.width(8.dp))
-            }
         }
     }
 }

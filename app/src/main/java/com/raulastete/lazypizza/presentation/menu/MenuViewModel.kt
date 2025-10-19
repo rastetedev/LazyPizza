@@ -11,7 +11,7 @@ import com.raulastete.lazypizza.presentation.ui.model.ProductCard
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
-import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlin.collections.filter
@@ -32,16 +32,19 @@ class MenuViewModel(
 
     private fun fetchProductsByCategory() {
         viewModelScope.launch {
-            _uiState.update { it.copy(isLoading = true) }
             menuRepository.getProductsByCategory()
+                .onStart {
+                    _uiState.update { it.copy(isLoading = true) }
+                }
                 .catch { exception ->
                     Log.e("Home", exception.message, exception)
+                    _uiState.update { it.copy(isLoading = false) }
                 }
-                .collectLatest { data ->
+                .collect { data ->
 
                     completeData = transformToUiModel(data)
 
-                    _uiState.update { it.copy(data = completeData, isLoading = false) }
+                    _uiState.update { it.copy(menuByCategory = completeData, isLoading = false) }
                 }
         }
     }
@@ -74,19 +77,19 @@ class MenuViewModel(
         }.toMap()
     }
 
-    fun search(query: String) {
-        if (query.isEmpty()) _uiState.update { it.copy(searchQuery = "", data = completeData) }
-        _uiState.update { it.copy(searchQuery = query) }
+    fun searchProduct(query: String) {
+        if (query.isEmpty()) _uiState.update { it.copy(searchProductQuery = "", menuByCategory = completeData) }
+        _uiState.update { it.copy(searchProductQuery = query) }
         filterData(query)
     }
 
-    fun increaseGenericProductCount(productCardId: String) {
+    fun increaseGenericProductCount(genericProductId: String) {
         _uiState.update { state ->
             val updatedData =
-                state.data.map { (category: Category, productList: List<ProductCard>) ->
+                state.menuByCategory.map { (category: Category, productList: List<ProductCard>) ->
                     val updatedProductList = productList
                         .map { productCard ->
-                            if (productCard.id == productCardId) {
+                            if (productCard.id == genericProductId) {
                                 (productCard as ProductCard.GenericProductCard).copy(count = productCard.count + 1)
                             } else {
                                 productCard
@@ -95,17 +98,17 @@ class MenuViewModel(
                     category to updatedProductList
                 }.toMap()
 
-            state.copy(data = updatedData)
+            state.copy(menuByCategory = updatedData)
         }
     }
 
-    fun removeGenericProductFromCard(productCardId: String) {
+    fun removeGenericProductFromCard(genericProductId: String) {
         _uiState.update { state ->
             val updatedData =
-                state.data.map { (category: Category, productList: List<ProductCard>) ->
+                state.menuByCategory.map { (category: Category, productList: List<ProductCard>) ->
                     val updatedProductList = productList
                         .map { productCard ->
-                            if (productCard.id == productCardId) {
+                            if (productCard.id == genericProductId) {
                                 (productCard as ProductCard.GenericProductCard).copy(count = 0)
                             } else {
                                 productCard
@@ -114,18 +117,18 @@ class MenuViewModel(
                     category to updatedProductList
                 }.toMap()
 
-            state.copy(data = updatedData)
+            state.copy(menuByCategory = updatedData)
         }
     }
 
 
-    fun decreaseGenericProductCount(productCardId: String) {
+    fun decreaseGenericProductCount(genericProductId: String) {
         _uiState.update { state ->
             val updatedData =
-                state.data.map { (category: Category, productList: List<ProductCard>) ->
+                state.menuByCategory.map { (category: Category, productList: List<ProductCard>) ->
                     val updatedProductList = productList
                         .map { productCard ->
-                            if (productCard.id == productCardId) {
+                            if (productCard.id == genericProductId) {
                                 (productCard as ProductCard.GenericProductCard).copy(count = productCard.count - 1)
                             } else {
                                 productCard
@@ -134,17 +137,17 @@ class MenuViewModel(
                     category to updatedProductList
                 }.toMap()
 
-            state.copy(data = updatedData)
+            state.copy(menuByCategory = updatedData)
         }
     }
 
-    private fun filterData(query: String) {
-        _uiState.update { it.copy(isLoading = true) }
+    private fun filterData(productName: String) {
+        _uiState.update { it.copy(isSearching = true) }
 
         val filteredData = completeData
             .map { (category, products) ->
                 category to products.filter { product ->
-                    product.name.contains(query, ignoreCase = true)
+                    product.name.contains(productName, ignoreCase = true)
                 }
             }
             .filter { (_, products) -> products.isNotEmpty() }
@@ -153,17 +156,17 @@ class MenuViewModel(
         if (filteredData.values.isNotEmpty()) {
             _uiState.update {
                 it.copy(
-                    data = filteredData,
-                    showEmptyDataMessage = false,
-                    isLoading = false
+                    menuByCategory = filteredData,
+                    showEmptyResultsForQuery = false,
+                    isSearching = false
                 )
             }
         } else {
             _uiState.update {
                 it.copy(
-                    data = emptyMap(),
-                    showEmptyDataMessage = true,
-                    isLoading = false
+                    menuByCategory = emptyMap(),
+                    showEmptyResultsForQuery = true,
+                    isSearching = false
                 )
             }
         }
