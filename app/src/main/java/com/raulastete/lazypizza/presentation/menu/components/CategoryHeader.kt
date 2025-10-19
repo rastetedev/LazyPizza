@@ -20,6 +20,5 @@ fun CategoryHeader(name: String) {
             .background(AppTheme.colorScheme.background)
             .padding(vertical = 12.dp)
             .padding(start = 16.dp)
-
     )
 }

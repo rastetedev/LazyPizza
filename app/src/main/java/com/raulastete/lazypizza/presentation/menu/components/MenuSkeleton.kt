@@ -1,5 +1,6 @@
 package com.raulastete.lazypizza.presentation.menu.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -16,12 +17,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.raulastete.lazypizza.presentation.ui.components.Skeleton
+import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 
 @Composable
 fun MenuSkeleton() {
-    Column(Modifier
-        .padding(16.dp)
-        .statusBarsPadding()) {
+    Column(
+        Modifier
+            .background(AppTheme.colorScheme.background)
+            .padding(16.dp)
+            .statusBarsPadding()
+    ) {
 
         Skeleton(
             modifier = Modifier
@@ -68,7 +73,6 @@ fun MenuSkeleton() {
                     shape = RoundedCornerShape(8.dp)
                 )
             }
-
         }
     }
 }

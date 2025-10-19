@@ -24,9 +24,7 @@ fun MenuItems(
 
     when {
         uiState.showEmptyResultsForQuery -> {
-            EmptyMessage(
-                modifier = Modifier.fillMaxSize()
-            )
+            EmptyMessage(modifier = Modifier.fillMaxSize())
         }
 
         deviceMode is DeviceMode.PhonePortrait -> ProductsMenuSingleColumn(
