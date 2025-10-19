@@ -36,14 +36,12 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.raulastete.lazypizza.domain.entity.Category
 import com.raulastete.lazypizza.presentation.menu.components.CategoryListRow
-import com.raulastete.lazypizza.presentation.menu.components.CountableProductCard
-import com.raulastete.lazypizza.presentation.menu.components.PizzaCard
-import com.raulastete.lazypizza.presentation.menu.model.CountableProductUi
-import com.raulastete.lazypizza.presentation.menu.model.PizzaUi
-import com.raulastete.lazypizza.presentation.menu.model.ProductUi
+import com.raulastete.lazypizza.presentation.ui.components.product.GeneralProductCard
+import com.raulastete.lazypizza.presentation.ui.components.product.PizzaCard
 import com.raulastete.lazypizza.presentation.ui.DeviceMode
 import com.raulastete.lazypizza.presentation.ui.components.LPSearchBar
 import com.raulastete.lazypizza.presentation.ui.components.LPTopbar
+import com.raulastete.lazypizza.presentation.ui.model.ProductCard
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 import com.raulastete.lazypizza.presentation.ui.theme.LocalDeviceMode
 import kotlinx.coroutines.CoroutineScope
@@ -62,7 +60,7 @@ fun MenuScreen(
     MenuScreenContent(
         uiState = uiState,
         onQuerySearch = viewModel::search,
-        addGenericProductToCard = viewModel::addGenericProductToCard,
+        addGenericProductToCard = viewModel::increaseGenericProductCount,
         removeGenericProductFromCard = viewModel::removeGenericProductFromCard,
         increaseGenericProductCount = viewModel::increaseGenericProductCount,
         decreaseGenericProductCount = viewModel::decreaseGenericProductCount,
@@ -201,7 +199,7 @@ private fun EmptyMessage() {
 @Composable
 private fun ProductItem(
     modifier: Modifier = Modifier,
-    product: ProductUi,
+    product: ProductCard,
     navigateToPizzaDetail: (String) -> Unit,
     addGenericProductToCard: (String) -> Unit,
     removeGenericProductFromCard: (String) -> Unit,
@@ -209,16 +207,16 @@ private fun ProductItem(
     decreaseGenericProductCount: (String) -> Unit
 ) {
     when (product) {
-        is PizzaUi -> PizzaCard(
+        is ProductCard.PizzaCard -> PizzaCard(
             modifier = modifier,
             pizzaUi = product
         ) {
             navigateToPizzaDetail(product.id)
         }
 
-        is CountableProductUi -> CountableProductCard(
+        is ProductCard.GenericProductCard -> GeneralProductCard(
             modifier = modifier,
-            countableProductUi = product,
+            genericProductCard = product,
             onClickAddToCart = {
                 addGenericProductToCard(product.id)
             },
@@ -232,16 +230,18 @@ private fun ProductItem(
                 removeGenericProductFromCard(product.id)
             }
         )
+
+        else -> throw Exception("Invalid product type")
     }
 }
 
 private fun LazyListScope.ProductList(
     uiState: MenuUiState,
     navigateToPizzaDetail: (String) -> Unit,
-    addGenericProductToCard : (String) -> Unit,
-    removeGenericProductFromCard : (String) -> Unit,
-    increaseGenericProductCount : (String) -> Unit,
-    decreaseGenericProductCount : (String) -> Unit
+    addGenericProductToCard: (String) -> Unit,
+    removeGenericProductFromCard: (String) -> Unit,
+    increaseGenericProductCount: (String) -> Unit,
+    decreaseGenericProductCount: (String) -> Unit
 ) {
     uiState.data.forEach { (category, productList) ->
         stickyHeader(key = category.id) {
@@ -253,9 +253,9 @@ private fun LazyListScope.ProductList(
             key = { it.id },
             contentType = {
                 if (category.isPizza) {
-                    PizzaUi::class
+                    ProductCard.PizzaCard::class
                 } else {
-                    CountableProductUi::class
+                    ProductCard.GenericProductCard::class
                 }
             }
         ) { product ->
@@ -277,10 +277,10 @@ private fun LazyListScope.ProductList(
 private fun LazyGridScope.ProductList(
     uiState: MenuUiState,
     navigateToPizzaDetail: (String) -> Unit,
-    addGenericProductToCard : (String) -> Unit,
-    removeGenericProductFromCard : (String) -> Unit,
-    increaseGenericProductCount : (String) -> Unit,
-    decreaseGenericProductCount : (String) -> Unit
+    addGenericProductToCard: (String) -> Unit,
+    removeGenericProductFromCard: (String) -> Unit,
+    increaseGenericProductCount: (String) -> Unit,
+    decreaseGenericProductCount: (String) -> Unit
 ) {
     uiState.data.forEach { (category, productList) ->
         stickyHeader(key = category.id) {
@@ -292,9 +292,9 @@ private fun LazyGridScope.ProductList(
             key = { index, item -> item.id },
             contentType = { index, item ->
                 if (category.isPizza) {
-                    PizzaUi::class
+                    ProductCard.PizzaCard::class
                 } else {
-                    CountableProductUi::class
+                    ProductCard.GenericProductCard::class
                 }
             }
         ) { index, product ->
@@ -333,7 +333,7 @@ private fun CategoryHeader(name: String) {
 
 private fun navigateToStickyHeader(
     categoryName: String,
-    menu: Map<Category, List<ProductUi>>,
+    menu: Map<Category, List<ProductCard>>,
     deviceMode: DeviceMode,
     lazyListState: LazyListState,
     lazyGridState: LazyGridState,

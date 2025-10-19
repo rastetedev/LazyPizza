@@ -39,12 +39,11 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.raulastete.lazypizza.R
-import com.raulastete.lazypizza.presentation.menu.model.PizzaUi
-import com.raulastete.lazypizza.presentation.pizza_detail.components.ToppingCard
-import com.raulastete.lazypizza.presentation.pizza_detail.model.ToppingUi
+import com.raulastete.lazypizza.presentation.ui.components.product.ToppingCard
 import com.raulastete.lazypizza.presentation.ui.DeviceMode
 import com.raulastete.lazypizza.presentation.ui.components.FadingEdgeVerticalList
 import com.raulastete.lazypizza.presentation.ui.components.LPPrimaryButton
+import com.raulastete.lazypizza.presentation.ui.model.ProductCard
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 import com.raulastete.lazypizza.presentation.ui.theme.LocalDeviceMode
 import org.koin.androidx.compose.koinViewModel
@@ -151,7 +150,7 @@ private fun SingleColumnPhoneMode(
                         )
                         .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
                         .padding(16.dp),
-                    pizzaUi = uiState.pizzaUi
+                    pizzaCard = uiState.pizzaUi
                 )
             }
             ToppingsSection(
@@ -209,7 +208,7 @@ private fun SingleColumnTabletMode(
                     )
                     .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
                     .padding(16.dp),
-                pizzaUi = uiState.pizzaUi
+                pizzaCard = uiState.pizzaUi
             )
         }
         ToppingsSection(
@@ -261,7 +260,7 @@ private fun TwoColumnMode(
                 Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                pizzaUi = uiState.pizzaUi
+                pizzaCard = uiState.pizzaUi
             )
         }
         Box(
@@ -332,12 +331,12 @@ private fun PizzaImage(modifier: Modifier = Modifier, imageUrl: String?) {
 }
 
 @Composable
-private fun PizzaInfo(modifier: Modifier, pizzaUi: PizzaUi?) {
+private fun PizzaInfo(modifier: Modifier, pizzaCard: ProductCard.PizzaCard?) {
     Column(
         modifier = modifier
     ) {
         Text(
-            pizzaUi?.name.orEmpty(),
+            pizzaCard?.name.orEmpty(),
             style = AppTheme.typography.title1Semibold,
             color = AppTheme.colorScheme.textPrimary,
             modifier = Modifier.fillMaxWidth(),
@@ -345,7 +344,7 @@ private fun PizzaInfo(modifier: Modifier, pizzaUi: PizzaUi?) {
         )
         Spacer(Modifier.height(4.dp))
         Text(
-            pizzaUi?.description.orEmpty(),
+            pizzaCard?.description.orEmpty(),
             style = AppTheme.typography.body3Regular,
             color = AppTheme.colorScheme.textSecondary,
             modifier = Modifier.fillMaxWidth(),
@@ -357,7 +356,7 @@ private fun PizzaInfo(modifier: Modifier, pizzaUi: PizzaUi?) {
 @Composable
 private fun ToppingsSection(
     modifier: Modifier = Modifier,
-    toppings: List<ToppingUi>,
+    toppings: List<ProductCard.ToppingCard>,
     listPadding: PaddingValues,
     onSelectTopping: (String) -> Unit,
     onIncreaseToppingQuantity: (String) -> Unit,

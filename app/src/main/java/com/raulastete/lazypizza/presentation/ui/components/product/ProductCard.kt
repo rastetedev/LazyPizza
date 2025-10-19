@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.presentation.ui.components
+package com.raulastete.lazypizza.presentation.ui.components.product
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -23,7 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.AsyncImage
 
 @Composable
-fun GenericProductCard(
+fun ProductCard(
     modifier: Modifier = Modifier,
     imageUrl: String,
     onClick: (() -> Unit)? = null,
@@ -75,7 +75,7 @@ fun GenericProductCard(
 @Preview
 fun GenericProductCardPreview() {
     AppTheme {
-        GenericProductCard(
+        ProductCard(
             modifier = Modifier.fillMaxWidth(),
             imageUrl = "",
             content = {

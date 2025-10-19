@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.presentation.menu.components
+package com.raulastete.lazypizza.presentation.ui.components.product
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -12,17 +12,16 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.raulastete.lazypizza.presentation.menu.model.PizzaUi
-import com.raulastete.lazypizza.presentation.ui.components.GenericProductCard
+import com.raulastete.lazypizza.presentation.ui.model.ProductCard
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 
 @Composable
 fun PizzaCard(
     modifier: Modifier = Modifier,
-    pizzaUi: PizzaUi,
+    pizzaUi: ProductCard.PizzaCard,
     onClick: () -> Unit
 ) {
-    GenericProductCard(
+    ProductCard(
         imageUrl = pizzaUi.imageUrl,
         modifier = modifier,
         onClick = onClick
@@ -74,7 +73,7 @@ private fun PizzaCardPreview() {
     AppTheme {
         PizzaCard(
             Modifier.fillMaxWidth(),
-            pizzaUi = PizzaUi(
+            pizzaUi = ProductCard.PizzaCard(
                 id = "",
                 name = "Margherita",
                 price = 10.0,

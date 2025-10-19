@@ -5,9 +5,7 @@ import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.raulastete.lazypizza.domain.MenuRepository
-import com.raulastete.lazypizza.presentation.menu.model.PizzaUi
-import com.raulastete.lazypizza.presentation.pizza_detail.model.ToppingUi
-import com.raulastete.lazypizza.presentation.pizza_detail.model.toUi
+import com.raulastete.lazypizza.presentation.ui.model.ProductCard
 import com.raulastete.lazypizza.presentation.ui.navigation.menu_navigation.PizzaDetailDestination.Companion.PIZZA_ID_ARG
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -17,6 +15,8 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.collections.filter
+import kotlin.collections.map
 
 class PizzaDetailViewModel(
     private val menuRepository: MenuRepository,
@@ -37,7 +37,6 @@ class PizzaDetailViewModel(
                         emit(null) // Emit null on error to not break the combine
                     }
 
-
                 val toppingsFlow = menuRepository.getToppings()
                     .catch { exception ->
                         Log.e("PizzaDetailViewModel", "Error fetching toppings", exception)
@@ -47,20 +46,29 @@ class PizzaDetailViewModel(
                 combine(pizzaFlow, toppingsFlow) { product, toppings ->
                     Pair(product, toppings)
                 }.collectLatest { (product, toppings) ->
-                    _uiState.update {
-                        it.copy(
-                            isLoading = false,
-                            pizzaUi = product?.let { p ->
-                                PizzaUi(
-                                    id = p.id,
-                                    imageUrl = p.imageUrl,
-                                    name = p.name,
-                                    description = p.description,
-                                    price = p.price
-                                )
-                            },
-                            toppings = toppings.map { t -> t.toUi() }
-                        )
+                    product?.let {
+                        _uiState.update {
+                            it.copy(
+                                isLoading = false,
+                                pizzaUi = ProductCard.PizzaCard(
+                                    id = product.id,
+                                    imageUrl = product.imageUrl,
+                                    name = product.name,
+                                    description = product.description,
+                                    price = product.price,
+                                ),
+                                toppings = toppings.map { topping ->
+                                    ProductCard.ToppingCard(
+                                        id = topping.id,
+                                        imageUrl = topping.imageUrl,
+                                        name = topping.name,
+                                        price = topping.price,
+                                        count = 0,
+                                        maximumQuantity = 3
+                                    )
+                                }
+                            )
+                        }
                     }
                 }
             }
@@ -112,13 +120,12 @@ class PizzaDetailViewModel(
             currentState.copy(toppings = updatedToppings)
         }
     }
-
 }
 
 data class PizzaDetailUiState(
     val isLoading: Boolean = false,
-    val pizzaUi: PizzaUi? = null,
-    val toppings: List<ToppingUi> = emptyList()
+    val pizzaUi: ProductCard.PizzaCard? = null,
+    val toppings: List<ProductCard.ToppingCard> = emptyList()
 ) {
     val totalPrice: Double = pizzaUi?.price?.let { pizzaPrice ->
         val toppingsPrice = toppings.filter { it.isSelected }.sumOf { it.price * it.count }

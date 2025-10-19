@@ -7,15 +7,14 @@ import com.raulastete.lazypizza.domain.MenuRepository
 import com.raulastete.lazypizza.domain.entity.Category
 import com.raulastete.lazypizza.domain.entity.Category.Companion.PIZZA_CATEGORY_ID
 import com.raulastete.lazypizza.domain.entity.Product
-import com.raulastete.lazypizza.presentation.menu.model.CountableProductUi
-import com.raulastete.lazypizza.presentation.menu.model.PizzaUi
-import com.raulastete.lazypizza.presentation.menu.model.ProductUi
+import com.raulastete.lazypizza.presentation.ui.model.ProductCard
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlin.collections.filter
 import kotlin.collections.map
 
 class MenuViewModel(
@@ -25,7 +24,7 @@ class MenuViewModel(
     private var _uiState = MutableStateFlow(MenuUiState())
     val uiState = _uiState.asStateFlow()
 
-    private var completeData: Map<Category, List<ProductUi>> = emptyMap()
+    private var completeData: Map<Category, List<ProductCard>> = emptyMap()
 
     init {
         fetchProductsByCategory()
@@ -47,26 +46,25 @@ class MenuViewModel(
         }
     }
 
-    private fun transformToUiModel(data: Map<Category, List<Product>>): Map<Category, List<ProductUi>> {
+    private fun transformToUiModel(data: Map<Category, List<Product>>): Map<Category, List<ProductCard>> {
         return data.map { (category, products) ->
             val products = if (category.id == PIZZA_CATEGORY_ID) {
                 products.map { product ->
-                    PizzaUi(
-                        id = product.id,
-                        imageUrl = product.imageUrl,
-                        name = product.name,
-                        description = product.description,
-                        price = product.price
-                    )
-                }
-            } else {
-                products.map { product ->
-                    CountableProductUi(
+                    ProductCard.PizzaCard(
                         id = product.id,
                         imageUrl = product.imageUrl,
                         name = product.name,
                         price = product.price,
-                        count = 0
+                        description = product.description
+                    )
+                }
+            } else {
+                products.map { product ->
+                    ProductCard.GenericProductCard(
+                        id = product.id,
+                        imageUrl = product.imageUrl,
+                        name = product.name,
+                        price = product.price,
                     )
                 }
             }
@@ -82,73 +80,59 @@ class MenuViewModel(
         filterData(query)
     }
 
-    fun addGenericProductToCard(productId: String) {
+    fun increaseGenericProductCount(productCardId: String) {
         _uiState.update { state ->
-            val updatedData = state.data.map { (category, productList) ->
-                val updatedProductList = productList
-                    .map { product ->
-                        if (product.id == productId) {
-                            (product as CountableProductUi).copy(count = product.count + 1)
-                        } else {
-                            product
+            val updatedData =
+                state.data.map { (category: Category, productList: List<ProductCard>) ->
+                    val updatedProductList = productList
+                        .map { productCard ->
+                            if (productCard.id == productCardId) {
+                                (productCard as ProductCard.GenericProductCard).copy(count = productCard.count + 1)
+                            } else {
+                                productCard
+                            }
                         }
-                    }
-                category to updatedProductList
-            }.toMap()
+                    category to updatedProductList
+                }.toMap()
 
             state.copy(data = updatedData)
         }
     }
 
-    fun removeGenericProductFromCard(productId: String) {
+    fun removeGenericProductFromCard(productCardId: String) {
         _uiState.update { state ->
-            val updatedData = state.data.map { (category, productList) ->
-                val updatedProductList = productList
-                    .map { product ->
-                        if (product.id == productId) {
-                            (product as CountableProductUi).copy(count = 0)
-                        } else {
-                            product
+            val updatedData =
+                state.data.map { (category: Category, productList: List<ProductCard>) ->
+                    val updatedProductList = productList
+                        .map { productCard ->
+                            if (productCard.id == productCardId) {
+                                (productCard as ProductCard.GenericProductCard).copy(count = 0)
+                            } else {
+                                productCard
+                            }
                         }
-                    }
-                category to updatedProductList
-            }.toMap()
+                    category to updatedProductList
+                }.toMap()
 
             state.copy(data = updatedData)
         }
     }
 
-    fun increaseGenericProductCount(productId: String) {
-        _uiState.update { state ->
-            val updatedData = state.data.map { (category, productList) ->
-                val updatedProductList = productList
-                    .map { product ->
-                        if (product.id == productId) {
-                            (product as CountableProductUi).copy(count = product.count + 1)
-                        } else {
-                            product
-                        }
-                    }
-                category to updatedProductList
-            }.toMap()
 
-            state.copy(data = updatedData)
-        }
-    }
-
-    fun decreaseGenericProductCount(productId: String) {
+    fun decreaseGenericProductCount(productCardId: String) {
         _uiState.update { state ->
-            val updatedData = state.data.map { (category, productList) ->
-                val updatedProductList = productList
-                    .map { product ->
-                        if (product.id == productId) {
-                            (product as CountableProductUi).copy(count = product.count - 1)
-                        } else {
-                            product
+            val updatedData =
+                state.data.map { (category: Category, productList: List<ProductCard>) ->
+                    val updatedProductList = productList
+                        .map { productCard ->
+                            if (productCard.id == productCardId) {
+                                (productCard as ProductCard.GenericProductCard).copy(count = productCard.count - 1)
+                            } else {
+                                productCard
+                            }
                         }
-                    }
-                category to updatedProductList
-            }.toMap()
+                    category to updatedProductList
+                }.toMap()
 
             state.copy(data = updatedData)
         }
@@ -184,19 +168,4 @@ class MenuViewModel(
             }
         }
     }
-}
-
-data class MenuUiState(
-    val isLoading: Boolean = false,
-    val searchQuery: String = "",
-    val data: Map<Category, List<ProductUi>> = emptyMap(),
-    val showEmptyDataMessage: Boolean = false,
-) {
-    val categoryNameList = data.keys
-        .map {
-            it.name
-                .lowercase()
-                .replaceFirstChar { firstLetter -> firstLetter.uppercase() }
-        }
-        .toList()
 }

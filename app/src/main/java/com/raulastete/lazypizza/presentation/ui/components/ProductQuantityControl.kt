@@ -17,6 +17,7 @@ fun ProductQuantityControl(
     modifier: Modifier = Modifier,
     count: Int,
     isIncreaseButtonEnabled: Boolean = true,
+    isDecreaseButtonEnabled: Boolean = true,
     onClickIncreaseCount: () -> Unit,
     onClickDecreaseCount: () -> Unit,
 ) {
@@ -28,6 +29,7 @@ fun ProductQuantityControl(
         LPIconButton(
             icon = R.drawable.ic_minus,
             iconTint = AppTheme.colorScheme.textSecondary,
+            enabled = isDecreaseButtonEnabled,
             onClick = onClickDecreaseCount
         )
 

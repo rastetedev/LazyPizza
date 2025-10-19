@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.presentation.pizza_detail.components
+package com.raulastete.lazypizza.presentation.ui.components.product
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -24,14 +24,14 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
-import com.raulastete.lazypizza.presentation.pizza_detail.model.ToppingUi
 import com.raulastete.lazypizza.presentation.ui.components.ProductQuantityControl
+import com.raulastete.lazypizza.presentation.ui.model.ProductCard
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 
 @Composable
 fun ToppingCard(
     modifier: Modifier = Modifier,
-    toppingUi: ToppingUi,
+    toppingUi: ProductCard.ToppingCard,
     onClick: () -> Unit,
     onClickDecreaseCount: () -> Unit,
     onClickIncreaseCount: () -> Unit
