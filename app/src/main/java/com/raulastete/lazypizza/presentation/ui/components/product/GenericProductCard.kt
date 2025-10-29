@@ -21,22 +21,22 @@ import com.raulastete.lazypizza.R
 import com.raulastete.lazypizza.presentation.ui.components.LPGhostButton
 import com.raulastete.lazypizza.presentation.ui.components.LPIconButton
 import com.raulastete.lazypizza.presentation.ui.components.ProductQuantityControl
-import com.raulastete.lazypizza.presentation.ui.model.ProductCard
+import com.raulastete.lazypizza.presentation.ui.model.GenericProductCardUi
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-fun GeneralProductCard(
+fun GenericProductCard(
     modifier: Modifier = Modifier,
-    genericProductCard: ProductCard.GenericProductCard,
+    genericProductCardUi: GenericProductCardUi,
     onClickAddToCart: () -> Unit,
     onClickIncreaseCount: () -> Unit,
     onClickDecreaseCount: () -> Unit,
     onClickRemoveFromCart: () -> Unit
 ) {
 
-    ProductCard(
-        imageUrl = genericProductCard.imageUrl,
+    ProductWrapperCard(
+        imageUrl = genericProductCardUi.imageUrl,
         modifier = modifier,
     ) {
         Column(
@@ -46,18 +46,18 @@ fun GeneralProductCard(
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            if (genericProductCard.isNotSelected) {
+            if (genericProductCardUi.isNotSelected) {
                 ZeroItemsContent(
-                    name = genericProductCard.name,
-                    price = "$${genericProductCard.price}",
+                    name = genericProductCardUi.name,
+                    price = genericProductCardUi.unitPrice,
                     onClickAddToCart = onClickAddToCart,
                 )
             } else {
                 NonZeroItemsContent(
-                    name = genericProductCard.name,
-                    price = "$${genericProductCard.price}",
-                    totalPrice = genericProductCard.formattedTotalCost,
-                    count = genericProductCard.count,
+                    name = genericProductCardUi.name,
+                    price = genericProductCardUi.unitPrice,
+                    totalPrice = genericProductCardUi.totalPrice,
+                    count = genericProductCardUi.count,
                     onClickIncreaseCount = onClickIncreaseCount,
                     onClickDecreaseCount = onClickDecreaseCount,
                     onClickRemoveFromCart = onClickRemoveFromCart,
@@ -167,15 +167,16 @@ private fun ColumnScope.NonZeroItemsContent(
 @Composable
 private fun PizzaCardPreview() {
     AppTheme {
-        Column {
-            GeneralProductCard(
+        Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+            GenericProductCard(
                 modifier = Modifier.fillMaxWidth(),
-                genericProductCard = ProductCard.GenericProductCard(
+                genericProductCardUi = GenericProductCardUi(
                     id = "",
+                    imageUrl = "",
                     name = "Margharita",
-                    price = 1.00,
-                    count = 2,
-                    imageUrl = ""
+                    unitPrice = "$1.00",
+                    totalPrice = "$2.00",
+                    count = 2
                 ),
                 onClickAddToCart = {},
                 onClickDecreaseCount = {},
@@ -183,28 +184,15 @@ private fun PizzaCardPreview() {
                 onClickRemoveFromCart = {}
             )
 
-            GeneralProductCard(
+            GenericProductCard(
                 modifier = Modifier.fillMaxWidth(),
-                genericProductCard = ProductCard.GenericProductCard(
+                genericProductCardUi = GenericProductCardUi(
                     id = "",
+                    imageUrl = "",
                     name = "Margharita",
-                    price = 1.00,
-                    count = 0,
-                    imageUrl = ""
-                ),
-                onClickAddToCart = {},
-                onClickDecreaseCount = {},
-                onClickIncreaseCount = {},
-                onClickRemoveFromCart = {}
-            )
-            GeneralProductCard(
-                modifier = Modifier.fillMaxWidth(),
-                genericProductCard = ProductCard.GenericProductCard(
-                    id = "",
-                    name = "Margharita",
-                    price = 1.00,
-                    count = 2,
-                    imageUrl = ""
+                    unitPrice = "$1.00",
+                    totalPrice = "$2.00",
+                    count = 0
                 ),
                 onClickAddToCart = {},
                 onClickDecreaseCount = {},

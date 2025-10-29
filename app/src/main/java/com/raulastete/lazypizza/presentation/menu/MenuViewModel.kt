@@ -3,11 +3,13 @@ package com.raulastete.lazypizza.presentation.menu
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.raulastete.lazypizza.domain.MenuRepository
+import com.raulastete.lazypizza.domain.repository.MenuRepository
 import com.raulastete.lazypizza.domain.entity.Category
 import com.raulastete.lazypizza.domain.entity.Category.Companion.PIZZA_CATEGORY_ID
 import com.raulastete.lazypizza.domain.entity.Product
-import com.raulastete.lazypizza.presentation.ui.model.ProductCard
+import com.raulastete.lazypizza.presentation.ui.model.GenericProductCardUi
+import com.raulastete.lazypizza.presentation.ui.model.MenuCardUi
+import com.raulastete.lazypizza.presentation.ui.model.PizzaCardUi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
@@ -24,7 +26,7 @@ class MenuViewModel(
     private var _uiState = MutableStateFlow(MenuUiState())
     val uiState = _uiState.asStateFlow()
 
-    private var completeData: Map<Category, List<ProductCard>> = emptyMap()
+    private var completeMenuBackupBeforeSearch: Map<Category, List<MenuCardUi>> = emptyMap()
 
     init {
         fetchProductsByCategory()
@@ -32,7 +34,7 @@ class MenuViewModel(
 
     private fun fetchProductsByCategory() {
         viewModelScope.launch {
-            menuRepository.getProductsByCategory()
+            menuRepository.getMenuByCategory()
                 .onStart {
                     _uiState.update { it.copy(isLoading = true) }
                 }
@@ -42,32 +44,38 @@ class MenuViewModel(
                 }
                 .collect { data ->
 
-                    completeData = transformToUiModel(data)
+                    completeMenuBackupBeforeSearch = transformToUiModel(data)
 
-                    _uiState.update { it.copy(menuByCategory = completeData, isLoading = false) }
+                    _uiState.update {
+                        it.copy(
+                            menuByCategory = completeMenuBackupBeforeSearch,
+                            isLoading = false
+                        )
+                    }
                 }
         }
     }
 
-    private fun transformToUiModel(data: Map<Category, List<Product>>): Map<Category, List<ProductCard>> {
+    private fun transformToUiModel(data: Map<Category, List<Product>>): Map<Category, List<MenuCardUi>> {
         return data.map { (category, products) ->
             val products = if (category.id == PIZZA_CATEGORY_ID) {
                 products.map { product ->
-                    ProductCard.PizzaCard(
+                    PizzaCardUi(
                         id = product.id,
                         imageUrl = product.imageUrl,
                         name = product.name,
-                        price = product.price,
+                        unitPrice = "${product.unitPrice}",
                         description = product.description
                     )
                 }
             } else {
                 products.map { product ->
-                    ProductCard.GenericProductCard(
+                    GenericProductCardUi(
                         id = product.id,
                         imageUrl = product.imageUrl,
                         name = product.name,
-                        price = product.price,
+                        unitPrice = "${product.unitPrice}",
+                        totalPrice = "${product.unitPrice}"
                     )
                 }
             }
@@ -78,7 +86,12 @@ class MenuViewModel(
     }
 
     fun searchProduct(query: String) {
-        if (query.isEmpty()) _uiState.update { it.copy(searchProductQuery = "", menuByCategory = completeData) }
+        if (query.isEmpty()) _uiState.update {
+            it.copy(
+                searchProductQuery = "",
+                menuByCategory = completeMenuBackupBeforeSearch
+            )
+        }
         _uiState.update { it.copy(searchProductQuery = query) }
         filterData(query)
     }
@@ -86,11 +99,11 @@ class MenuViewModel(
     fun increaseGenericProductCount(genericProductId: String) {
         _uiState.update { state ->
             val updatedData =
-                state.menuByCategory.map { (category: Category, productList: List<ProductCard>) ->
+                state.menuByCategory.map { (category: Category, productList: List<MenuCardUi>) ->
                     val updatedProductList = productList
                         .map { productCard ->
                             if (productCard.id == genericProductId) {
-                                (productCard as ProductCard.GenericProductCard).copy(count = productCard.count + 1)
+                                (productCard as GenericProductCardUi).copy(count = productCard.count + 1)
                             } else {
                                 productCard
                             }
@@ -105,11 +118,11 @@ class MenuViewModel(
     fun removeGenericProductFromCard(genericProductId: String) {
         _uiState.update { state ->
             val updatedData =
-                state.menuByCategory.map { (category: Category, productList: List<ProductCard>) ->
+                state.menuByCategory.map { (category: Category, productList: List<MenuCardUi>) ->
                     val updatedProductList = productList
                         .map { productCard ->
                             if (productCard.id == genericProductId) {
-                                (productCard as ProductCard.GenericProductCard).copy(count = 0)
+                                (productCard as GenericProductCardUi).copy(count = 0)
                             } else {
                                 productCard
                             }
@@ -125,11 +138,11 @@ class MenuViewModel(
     fun decreaseGenericProductCount(genericProductId: String) {
         _uiState.update { state ->
             val updatedData =
-                state.menuByCategory.map { (category: Category, productList: List<ProductCard>) ->
+                state.menuByCategory.map { (category: Category, productList: List<MenuCardUi >) ->
                     val updatedProductList = productList
                         .map { productCard ->
                             if (productCard.id == genericProductId) {
-                                (productCard as ProductCard.GenericProductCard).copy(count = productCard.count - 1)
+                                (productCard as GenericProductCardUi).copy(count = productCard.count - 1)
                             } else {
                                 productCard
                             }
@@ -144,7 +157,7 @@ class MenuViewModel(
     private fun filterData(productName: String) {
         _uiState.update { it.copy(isSearching = true) }
 
-        val filteredData = completeData
+        val filteredData = completeMenuBackupBeforeSearch
             .map { (category, products) ->
                 category to products.filter { product ->
                     product.name.contains(productName, ignoreCase = true)

@@ -43,7 +43,8 @@ import com.raulastete.lazypizza.presentation.ui.components.product.ToppingCard
 import com.raulastete.lazypizza.presentation.ui.DeviceMode
 import com.raulastete.lazypizza.presentation.ui.components.FadingEdgeVerticalList
 import com.raulastete.lazypizza.presentation.ui.components.LPPrimaryButton
-import com.raulastete.lazypizza.presentation.ui.model.ProductCard
+import com.raulastete.lazypizza.presentation.ui.model.PizzaCardUi
+import com.raulastete.lazypizza.presentation.ui.model.ToppingCardUi
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 import com.raulastete.lazypizza.presentation.ui.theme.LocalDeviceMode
 import org.koin.androidx.compose.koinViewModel
@@ -150,7 +151,7 @@ private fun SingleColumnPhoneMode(
                         )
                         .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
                         .padding(16.dp),
-                    pizzaCard = uiState.pizzaUi
+                    pizzaCardUi = uiState.pizzaUi
                 )
             }
             ToppingsSection(
@@ -170,7 +171,7 @@ private fun SingleColumnPhoneMode(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
                 .padding(bottom = 32.dp),
-            text = "Add to Cart for $${uiState.formattedTotalPrice}"
+            text = "Add to Cart for ${uiState.totalPrice}"
         ) { }
     }
 }
@@ -208,7 +209,7 @@ private fun SingleColumnTabletMode(
                     )
                     .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
                     .padding(16.dp),
-                pizzaCard = uiState.pizzaUi
+                pizzaCardUi = uiState.pizzaUi
             )
         }
         ToppingsSection(
@@ -227,7 +228,7 @@ private fun SingleColumnTabletMode(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
                 .padding(bottom = 32.dp),
-            text = "Add to Cart for $${uiState.formattedTotalPrice}"
+            text = "Add to Cart for ${uiState.totalPrice}"
         ) { }
     }
 }
@@ -260,7 +261,7 @@ private fun TwoColumnMode(
                 Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                pizzaCard = uiState.pizzaUi
+                pizzaCardUi = uiState.pizzaUi
             )
         }
         Box(
@@ -291,7 +292,7 @@ private fun TwoColumnMode(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
                     .padding(bottom = 32.dp),
-                text = "Add to Cart for $${uiState.formattedTotalPrice}"
+                text = "Add to Cart for ${uiState.totalPrice}"
             ) { }
         }
     }
@@ -331,12 +332,12 @@ private fun PizzaImage(modifier: Modifier = Modifier, imageUrl: String?) {
 }
 
 @Composable
-private fun PizzaInfo(modifier: Modifier, pizzaCard: ProductCard.PizzaCard?) {
+private fun PizzaInfo(modifier: Modifier, pizzaCardUi: PizzaCardUi?) {
     Column(
         modifier = modifier
     ) {
         Text(
-            pizzaCard?.name.orEmpty(),
+            pizzaCardUi?.name.orEmpty(),
             style = AppTheme.typography.title1Semibold,
             color = AppTheme.colorScheme.textPrimary,
             modifier = Modifier.fillMaxWidth(),
@@ -344,7 +345,7 @@ private fun PizzaInfo(modifier: Modifier, pizzaCard: ProductCard.PizzaCard?) {
         )
         Spacer(Modifier.height(4.dp))
         Text(
-            pizzaCard?.description.orEmpty(),
+            pizzaCardUi?.description.orEmpty(),
             style = AppTheme.typography.body3Regular,
             color = AppTheme.colorScheme.textSecondary,
             modifier = Modifier.fillMaxWidth(),
@@ -356,7 +357,7 @@ private fun PizzaInfo(modifier: Modifier, pizzaCard: ProductCard.PizzaCard?) {
 @Composable
 private fun ToppingsSection(
     modifier: Modifier = Modifier,
-    toppings: List<ProductCard.ToppingCard>,
+    toppings: List<ToppingCardUi>,
     listPadding: PaddingValues,
     onSelectTopping: (String) -> Unit,
     onIncreaseToppingQuantity: (String) -> Unit,
@@ -390,7 +391,7 @@ private fun ToppingsSection(
                 items(toppings) {
                     ToppingCard(
                         modifier = Modifier.weight(1f),
-                        toppingUi = it,
+                        toppingCardUi = it,
                         onClick = {
                             onSelectTopping(it.id)
                         },

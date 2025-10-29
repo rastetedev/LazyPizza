@@ -27,7 +27,7 @@ fun MenuItems(
             EmptyMessage(modifier = Modifier.fillMaxSize())
         }
 
-        deviceMode is DeviceMode.PhonePortrait -> ProductsMenuSingleColumn(
+        deviceMode is DeviceMode.PhonePortrait -> CategorizedProductList(
             lazyListState = lazyListState,
             uiState = uiState,
             navigateToPizzaDetail = navigateToPizzaDetail,
@@ -37,7 +37,7 @@ fun MenuItems(
             decreaseGenericProductCount = decreaseGenericProductCount
         )
 
-        else -> ProductsMenuTwoColumn(
+        else -> CategorizedProductGrid(
             lazyGridState = lazyGridState,
             uiState = uiState,
             navigateToPizzaDetail = navigateToPizzaDetail,

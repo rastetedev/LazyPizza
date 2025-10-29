@@ -4,8 +4,9 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.raulastete.lazypizza.domain.MenuRepository
-import com.raulastete.lazypizza.presentation.ui.model.ProductCard
+import com.raulastete.lazypizza.domain.repository.MenuRepository
+import com.raulastete.lazypizza.presentation.ui.model.PizzaCardUi
+import com.raulastete.lazypizza.presentation.ui.model.ToppingCardUi
 import com.raulastete.lazypizza.presentation.ui.navigation.menu_navigation.PizzaDetailDestination.Companion.PIZZA_ID_ARG
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -15,8 +16,6 @@ import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlin.collections.filter
-import kotlin.collections.map
 
 class PizzaDetailViewModel(
     private val menuRepository: MenuRepository,
@@ -50,21 +49,20 @@ class PizzaDetailViewModel(
                         _uiState.update {
                             it.copy(
                                 isLoading = false,
-                                pizzaUi = ProductCard.PizzaCard(
+                                pizzaUi = PizzaCardUi(
                                     id = product.id,
                                     imageUrl = product.imageUrl,
                                     name = product.name,
                                     description = product.description,
-                                    price = product.price,
+                                    unitPrice = "$${product.unitPrice}",
                                 ),
                                 toppings = toppings.map { topping ->
-                                    ProductCard.ToppingCard(
+                                    ToppingCardUi(
                                         id = topping.id,
                                         imageUrl = topping.imageUrl,
                                         name = topping.name,
-                                        price = topping.price,
-                                        count = 0,
-                                        maximumQuantity = 3
+                                        unitPrice = "$${topping.price}",
+                                        count = 0
                                     )
                                 }
                             )
@@ -124,13 +122,7 @@ class PizzaDetailViewModel(
 
 data class PizzaDetailUiState(
     val isLoading: Boolean = false,
-    val pizzaUi: ProductCard.PizzaCard? = null,
-    val toppings: List<ProductCard.ToppingCard> = emptyList()
-) {
-    val totalPrice: Double = pizzaUi?.price?.let { pizzaPrice ->
-        val toppingsPrice = toppings.filter { it.isSelected }.sumOf { it.price * it.count }
-        pizzaPrice + toppingsPrice
-    } ?: 0.0
-
-    val formattedTotalPrice: String = String.format("%.2f", totalPrice)
-}
+    val pizzaUi: PizzaCardUi? = null,
+    val toppings: List<ToppingCardUi> = emptyList(),
+    val totalPrice: String = ""
+)

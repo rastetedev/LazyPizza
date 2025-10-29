@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.domain
+package com.raulastete.lazypizza.domain.repository
 
 import com.raulastete.lazypizza.domain.entity.Category
 import com.raulastete.lazypizza.domain.entity.Product
@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface MenuRepository {
 
-    fun getProductsByCategory(): Flow<Map<Category, List<Product>>>
+    fun getMenuByCategory(): Flow<Map<Category, List<Product>>>
     fun getToppings(): Flow<List<Topping>>
     fun getProductById(productId: String): Flow<Product?>
 }

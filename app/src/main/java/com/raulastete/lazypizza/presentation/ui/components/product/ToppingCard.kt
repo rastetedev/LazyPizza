@@ -21,17 +21,18 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.raulastete.lazypizza.presentation.ui.components.ProductQuantityControl
-import com.raulastete.lazypizza.presentation.ui.model.ProductCard
+import com.raulastete.lazypizza.presentation.ui.model.ToppingCardUi
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 
 @Composable
 fun ToppingCard(
     modifier: Modifier = Modifier,
-    toppingUi: ProductCard.ToppingCard,
+    toppingCardUi: ToppingCardUi,
     onClick: () -> Unit,
     onClickDecreaseCount: () -> Unit,
     onClickIncreaseCount: () -> Unit
@@ -40,7 +41,7 @@ fun ToppingCard(
         modifier = modifier
             .clickable(
                 onClick = onClick,
-                enabled = toppingUi.isNotSelected,
+                enabled = toppingCardUi.isSelected.not(),
                 interactionSource = remember { MutableInteractionSource() },
                 indication = null
             )
@@ -51,7 +52,7 @@ fun ToppingCard(
             )
             .border(
                 width = 1.dp,
-                color = if (toppingUi.isNotSelected) AppTheme.colorScheme.outline else AppTheme.colorScheme.primary,
+                color = if (toppingCardUi.isSelected.not()) AppTheme.colorScheme.outline else AppTheme.colorScheme.primary,
                 shape = AppTheme.shape.card
             )
     ) {
@@ -60,17 +61,42 @@ fun ToppingCard(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            ToppingImage(imageUrl = toppingUi.imageUrl)
+            Box(
+                Modifier
+                    .size(64.dp)
+                    .background(color = AppTheme.colorScheme.primary8, shape = CircleShape),
+                contentAlignment = Alignment.Center
+            ) {
+                AsyncImage(
+                    model = toppingCardUi.imageUrl,
+                    contentDescription = null,
+                )
+            }
             Spacer(Modifier.height(12.dp))
-            ToppingName(name = toppingUi.name)
+            Text(
+                text = toppingCardUi.name,
+                style = AppTheme.typography.body3Regular,
+                color = AppTheme.colorScheme.textSecondary,
+                maxLines = 1,
+                autoSize = TextAutoSize.StepBased(
+                    minFontSize = 10.sp,
+                    maxFontSize = AppTheme.typography.body3Regular.fontSize
+                )
+            )
             Spacer(Modifier.height(12.dp))
-            if (toppingUi.isNotSelected)
-                ToppingPrice(price = toppingUi.price)
+            if (toppingCardUi.isSelected.not())
+                Text(
+                    modifier = Modifier.fillMaxWidth(),
+                    textAlign = TextAlign.Center,
+                    text = toppingCardUi.unitPrice,
+                    style = AppTheme.typography.title2,
+                    color = AppTheme.colorScheme.textPrimary
+                )
             else {
                 ProductQuantityControl(
                     modifier = Modifier.fillMaxWidth(),
-                    count = toppingUi.count,
-                    isIncreaseButtonEnabled = toppingUi.canIncreaseQuantity,
+                    count = toppingCardUi.count,
+                    isIncreaseButtonEnabled = toppingCardUi.canIncreaseQuantity,
                     onClickDecreaseCount = onClickDecreaseCount,
                     onClickIncreaseCount = onClickIncreaseCount
                 )
@@ -78,43 +104,19 @@ fun ToppingCard(
         }
     }
 }
-
 @Composable
-private fun ToppingName(name: String) {
-    Text(
-        text = name,
-        style = AppTheme.typography.body3Regular,
-        color = AppTheme.colorScheme.textSecondary,
-        maxLines = 1,
-        autoSize = TextAutoSize.StepBased(
-            minFontSize = 10.sp,
-            maxFontSize = AppTheme.typography.body3Regular.fontSize
-        )
+@Preview
+private fun ToppingCardPreview(){
+    ToppingCard(
+        toppingCardUi = ToppingCardUi(
+            id = "",
+            imageUrl = "",
+            name = "Tomate",
+            unitPrice = "$1.00",
+            count = 1,
+        ),
+        onClickDecreaseCount = {},
+        onClickIncreaseCount = {},
+        onClick = {}
     )
-}
-
-@Composable
-private fun ToppingPrice(price: Double) {
-    Text(
-        modifier = Modifier.fillMaxWidth(),
-        textAlign = TextAlign.Center,
-        text = "$${price}",
-        style = AppTheme.typography.title2,
-        color = AppTheme.colorScheme.textPrimary
-    )
-}
-
-@Composable
-private fun ToppingImage(imageUrl: String) {
-    Box(
-        Modifier
-            .size(64.dp)
-            .background(color = AppTheme.colorScheme.primary8, shape = CircleShape),
-        contentAlignment = Alignment.Center
-    ) {
-        AsyncImage(
-            model = imageUrl,
-            contentDescription = null,
-        )
-    }
 }

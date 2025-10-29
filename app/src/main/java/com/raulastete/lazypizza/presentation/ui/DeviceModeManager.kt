@@ -29,9 +29,7 @@ class DeviceModeManager(
     }
 }
 
-
 sealed interface DeviceMode {
-
     object PhonePortrait : DeviceMode
     object PhoneLandscape : DeviceMode
     object TabletPortrait : DeviceMode

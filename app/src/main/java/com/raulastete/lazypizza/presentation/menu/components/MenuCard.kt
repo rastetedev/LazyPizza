@@ -2,45 +2,45 @@ package com.raulastete.lazypizza.presentation.menu.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import com.raulastete.lazypizza.presentation.ui.components.product.GeneralProductCard
+import com.raulastete.lazypizza.presentation.ui.components.product.GenericProductCard
 import com.raulastete.lazypizza.presentation.ui.components.product.PizzaCard
-import com.raulastete.lazypizza.presentation.ui.model.ProductCard
+import com.raulastete.lazypizza.presentation.ui.model.GenericProductCardUi
+import com.raulastete.lazypizza.presentation.ui.model.MenuCardUi
+import com.raulastete.lazypizza.presentation.ui.model.PizzaCardUi
 
 @Composable
-fun ProductItem(
+fun MenuCard(
     modifier: Modifier = Modifier,
-    product: ProductCard,
+    menuCardUi: MenuCardUi,
     navigateToPizzaDetail: (String) -> Unit,
     addGenericProductToCard: (String) -> Unit,
     removeGenericProductFromCard: (String) -> Unit,
     increaseGenericProductCount: (String) -> Unit,
     decreaseGenericProductCount: (String) -> Unit
 ) {
-    when (product) {
-        is ProductCard.PizzaCard -> PizzaCard(
+    when (menuCardUi) {
+        is PizzaCardUi -> PizzaCard(
             modifier = modifier,
-            pizzaUi = product
+            pizzaCardUi = menuCardUi
         ) {
-            navigateToPizzaDetail(product.id)
+            navigateToPizzaDetail(menuCardUi.id)
         }
 
-        is ProductCard.GenericProductCard -> GeneralProductCard(
+        is GenericProductCardUi -> GenericProductCard(
             modifier = modifier,
-            genericProductCard = product,
+            genericProductCardUi = menuCardUi,
             onClickAddToCart = {
-                addGenericProductToCard(product.id)
+                addGenericProductToCard(menuCardUi.id)
             },
             onClickDecreaseCount = {
-                decreaseGenericProductCount(product.id)
+                decreaseGenericProductCount(menuCardUi.id)
             },
             onClickIncreaseCount = {
-                increaseGenericProductCount(product.id)
+                increaseGenericProductCount(menuCardUi.id)
             },
             onClickRemoveFromCart = {
-                removeGenericProductFromCard(product.id)
+                removeGenericProductFromCard(menuCardUi.id)
             }
         )
-
-        else -> throw Exception("Invalid product type")
     }
 }

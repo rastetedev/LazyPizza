@@ -12,17 +12,17 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.raulastete.lazypizza.presentation.ui.model.ProductCard
+import com.raulastete.lazypizza.presentation.ui.model.PizzaCardUi
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 
 @Composable
 fun PizzaCard(
     modifier: Modifier = Modifier,
-    pizzaUi: ProductCard.PizzaCard,
+    pizzaCardUi: PizzaCardUi,
     onClick: () -> Unit
 ) {
-    ProductCard(
-        imageUrl = pizzaUi.imageUrl,
+    ProductWrapperCard(
+        imageUrl = pizzaCardUi.imageUrl,
         modifier = modifier,
         onClick = onClick
     ) {
@@ -34,7 +34,7 @@ fun PizzaCard(
             Column {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = pizzaUi.name,
+                    text = pizzaCardUi.name,
                     textAlign = TextAlign.Start,
                     maxLines = 1,
                     minLines = 1,
@@ -44,7 +44,7 @@ fun PizzaCard(
                 )
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = pizzaUi.description,
+                    text = pizzaCardUi.description,
                     style = AppTheme.typography.body3Regular,
                     color = AppTheme.colorScheme.textSecondary,
                     textAlign = TextAlign.Start,
@@ -58,7 +58,7 @@ fun PizzaCard(
 
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = "$${pizzaUi.price}",
+                text = pizzaCardUi.unitPrice,
                 textAlign = TextAlign.Start,
                 style = AppTheme.typography.title1Semibold,
                 color = AppTheme.colorScheme.textPrimary
@@ -73,15 +73,14 @@ private fun PizzaCardPreview() {
     AppTheme {
         PizzaCard(
             Modifier.fillMaxWidth(),
-            pizzaUi = ProductCard.PizzaCard(
+            pizzaCardUi = PizzaCardUi(
                 id = "",
                 name = "Margherita",
-                price = 10.0,
+                unitPrice = "$10.0",
                 description = "This is my pizza description",
                 imageUrl = ""
-            )
-        ) {
-
-        }
+            ),
+            onClick = {}
+        )
     }
 }

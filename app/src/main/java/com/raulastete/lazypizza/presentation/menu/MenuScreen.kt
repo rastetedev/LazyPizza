@@ -13,6 +13,7 @@ import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -27,7 +28,8 @@ import com.raulastete.lazypizza.presentation.menu.components.MenuSkeleton
 import com.raulastete.lazypizza.presentation.ui.DeviceMode
 import com.raulastete.lazypizza.presentation.ui.components.LPSearchBar
 import com.raulastete.lazypizza.presentation.ui.components.LPTopbar
-import com.raulastete.lazypizza.presentation.ui.model.ProductCard
+import com.raulastete.lazypizza.presentation.ui.model.MenuCardUi
+import com.raulastete.lazypizza.presentation.ui.model.PizzaCardUi
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 import com.raulastete.lazypizza.presentation.ui.theme.LocalDeviceMode
 import kotlinx.coroutines.CoroutineScope
@@ -154,7 +156,7 @@ private fun MenuContent(
 
 private fun navigateToStickyHeader(
     categoryName: String,
-    menu: Map<Category, List<ProductCard>>,
+    menu: Map<Category, List<MenuCardUi>>,
     deviceMode: DeviceMode,
     lazyListState: LazyListState,
     lazyGridState: LazyGridState,
@@ -186,14 +188,33 @@ private fun navigateToStickyHeader(
 @Composable
 private fun MenuScreenContentPreview() {
     AppTheme {
-        MenuScreenContent(
-            uiState = MenuUiState(),
-            searchProduct = {},
-            navigateToPizzaDetail = {},
-            addGenericProductToCard = {},
-            removeGenericProductFromCard = {},
-            increaseGenericProductCount = {},
-            decreaseGenericProductCount = {}
-        )
+
+        CompositionLocalProvider(
+            LocalDeviceMode provides DeviceMode.PhonePortrait
+        ) {
+            MenuScreenContent(
+                uiState = MenuUiState(
+                    isLoading = false,
+                    menuByCategory = mapOf(
+                        Category(id = "PIZZA", name = "Pizza") to listOf(
+                            PizzaCardUi(
+                                id = "1",
+                                imageUrl = "",
+                                name = "Pizza 1",
+                                unitPrice = "$10.0",
+                                description = "Pizza 1 description"
+                            )
+                        )
+                    )
+                ),
+                searchProduct = {},
+                navigateToPizzaDetail = {},
+                addGenericProductToCard = {},
+                removeGenericProductFromCard = {},
+                increaseGenericProductCount = {},
+                decreaseGenericProductCount = {}
+            )
+        }
+
     }
 }

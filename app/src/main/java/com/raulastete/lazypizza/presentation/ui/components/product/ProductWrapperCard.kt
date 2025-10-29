@@ -23,7 +23,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.AsyncImage
 
 @Composable
-fun ProductCard(
+fun ProductWrapperCard(
     modifier: Modifier = Modifier,
     imageUrl: String,
     onClick: (() -> Unit)? = null,
@@ -75,7 +75,7 @@ fun ProductCard(
 @Preview
 fun GenericProductCardPreview() {
     AppTheme {
-        ProductCard(
+        ProductWrapperCard(
             modifier = Modifier.fillMaxWidth(),
             imageUrl = "",
             content = {

@@ -12,10 +12,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.raulastete.lazypizza.presentation.menu.MenuUiState
-import com.raulastete.lazypizza.presentation.ui.model.ProductCard
+import com.raulastete.lazypizza.presentation.ui.model.GenericProductCardUi
+import com.raulastete.lazypizza.presentation.ui.model.PizzaCardUi
 
 @Composable
-fun ProductsMenuSingleColumn(
+fun CategorizedProductList(
     lazyListState: LazyListState,
     uiState: MenuUiState,
     navigateToPizzaDetail: (String) -> Unit,
@@ -30,24 +31,24 @@ fun ProductsMenuSingleColumn(
         verticalArrangement = Arrangement.spacedBy(8.dp),
         contentPadding = PaddingValues(bottom = 16.dp)
     ) {
-        uiState.menuByCategory.forEach { (category, productList) ->
+        uiState.menuByCategory.forEach { (category, menuCardUis) ->
             stickyHeader(key = category.id) {
                 CategoryHeader(category.name)
             }
 
             items(
-                items = productList,
+                items = menuCardUis,
                 key = { it.id },
                 contentType = {
                     if (category.isPizza) {
-                        ProductCard.PizzaCard::class
+                        PizzaCardUi::class
                     } else {
-                        ProductCard.GenericProductCard::class
+                        GenericProductCardUi::class
                     }
                 }
-            ) { product ->
-                ProductItem(
-                    product = product,
+            ) { menuCardUi ->
+                MenuCard(
+                    menuCardUi = menuCardUi,
                     navigateToPizzaDetail = navigateToPizzaDetail,
                     modifier = Modifier
                         .fillMaxWidth()

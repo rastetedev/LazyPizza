@@ -1,7 +1,7 @@
 package com.raulastete.lazypizza.presentation.menu
 
 import com.raulastete.lazypizza.domain.entity.Category
-import com.raulastete.lazypizza.presentation.ui.model.ProductCard
+import com.raulastete.lazypizza.presentation.ui.model.MenuCardUi
 import kotlin.collections.map
 
 data class MenuUiState(
@@ -9,7 +9,7 @@ data class MenuUiState(
     val isSearching: Boolean = false,
     val searchProductQuery: String = "",
     val showEmptyResultsForQuery: Boolean = false,
-    val menuByCategory: Map<Category, List<ProductCard>> = emptyMap(),
+    val menuByCategory: Map<Category, List<MenuCardUi>> = emptyMap(),
 ) {
     val categoryNameList = menuByCategory.keys
         .map {
