@@ -43,15 +43,46 @@ class DefaultCartRepository(
         }
     }
 
-    override suspend fun upsertOrderItem(orderItem: OrderItem) {
-        orderItemDao.upsert(
-            OrderItemDto(
-                id = orderItem.id,
-                productId = orderItem.product.id,
-                count = orderItem.count,
-                userId = "ME"
+    override suspend fun increaseProductCountInCart(productId: String) {
+        val orderDto = orderItemDao.getOrderItemByProductId(productId)
+
+        if (orderDto != null) {
+            orderItemDao.upsert(
+                orderDto.copy(
+                    count = orderDto.count + 1
+                )
             )
-        )
+        } else {
+            orderItemDao.upsert(
+                OrderItemDto(
+                    productId = productId,
+                    count = 1,
+                    userId = "me"
+                )
+            )
+        }
+    }
+
+    override suspend fun decreaseProductCountInCart(productId: String) {
+        val orderDto = orderItemDao.getOrderItemByProductId(productId)
+        check(orderDto != null)
+
+        if (orderDto.count == 1) {
+            orderItemDao.deleteItem(orderDto.id)
+        } else {
+            orderItemDao.upsert(
+                orderDto.copy(
+                    count = orderDto.count - 1
+                )
+            )
+        }
+    }
+
+    override suspend fun deleteProductFromCart(productId: String) {
+        val orderDto = orderItemDao.getOrderItemByProductId(productId)
+        check(orderDto != null)
+
+        orderItemDao.deleteItem(orderDto.id)
     }
 
     override suspend fun deleteOrderItem(orderItem: OrderItem) {

@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.Text
@@ -107,16 +108,19 @@ fun ToppingCard(
 @Composable
 @Preview
 private fun ToppingCardPreview(){
-    ToppingCard(
-        toppingCardUi = ToppingCardUi(
-            id = "",
-            imageUrl = "",
-            name = "Tomate",
-            unitPrice = "$1.00",
-            count = 1,
-        ),
-        onClickDecreaseCount = {},
-        onClickIncreaseCount = {},
-        onClick = {}
-    )
+    AppTheme {
+        ToppingCard(
+            modifier = Modifier.width(120.dp),
+            toppingCardUi = ToppingCardUi(
+                id = "",
+                imageUrl = "",
+                name = "Tomate",
+                unitPrice = "$1.00",
+                count = 1,
+            ),
+            onClickDecreaseCount = {},
+            onClickIncreaseCount = {},
+            onClick = {}
+        )
+    }
 }

@@ -1,6 +1,6 @@
 package com.raulastete.lazypizza.presentation.ui.model
 
-data class RecommendProductCardUi(
+data class RecommendedProductCardUi(
     val id: String,
     val imageUrl: String,
     val name: String,

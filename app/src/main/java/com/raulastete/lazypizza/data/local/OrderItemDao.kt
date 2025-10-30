@@ -8,13 +8,16 @@ import kotlinx.coroutines.flow.Flow
 @Dao
 interface OrderItemDao {
 
-    @Upsert
-    suspend fun upsert(orderItemDto: OrderItemDto)
-
     @Query("DELETE FROM orders WHERE id = :orderItemId")
-    suspend fun deleteItem(orderItemId: String)
+    suspend fun deleteItem(orderItemId: Long)
 
     @Query("SELECT * FROM orders WHERE userId = :userId")
     fun getOrderItemsByUser(userId: String): Flow<List<OrderItemDto>>
+
+    @Query("SELECT * FROM orders WHERE productId = :productId")
+    suspend fun getOrderItemByProductId(productId: String): OrderItemDto?
+
+    @Upsert
+    suspend fun upsert(orderItemDto: OrderItemDto)
 
 }

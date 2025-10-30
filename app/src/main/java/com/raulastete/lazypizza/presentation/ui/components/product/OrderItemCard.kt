@@ -110,7 +110,7 @@ private fun PizzaCardPreview() {
     AppTheme {
         OrderItemCard(
             orderItemCardUi = OrderItemCardUi(
-                id = "",
+                id = 0L,
                 imageUrl = "https://cdn.pixabay.com/photo/2016/0",
                 name = "Pizza",
                 unitPrice = "$10.00",

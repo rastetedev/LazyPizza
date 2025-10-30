@@ -2,10 +2,10 @@ package com.raulastete.lazypizza.data.repository
 
 import com.raulastete.lazypizza.data.remote.MenuRemoteDataSource
 import com.raulastete.lazypizza.data.remote.dto.toDomain
-import com.raulastete.lazypizza.domain.entity.Topping
-import com.raulastete.lazypizza.domain.repository.MenuRepository
 import com.raulastete.lazypizza.domain.entity.Category
 import com.raulastete.lazypizza.domain.entity.Product
+import com.raulastete.lazypizza.domain.entity.Topping
+import com.raulastete.lazypizza.domain.repository.MenuRepository
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.map
@@ -43,6 +43,25 @@ class DefaultMenuRepository(
                 category to products
             }.toMap()
         }
+    }
+
+    override fun getRecommendedProducts(): Flow<List<Product>> {
+        return remoteDataSource.getAllProducts()
+            .map { productsDto ->
+                productsDto
+                    .map { productDto ->
+                        Product(
+                            id = productDto.id,
+                            name = productDto.name,
+                            description = productDto.description,
+                            unitPrice = productDto.price,
+                            imageUrl = productDto.imageUrl,
+                            categoryId = productDto.category
+                        )
+                    }.filter { product ->
+                        product.belongsToDrinksCategory || product.belongsToSaucesCategory
+                    }
+            }
     }
 
     override fun getToppings(): Flow<List<Topping>> {

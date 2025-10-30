@@ -8,6 +8,8 @@ import kotlinx.coroutines.flow.Flow
 interface MenuRepository {
 
     fun getMenuByCategory(): Flow<Map<Category, List<Product>>>
+
+    fun getRecommendedProducts(): Flow<List<Product>>
     fun getToppings(): Flow<List<Topping>>
     fun getProductById(productId: String): Flow<Product?>
 }

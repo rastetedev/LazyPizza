@@ -1,7 +1,7 @@
 package com.raulastete.lazypizza.presentation.ui.model
 
 data class OrderItemCardUi(
-    val id: String,
+    val id: Long,
     val imageUrl: String,
     val name: String,
     val toppings: List<String>?,
