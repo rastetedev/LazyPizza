@@ -81,8 +81,7 @@ private fun PizzaCardPreview() {
                    description = "",
                    imageUrl = "",
                    unitPrice = 0.0,
-                   categoryId = "",
-                   toppings = null
+                   categoryId = ""
                )
             ),
             onClick = {}

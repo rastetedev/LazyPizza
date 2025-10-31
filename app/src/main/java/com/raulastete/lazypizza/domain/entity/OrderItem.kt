@@ -6,5 +6,6 @@ import kotlin.uuid.ExperimentalUuidApi
 data class OrderItem(
     val id: Long,
     val product: Product,
+    val toppings: Map<Topping, Int>? = null,
     val count: Int
 )

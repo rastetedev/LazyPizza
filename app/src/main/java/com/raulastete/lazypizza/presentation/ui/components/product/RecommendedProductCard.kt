@@ -115,8 +115,7 @@ private fun RecommendedProductCardPreview() {
                 description = "",
                 imageUrl = "",
                 unitPrice = 12.99,
-                categoryId = "",
-                toppings = null
+                categoryId = ""
             ),
             onAddToCartClick = {}
         )

@@ -62,6 +62,7 @@ fun PizzaDetailScreen(
         onSelectTopping = viewModel::selectTopping,
         onIncreaseToppingQuantity = viewModel::increaseToppingQuantity,
         onDecreaseToppingQuantity = viewModel::decreaseToppingQuantity,
+        addPizzaToCart = viewModel::addPizzaToCart
     )
 }
 
@@ -70,9 +71,10 @@ fun PizzaDetailScreen(
 private fun ProductDetailScreenContent(
     uiState: PizzaDetailUiState,
     navigateBack: () -> Unit,
-    onSelectTopping: (String) -> Unit,
-    onIncreaseToppingQuantity: (String) -> Unit,
-    onDecreaseToppingQuantity: (String) -> Unit,
+    onSelectTopping: (toppingId: String) -> Unit,
+    onIncreaseToppingQuantity: (toppingId: String) -> Unit,
+    onDecreaseToppingQuantity: (toppingId: String) -> Unit,
+    addPizzaToCart: () -> Unit
 ) {
 
     val deviceMode = LocalDeviceMode.current
@@ -94,7 +96,8 @@ private fun ProductDetailScreenContent(
                     navigateBack = navigateBack,
                     onSelectTopping = onSelectTopping,
                     onIncreaseToppingQuantity = onIncreaseToppingQuantity,
-                    onDecreaseToppingQuantity = onDecreaseToppingQuantity
+                    onDecreaseToppingQuantity = onDecreaseToppingQuantity,
+                    addPizzaToCart = addPizzaToCart
                 )
             }
 
@@ -103,7 +106,8 @@ private fun ProductDetailScreenContent(
                 navigateBack = navigateBack,
                 onSelectTopping = onSelectTopping,
                 onIncreaseToppingQuantity = onIncreaseToppingQuantity,
-                onDecreaseToppingQuantity = onDecreaseToppingQuantity
+                onDecreaseToppingQuantity = onDecreaseToppingQuantity,
+                addPizzaToCart = addPizzaToCart
             )
 
 
@@ -112,7 +116,8 @@ private fun ProductDetailScreenContent(
                 navigateBack = navigateBack,
                 onSelectTopping = onSelectTopping,
                 onIncreaseToppingQuantity = onIncreaseToppingQuantity,
-                onDecreaseToppingQuantity = onDecreaseToppingQuantity
+                onDecreaseToppingQuantity = onDecreaseToppingQuantity,
+                addPizzaToCart = addPizzaToCart
             )
         }
     }
@@ -122,9 +127,10 @@ private fun ProductDetailScreenContent(
 private fun SingleColumnPhoneMode(
     uiState: PizzaDetailUiState,
     navigateBack: () -> Unit,
-    onSelectTopping: (String) -> Unit,
-    onIncreaseToppingQuantity: (String) -> Unit,
-    onDecreaseToppingQuantity: (String) -> Unit,
+    onSelectTopping: (toppingId: String) -> Unit,
+    onIncreaseToppingQuantity: (toppingId: String) -> Unit,
+    onDecreaseToppingQuantity: (toppingId: String) -> Unit,
+    addPizzaToCart: () -> Unit
 ) {
     Box(Modifier.background(AppTheme.colorScheme.surfaceHigher)) {
         Column {
@@ -158,7 +164,7 @@ private fun SingleColumnPhoneMode(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                toppings = uiState.toppings,
+                toppings = uiState.toppingCardUis,
                 listPadding = PaddingValues(bottom = 64.dp),
                 onSelectTopping = onSelectTopping,
                 onIncreaseToppingQuantity = onIncreaseToppingQuantity,
@@ -171,8 +177,9 @@ private fun SingleColumnPhoneMode(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
                 .padding(bottom = 32.dp),
-            text = "Add to Cart for ${uiState.totalPrice}"
-        ) { }
+            text = "Add to Cart for ${uiState.totalPrice}",
+            onClick = addPizzaToCart
+        )
     }
 }
 
@@ -180,9 +187,10 @@ private fun SingleColumnPhoneMode(
 private fun SingleColumnTabletMode(
     uiState: PizzaDetailUiState,
     navigateBack: () -> Unit,
-    onSelectTopping: (String) -> Unit,
-    onIncreaseToppingQuantity: (String) -> Unit,
-    onDecreaseToppingQuantity: (String) -> Unit,
+    onSelectTopping: (toppingId: String) -> Unit,
+    onIncreaseToppingQuantity: (toppingId: String) -> Unit,
+    onDecreaseToppingQuantity: (toppingId: String) -> Unit,
+    addPizzaToCart: () -> Unit
 ) {
 
     Column(Modifier.background(AppTheme.colorScheme.surfaceHigher)) {
@@ -217,7 +225,7 @@ private fun SingleColumnTabletMode(
                 .fillMaxWidth()
                 .padding(16.dp)
                 .weight(1f),
-            toppings = uiState.toppings,
+            toppings = uiState.toppingCardUis,
             listPadding = PaddingValues(bottom = 64.dp),
             onSelectTopping = onSelectTopping,
             onIncreaseToppingQuantity = onIncreaseToppingQuantity,
@@ -228,8 +236,9 @@ private fun SingleColumnTabletMode(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
                 .padding(bottom = 32.dp),
-            text = "Add to Cart for ${uiState.totalPrice}"
-        ) { }
+            text = "Add to Cart for ${uiState.totalPrice}",
+            onClick = addPizzaToCart
+        )
     }
 }
 
@@ -237,9 +246,10 @@ private fun SingleColumnTabletMode(
 private fun TwoColumnMode(
     uiState: PizzaDetailUiState,
     navigateBack: () -> Unit,
-    onSelectTopping: (String) -> Unit,
-    onIncreaseToppingQuantity: (String) -> Unit,
-    onDecreaseToppingQuantity: (String) -> Unit,
+    onSelectTopping: (toppingId: String) -> Unit,
+    onIncreaseToppingQuantity: (toppingId: String) -> Unit,
+    onDecreaseToppingQuantity: (toppingId: String) -> Unit,
+    addPizzaToCart: () -> Unit
 ) {
     Row(
         Modifier
@@ -280,7 +290,7 @@ private fun TwoColumnMode(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                toppings = uiState.toppings,
+                toppings = uiState.toppingCardUis,
                 listPadding = PaddingValues(bottom = 64.dp),
                 onSelectTopping = onSelectTopping,
                 onIncreaseToppingQuantity = onIncreaseToppingQuantity,
@@ -292,8 +302,9 @@ private fun TwoColumnMode(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
                     .padding(bottom = 32.dp),
-                text = "Add to Cart for ${uiState.totalPrice}"
-            ) { }
+                text = "Add to Cart for ${uiState.totalPrice}",
+                onClick = addPizzaToCart
+            )
         }
     }
 
@@ -359,9 +370,9 @@ private fun ToppingsSection(
     modifier: Modifier = Modifier,
     toppings: List<ToppingCardUi>,
     listPadding: PaddingValues,
-    onSelectTopping: (String) -> Unit,
-    onIncreaseToppingQuantity: (String) -> Unit,
-    onDecreaseToppingQuantity: (String) -> Unit
+    onSelectTopping: (toppingId: String) -> Unit,
+    onIncreaseToppingQuantity: (toppingId: String) -> Unit,
+    onDecreaseToppingQuantity: (toppingId: String) -> Unit
 ) {
 
     val lazyGridState = rememberLazyGridState()
@@ -393,13 +404,13 @@ private fun ToppingsSection(
                         modifier = Modifier.weight(1f),
                         toppingCardUi = it,
                         onClick = {
-                            onSelectTopping(it.id)
+                            onSelectTopping(it.topping.id)
                         },
                         onClickIncreaseCount = {
-                            onIncreaseToppingQuantity(it.id)
+                            onIncreaseToppingQuantity(it.topping.id)
                         },
                         onClickDecreaseCount = {
-                            onDecreaseToppingQuantity(it.id)
+                            onDecreaseToppingQuantity(it.topping.id)
                         }
                     )
                 }
@@ -417,7 +428,8 @@ private fun ProductDetailScreenContentPreview() {
             navigateBack = {},
             onSelectTopping = {},
             onIncreaseToppingQuantity = {},
-            onDecreaseToppingQuantity = {}
+            onDecreaseToppingQuantity = {},
+            addPizzaToCart = {}
         )
     }
 }

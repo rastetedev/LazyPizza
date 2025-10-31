@@ -6,6 +6,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.database
 import com.raulastete.lazypizza.data.local.database.LazyPizzaDatabase
 import com.raulastete.lazypizza.data.local.dao.OrderItemDao
+import com.raulastete.lazypizza.data.local.dao.OrderItemToppingDao
 import com.raulastete.lazypizza.data.remote.MenuRemoteDataSource
 import com.raulastete.lazypizza.data.repository.DefaultCartRepository
 import com.raulastete.lazypizza.data.repository.DefaultMenuRepository
@@ -35,6 +36,10 @@ val appModule = module {
         get<LazyPizzaDatabase>().orderItemDao()
     }
 
+    single<OrderItemToppingDao> {
+        get<LazyPizzaDatabase>().orderItemToppingDao()
+    }
+
     single<MenuRemoteDataSource> {
         MenuRemoteDataSource(database = get())
     }
@@ -43,10 +48,11 @@ val appModule = module {
     }
     single<CartRepository> {
         DefaultCartRepository(
-            orderItemDao = get()
+            orderItemDao = get(),
+            orderItemToppingDao = get()
         )
     }
-    viewModel { PizzaDetailViewModel(menuRepository = get(), savedStateHandle = get()) }
+    viewModel { PizzaDetailViewModel(menuRepository = get(), cartRepository = get(), savedStateHandle = get()) }
     viewModel { MenuViewModel(menuRepository = get(), cartRepository = get()) }
     viewModel { CartViewModel(menuRepository = get(), cartRepository = get()) }
 }

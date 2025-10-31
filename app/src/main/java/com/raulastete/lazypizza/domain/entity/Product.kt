@@ -10,8 +10,7 @@ data class Product(
     val description: String,
     val imageUrl: String,
     val unitPrice: Double,
-    val categoryId: String,
-    val toppings: List<Topping>? = null
+    val categoryId: String
 ) {
     val isSauce: Boolean = categoryId == SAUCES_CATEGORY_ID
     val isDrink: Boolean = categoryId == DRINKS_CATEGORY_ID

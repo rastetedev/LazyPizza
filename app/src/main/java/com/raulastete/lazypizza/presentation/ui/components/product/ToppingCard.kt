@@ -26,6 +26,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
+import com.raulastete.lazypizza.domain.entity.Topping
 import com.raulastete.lazypizza.presentation.ui.components.ProductQuantityControl
 import com.raulastete.lazypizza.presentation.ui.model.ToppingCardUi
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
@@ -69,13 +70,13 @@ fun ToppingCard(
                 contentAlignment = Alignment.Center
             ) {
                 AsyncImage(
-                    model = toppingCardUi.imageUrl,
+                    model = toppingCardUi.topping.imageUrl,
                     contentDescription = null,
                 )
             }
             Spacer(Modifier.height(12.dp))
             Text(
-                text = toppingCardUi.name,
+                text = toppingCardUi.topping.name,
                 style = AppTheme.typography.body3Regular,
                 color = AppTheme.colorScheme.textSecondary,
                 maxLines = 1,
@@ -89,7 +90,7 @@ fun ToppingCard(
                 Text(
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center,
-                    text = toppingCardUi.unitPrice,
+                    text = "$${toppingCardUi.topping.unitPrice}",
                     style = AppTheme.typography.title2,
                     color = AppTheme.colorScheme.textPrimary
                 )
@@ -105,17 +106,20 @@ fun ToppingCard(
         }
     }
 }
+
 @Composable
 @Preview
-private fun ToppingCardPreview(){
+private fun ToppingCardPreview() {
     AppTheme {
         ToppingCard(
             modifier = Modifier.width(120.dp),
             toppingCardUi = ToppingCardUi(
-                id = "",
-                imageUrl = "",
-                name = "Tomate",
-                unitPrice = "$1.00",
+                topping = Topping(
+                    id = "",
+                    imageUrl = "",
+                    name = "Tomate",
+                    unitPrice = 1.00,
+                ),
                 count = 1,
             ),
             onClickDecreaseCount = {},

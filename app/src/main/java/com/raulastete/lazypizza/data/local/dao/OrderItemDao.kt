@@ -13,7 +13,7 @@ interface OrderItemDao {
     fun getOrderItemsByUser(userId: String): Flow<List<OrderItemDto>>
 
     @Upsert
-    suspend fun upsertOrderItem(orderItemDto: OrderItemDto)
+    suspend fun upsertOrderItem(orderItemDto: OrderItemDto) : Long
 
     @Query("DELETE FROM order_items WHERE id = :orderItemId")
     suspend fun deleteOrderItem(orderItemId: Long)

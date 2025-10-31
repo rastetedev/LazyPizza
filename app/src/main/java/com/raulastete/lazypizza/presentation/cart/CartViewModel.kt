@@ -60,7 +60,9 @@ class CartViewModel(
                                 orderItem.count * orderItem.product.unitPrice
                             )
                         }",
-                        toppings = null
+                        toppings = orderItem.toppings?.map { (topping, count) ->
+                            "$count x ${topping.name}"
+                        },
                     )
                 }
 
@@ -98,7 +100,7 @@ class CartViewModel(
 
     fun decreaseOrderItemCount(orderItemId: Long, currentCount: Int) {
         viewModelScope.launch {
-            cartRepository.updateOrderItemCount(orderItemId, currentCount  - 1)
+            cartRepository.updateOrderItemCount(orderItemId, currentCount - 1)
         }
     }
 

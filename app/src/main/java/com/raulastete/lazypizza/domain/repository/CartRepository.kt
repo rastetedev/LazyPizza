@@ -2,6 +2,7 @@ package com.raulastete.lazypizza.domain.repository
 
 import com.raulastete.lazypizza.domain.entity.OrderItem
 import com.raulastete.lazypizza.domain.entity.Product
+import com.raulastete.lazypizza.domain.entity.Topping
 import kotlinx.coroutines.flow.Flow
 
 interface CartRepository {
@@ -11,6 +12,8 @@ interface CartRepository {
     suspend fun getOrderItemsByUser(userId: String): Flow<List<OrderItem>>
 
     suspend fun addGenericProductToCart(product: Product, userId: String)
+
+    suspend fun addPizzaToCart(product: Product, toppings: Map<Topping, Int>, userId: String)
 
     suspend fun removeGenericProductFromCart(productId: String, userId: String)
 

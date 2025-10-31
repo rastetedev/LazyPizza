@@ -205,8 +205,7 @@ private fun MenuScreenContentPreview() {
                                     description = "Pizza con muzzarella",
                                     unitPrice = 10.0,
                                     imageUrl = "",
-                                    categoryId = "",
-                                    toppings = null
+                                    categoryId = ""
                                 )
                             )
                         )
