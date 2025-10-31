@@ -17,6 +17,9 @@ interface OrderItemDao {
     @Query("SELECT * FROM orders WHERE productId = :productId")
     suspend fun getOrderItemByProductId(productId: String): OrderItemDto?
 
+    @Query("SELECT * FROM orders WHERE id = :orderItemId")
+    suspend fun getOrderItemById(orderItemId: Long): OrderItemDto?
+
     @Upsert
     suspend fun upsert(orderItemDto: OrderItemDto)
 

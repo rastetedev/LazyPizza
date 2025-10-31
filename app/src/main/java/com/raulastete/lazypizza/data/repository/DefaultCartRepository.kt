@@ -85,7 +85,31 @@ class DefaultCartRepository(
         orderItemDao.deleteItem(orderDto.id)
     }
 
-    override suspend fun deleteOrderItem(orderItem: OrderItem) {
-        orderItemDao.deleteItem(orderItem.id)
+    override suspend fun deleteOrderItem(orderItemId: Long) {
+        orderItemDao.deleteItem(orderItemId)
+    }
+
+    override suspend fun increaseOrderItemCountInCart(orderItemId: Long) {
+        val orderDto = orderItemDao.getOrderItemById(orderItemId)
+
+        if (orderDto != null) {
+            orderItemDao.upsert(
+                orderDto.copy(
+                    count = orderDto.count + 1
+                )
+            )
+        }
+    }
+
+    override suspend fun decreaseOrderItemCountInCart(orderItemId: Long) {
+        val orderDto = orderItemDao.getOrderItemById(orderItemId)
+
+        if (orderDto != null) {
+            orderItemDao.upsert(
+                orderDto.copy(
+                    count = orderDto.count - 1
+                )
+            )
+        }
     }
 }

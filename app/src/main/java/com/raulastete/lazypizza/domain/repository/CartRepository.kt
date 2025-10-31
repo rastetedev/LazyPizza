@@ -12,6 +12,10 @@ interface CartRepository {
 
     suspend fun deleteProductFromCart(productId: String)
 
-    suspend fun deleteOrderItem(orderItem: OrderItem)
+    suspend fun deleteOrderItem(orderItemId: Long)
+
+    suspend fun increaseOrderItemCountInCart(orderItemId: Long)
+
+    suspend fun decreaseOrderItemCountInCart(orderItemId: Long)
 
 }

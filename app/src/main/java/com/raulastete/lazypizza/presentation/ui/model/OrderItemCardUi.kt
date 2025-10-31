@@ -9,5 +9,5 @@ data class OrderItemCardUi(
     val unitPrice: String,
     val totalPrice: String
 ) {
-    val canDecreaseQuantity = 1 <= count
+    val canDecreaseQuantity = count > 1
 }

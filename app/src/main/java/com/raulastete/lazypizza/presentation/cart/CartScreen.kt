@@ -40,14 +40,22 @@ fun CartScreen(
 
     CartScreenContent(
         uiState = uiState,
-        navigateToMenu = navigateToMenu
+        navigateToMenu = navigateToMenu,
+        onAddProductToCartClick = cartViewModel::addProductToCart,
+        onIncreaseOrderItemCount = cartViewModel::increaseOrderItemCount,
+        onDecreaseOrderItemCount = cartViewModel::decreaseOrderItemCount,
+        onRemoveOrderItemFromCartClick = cartViewModel::removeOrderItemFromCart
     )
 }
 
 @Composable
 private fun CartScreenContent(
     uiState: CartUiState,
-    navigateToMenu: () -> Unit
+    navigateToMenu: () -> Unit,
+    onAddProductToCartClick: (String) -> Unit,
+    onIncreaseOrderItemCount: (Long) -> Unit,
+    onDecreaseOrderItemCount: (Long) -> Unit,
+    onRemoveOrderItemFromCartClick: (Long) -> Unit
 ) {
     Scaffold(
         topBar = {
@@ -78,7 +86,11 @@ private fun CartScreenContent(
                         .fillMaxSize()
                         .padding(paddingValues),
                     orderItems = uiState.orderItems,
-                    recommendedItems = uiState.recommendedItems
+                    recommendedItems = uiState.recommendedItems,
+                    onAddProductToCartClick = onAddProductToCartClick,
+                    onIncreaseCountClick = onIncreaseOrderItemCount,
+                    onDecreaseCountClick = onDecreaseOrderItemCount,
+                    onRemoveOrderItemFromCartClick = onRemoveOrderItemFromCartClick
                 )
             }
         }
@@ -89,7 +101,11 @@ private fun CartScreenContent(
 private fun CartList(
     modifier: Modifier = Modifier,
     orderItems: List<OrderItemCardUi>,
-    recommendedItems: List<RecommendedProductCardUi>
+    recommendedItems: List<RecommendedProductCardUi>,
+    onAddProductToCartClick: (String) -> Unit,
+    onIncreaseCountClick: (Long) -> Unit,
+    onDecreaseCountClick: (Long) -> Unit,
+    onRemoveOrderItemFromCartClick: (Long) -> Unit
 ) {
     LazyColumn(
         modifier = modifier
@@ -98,39 +114,45 @@ private fun CartList(
     ) {
         items(orderItems, key = { it.id }) { orderItem ->
             OrderItemCard(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
                 orderItemCardUi = orderItem,
-                onClickIncreaseCount = {},
-                onClickDecreaseCount = {},
-                onClickRemoveFromCart = {}
+                onClickIncreaseCount = { onIncreaseCountClick(orderItem.id) },
+                onClickDecreaseCount = { onDecreaseCountClick(orderItem.id) },
+                onClickRemoveFromCart = { onRemoveOrderItemFromCartClick(orderItem.id) }
             )
         }
 
-        item(key = "recommended_section") {
-            Column {
-                Spacer(Modifier.height(12.dp))
+        if (recommendedItems.isNotEmpty()) {
+            item(key = "recommended_section") {
+                Column {
+                    Spacer(Modifier.height(12.dp))
 
-                Text(
-                    modifier = Modifier.padding(horizontal = 16.dp),
-                    text = stringResource(R.string.recommended_section_title),
-                    style = AppTheme.typography.label2Semibold.copy(color = AppTheme.colorScheme.textSecondary)
-                )
+                    Text(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        text = stringResource(R.string.recommended_section_title),
+                        style = AppTheme.typography.label2Semibold.copy(color = AppTheme.colorScheme.textSecondary)
+                    )
 
-                Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(8.dp))
 
-                LazyRow(
-                    modifier = Modifier
-                        .fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    item { Spacer(Modifier.width(16.dp)) }
-                    items(recommendedItems, key = { it.id }) { recommendedItem ->
-                        RecommendedProductCard(
-                            recommendedProductCardUi = recommendedItem,
-                            onAddToCartClick = {}
-                        )
+                    LazyRow(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        item { Spacer(Modifier.width(16.dp)) }
+                        items(recommendedItems, key = { it.id }) { recommendedItem ->
+                            RecommendedProductCard(
+                                recommendedProductCardUi = recommendedItem,
+                                onAddToCartClick = {
+                                    onAddProductToCartClick(recommendedItem.id)
+                                }
+                            )
+                        }
+                        item { Spacer(Modifier.width(16.dp)) }
                     }
-                    item { Spacer(Modifier.width(16.dp)) }
                 }
             }
         }
@@ -156,7 +178,11 @@ private fun EmptyCartScreenContentPreview() {
     AppTheme {
         CartScreenContent(
             uiState = CartUiState(),
-            navigateToMenu = {}
+            navigateToMenu = {},
+            onAddProductToCartClick = {},
+            onRemoveOrderItemFromCartClick = {},
+            onIncreaseOrderItemCount = {},
+            onDecreaseOrderItemCount = {}
         )
     }
 }
@@ -179,7 +205,11 @@ private fun CartScreenContentPreview() {
                     )
                 )
             ),
-            navigateToMenu = {}
+            navigateToMenu = {},
+            onAddProductToCartClick = {},
+            onRemoveOrderItemFromCartClick = {},
+            onIncreaseOrderItemCount = {},
+            onDecreaseOrderItemCount = {}
         )
     }
 }

@@ -91,7 +91,9 @@ fun AppRoot() {
 
             if (currentDestination == MainDestinations.CART) {
                 CartScreen(
-                    navigateToMenu = {}
+                    navigateToMenu = {
+                        currentDestination = MainDestinations.MENU
+                    }
                 )
             }
 
