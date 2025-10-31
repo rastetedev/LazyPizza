@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.grid.itemsIndexed
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.raulastete.lazypizza.domain.entity.Product
 import com.raulastete.lazypizza.presentation.menu.MenuUiState
 import com.raulastete.lazypizza.presentation.ui.model.GenericProductCardUi
 import com.raulastete.lazypizza.presentation.ui.model.PizzaCardUi
@@ -21,10 +22,10 @@ fun CategorizedProductGrid(
     lazyGridState: LazyGridState,
     uiState: MenuUiState,
     navigateToPizzaDetail: (String) -> Unit,
-    addGenericProductToCard: (String) -> Unit,
+    addGenericProductToCard: (Product) -> Unit,
     removeGenericProductFromCard: (String) -> Unit,
-    increaseGenericProductCount: (String) -> Unit,
-    decreaseGenericProductCount: (String) -> Unit
+    increaseGenericProductCount: (String, Int) -> Unit,
+    decreaseGenericProductCount: (String, Int) -> Unit
 ) {
     LazyVerticalGrid(
         modifier = Modifier.fillMaxSize(),
@@ -41,7 +42,7 @@ fun CategorizedProductGrid(
 
             itemsIndexed(
                 items = menuCardUis,
-                key = { index, item -> item.id },
+                key = { index, item -> item.product.id },
                 contentType = { index, item ->
                     if (category.isPizza) {
                         PizzaCardUi::class

@@ -5,7 +5,6 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.raulastete.lazypizza.domain.repository.MenuRepository
 import com.raulastete.lazypizza.domain.entity.Category
-import com.raulastete.lazypizza.domain.entity.Category.Companion.PIZZA_CATEGORY_ID
 import com.raulastete.lazypizza.domain.entity.OrderItem
 import com.raulastete.lazypizza.domain.entity.Product
 import com.raulastete.lazypizza.domain.repository.CartRepository
@@ -20,6 +19,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import java.util.Locale
 import kotlin.collections.filter
 import kotlin.collections.map
 
@@ -32,6 +32,8 @@ class MenuViewModel(
     val uiState = _uiState.asStateFlow()
 
     private var completeMenuBackupBeforeSearch: Map<Category, List<MenuCardUi>> = emptyMap()
+
+    private val userId = "me" //TODO: get user id from auth
 
     init {
         fetchProductsByCategory()
@@ -69,15 +71,9 @@ class MenuViewModel(
         cart: List<OrderItem>
     ): Map<Category, List<MenuCardUi>> {
         return data.map { (category, products) ->
-            val products = if (category.id == PIZZA_CATEGORY_ID) {
+            val products = if (category.isPizza) {
                 products.map { product ->
-                    PizzaCardUi(
-                        id = product.id,
-                        imageUrl = product.imageUrl,
-                        name = product.name,
-                        unitPrice = "${product.unitPrice}",
-                        description = product.description
-                    )
+                    PizzaCardUi(product = product)
                 }
             } else {
                 products.map { product ->
@@ -87,11 +83,12 @@ class MenuViewModel(
                     }?.count ?: 0
 
                     GenericProductCardUi(
-                        id = product.id,
-                        imageUrl = product.imageUrl,
-                        name = product.name,
-                        unitPrice = "${product.unitPrice}",
-                        totalPrice = "${product.unitPrice}",
+                        product = product,
+                        totalPrice = String.format(
+                            Locale.US,
+                            "%.2f",
+                            product.unitPrice * count
+                        ),
                         count = count
                     )
                 }
@@ -116,21 +113,41 @@ class MenuViewModel(
         filterData(query)
     }
 
-    fun increaseGenericProductCount(genericProductId: String) {
+    fun increaseGenericProductCount(genericProductId: String, currentCount: Int) {
         viewModelScope.launch {
-            cartRepository.increaseProductCountInCart(productId = genericProductId)
+            cartRepository.updateGenericProductCount(
+                productId = genericProductId,
+                userId = userId,
+                count = currentCount + 1
+            )
         }
     }
 
-    fun removeGenericProductFromCard(genericProductId: String) {
+    fun addGenericProductToCart(product: Product) {
         viewModelScope.launch {
-            cartRepository.deleteProductFromCart(productId = genericProductId)
+            cartRepository.addGenericProductToCart(
+                product = product,
+                userId = userId
+            )
         }
     }
 
-    fun decreaseGenericProductCount(genericProductId: String) {
+    fun removeGenericProductFromCart(genericProductId: String) {
         viewModelScope.launch {
-            cartRepository.decreaseProductCountInCart(productId = genericProductId)
+            cartRepository.removeGenericProductFromCart(
+                productId = genericProductId,
+                userId = userId
+            )
+        }
+    }
+
+    fun decreaseGenericProductCount(genericProductId: String, currentCount: Int) {
+        viewModelScope.launch {
+            cartRepository.updateGenericProductCount(
+                productId = genericProductId,
+                userId = userId,
+                count = currentCount - 1
+            )
         }
     }
 
@@ -140,7 +157,7 @@ class MenuViewModel(
         val filteredData = completeMenuBackupBeforeSearch
             .map { (category, menuCardUis) ->
                 category to menuCardUis.filter { menuCardUi ->
-                    menuCardUi.name.contains(productName, ignoreCase = true)
+                    menuCardUi.product.name.contains(productName, ignoreCase = true)
                 }
             }
             .filter { (_, menuCardUis) -> menuCardUis.isNotEmpty() }

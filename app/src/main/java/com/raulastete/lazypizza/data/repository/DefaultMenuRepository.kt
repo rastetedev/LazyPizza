@@ -59,7 +59,7 @@ class DefaultMenuRepository(
                             categoryId = productDto.category
                         )
                     }.filter { product ->
-                        product.belongsToDrinksCategory || product.belongsToSaucesCategory
+                        product.isDrink || product.isSauce
                     }
             }
     }

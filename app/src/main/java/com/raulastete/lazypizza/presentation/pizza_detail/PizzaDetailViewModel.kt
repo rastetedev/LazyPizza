@@ -50,18 +50,14 @@ class PizzaDetailViewModel(
                             it.copy(
                                 isLoading = false,
                                 pizzaUi = PizzaCardUi(
-                                    id = product.id,
-                                    imageUrl = product.imageUrl,
-                                    name = product.name,
-                                    description = product.description,
-                                    unitPrice = "$${product.unitPrice}",
+                                    product = product
                                 ),
                                 toppings = toppings.map { topping ->
                                     ToppingCardUi(
                                         id = topping.id,
                                         imageUrl = topping.imageUrl,
                                         name = topping.name,
-                                        unitPrice = "$${topping.price}",
+                                        unitPrice = "$${topping.unitPrice}",
                                         count = 0
                                     )
                                 }

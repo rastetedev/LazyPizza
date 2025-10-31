@@ -12,6 +12,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.raulastete.lazypizza.domain.entity.Product
 import com.raulastete.lazypizza.presentation.ui.model.PizzaCardUi
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 
@@ -22,7 +23,7 @@ fun PizzaCard(
     onClick: () -> Unit
 ) {
     ProductWrapperCard(
-        imageUrl = pizzaCardUi.imageUrl,
+        imageUrl = pizzaCardUi.product.imageUrl,
         modifier = modifier,
         onClick = onClick
     ) {
@@ -34,7 +35,7 @@ fun PizzaCard(
             Column {
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = pizzaCardUi.name,
+                    text = pizzaCardUi.product.name,
                     textAlign = TextAlign.Start,
                     maxLines = 1,
                     minLines = 1,
@@ -44,7 +45,7 @@ fun PizzaCard(
                 )
                 Text(
                     modifier = Modifier.fillMaxWidth(),
-                    text = pizzaCardUi.description,
+                    text = pizzaCardUi.product.description,
                     style = AppTheme.typography.body3Regular,
                     color = AppTheme.colorScheme.textSecondary,
                     textAlign = TextAlign.Start,
@@ -58,7 +59,7 @@ fun PizzaCard(
 
             Text(
                 modifier = Modifier.fillMaxWidth(),
-                text = pizzaCardUi.unitPrice,
+                text = "$${pizzaCardUi.product.unitPrice}",
                 textAlign = TextAlign.Start,
                 style = AppTheme.typography.title1Semibold,
                 color = AppTheme.colorScheme.textPrimary
@@ -74,11 +75,15 @@ private fun PizzaCardPreview() {
         PizzaCard(
             Modifier.fillMaxWidth(),
             pizzaCardUi = PizzaCardUi(
-                id = "",
-                name = "Margherita",
-                unitPrice = "$10.0",
-                description = "This is my pizza description",
-                imageUrl = ""
+               product = Product(
+                   id = "",
+                   name = "",
+                   description = "",
+                   imageUrl = "",
+                   unitPrice = 0.0,
+                   categoryId = "",
+                   toppings = null
+               )
             ),
             onClick = {}
         )

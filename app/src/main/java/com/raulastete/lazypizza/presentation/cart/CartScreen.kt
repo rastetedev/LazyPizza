@@ -21,13 +21,13 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.raulastete.lazypizza.R
+import com.raulastete.lazypizza.domain.entity.Product
 import com.raulastete.lazypizza.presentation.ui.components.LPCenterTopbar
 import com.raulastete.lazypizza.presentation.ui.components.LPPrimaryButton
 import com.raulastete.lazypizza.presentation.ui.components.MessageFullScreen
 import com.raulastete.lazypizza.presentation.ui.components.product.OrderItemCard
 import com.raulastete.lazypizza.presentation.ui.components.product.RecommendedProductCard
 import com.raulastete.lazypizza.presentation.ui.model.OrderItemCardUi
-import com.raulastete.lazypizza.presentation.ui.model.RecommendedProductCardUi
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 import org.koin.androidx.compose.koinViewModel
 
@@ -41,7 +41,7 @@ fun CartScreen(
     CartScreenContent(
         uiState = uiState,
         navigateToMenu = navigateToMenu,
-        onAddProductToCartClick = cartViewModel::addProductToCart,
+        onAddRecommendedProductToCart = cartViewModel::addRecommendedProductToCart,
         onIncreaseOrderItemCount = cartViewModel::increaseOrderItemCount,
         onDecreaseOrderItemCount = cartViewModel::decreaseOrderItemCount,
         onRemoveOrderItemFromCartClick = cartViewModel::removeOrderItemFromCart
@@ -52,9 +52,9 @@ fun CartScreen(
 private fun CartScreenContent(
     uiState: CartUiState,
     navigateToMenu: () -> Unit,
-    onAddProductToCartClick: (String) -> Unit,
-    onIncreaseOrderItemCount: (Long) -> Unit,
-    onDecreaseOrderItemCount: (Long) -> Unit,
+    onAddRecommendedProductToCart: (Product) -> Unit,
+    onIncreaseOrderItemCount: (Long, Int) -> Unit,
+    onDecreaseOrderItemCount: (Long, Int) -> Unit,
     onRemoveOrderItemFromCartClick: (Long) -> Unit
 ) {
     Scaffold(
@@ -87,9 +87,9 @@ private fun CartScreenContent(
                         .padding(paddingValues),
                     orderItems = uiState.orderItems,
                     recommendedItems = uiState.recommendedItems,
-                    onAddProductToCartClick = onAddProductToCartClick,
-                    onIncreaseCountClick = onIncreaseOrderItemCount,
-                    onDecreaseCountClick = onDecreaseOrderItemCount,
+                    onAddRecommendedProductToCart = onAddRecommendedProductToCart,
+                    onIncreaseOrderItemCount = onIncreaseOrderItemCount,
+                    onDecreaseOrderItemCount = onDecreaseOrderItemCount,
                     onRemoveOrderItemFromCartClick = onRemoveOrderItemFromCartClick
                 )
             }
@@ -101,10 +101,10 @@ private fun CartScreenContent(
 private fun CartList(
     modifier: Modifier = Modifier,
     orderItems: List<OrderItemCardUi>,
-    recommendedItems: List<RecommendedProductCardUi>,
-    onAddProductToCartClick: (String) -> Unit,
-    onIncreaseCountClick: (Long) -> Unit,
-    onDecreaseCountClick: (Long) -> Unit,
+    recommendedItems: List<Product>,
+    onAddRecommendedProductToCart: (Product) -> Unit,
+    onIncreaseOrderItemCount: (Long, Int) -> Unit,
+    onDecreaseOrderItemCount: (Long, Int) -> Unit,
     onRemoveOrderItemFromCartClick: (Long) -> Unit
 ) {
     LazyColumn(
@@ -118,8 +118,8 @@ private fun CartList(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp),
                 orderItemCardUi = orderItem,
-                onClickIncreaseCount = { onIncreaseCountClick(orderItem.id) },
-                onClickDecreaseCount = { onDecreaseCountClick(orderItem.id) },
+                onClickIncreaseCount = { onIncreaseOrderItemCount(orderItem.id, orderItem.count) },
+                onClickDecreaseCount = { onDecreaseOrderItemCount(orderItem.id, orderItem.count) },
                 onClickRemoveFromCart = { onRemoveOrderItemFromCartClick(orderItem.id) }
             )
         }
@@ -143,11 +143,11 @@ private fun CartList(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         item { Spacer(Modifier.width(16.dp)) }
-                        items(recommendedItems, key = { it.id }) { recommendedItem ->
+                        items(recommendedItems, key = { it.id }) { product ->
                             RecommendedProductCard(
-                                recommendedProductCardUi = recommendedItem,
+                                product = product,
                                 onAddToCartClick = {
-                                    onAddProductToCartClick(recommendedItem.id)
+                                    onAddRecommendedProductToCart(product)
                                 }
                             )
                         }
@@ -179,10 +179,10 @@ private fun EmptyCartScreenContentPreview() {
         CartScreenContent(
             uiState = CartUiState(),
             navigateToMenu = {},
-            onAddProductToCartClick = {},
+            onAddRecommendedProductToCart = {},
             onRemoveOrderItemFromCartClick = {},
-            onIncreaseOrderItemCount = {},
-            onDecreaseOrderItemCount = {}
+            onIncreaseOrderItemCount = { _, _ -> },
+            onDecreaseOrderItemCount = { _, _ -> }
         )
     }
 }
@@ -206,10 +206,10 @@ private fun CartScreenContentPreview() {
                 )
             ),
             navigateToMenu = {},
-            onAddProductToCartClick = {},
+            onAddRecommendedProductToCart = {},
             onRemoveOrderItemFromCartClick = {},
-            onIncreaseOrderItemCount = {},
-            onDecreaseOrderItemCount = {}
+            onIncreaseOrderItemCount = { _, _ -> },
+            onDecreaseOrderItemCount = { _, _ -> }
         )
     }
 }

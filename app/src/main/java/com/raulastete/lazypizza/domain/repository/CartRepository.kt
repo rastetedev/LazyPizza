@@ -1,21 +1,23 @@
 package com.raulastete.lazypizza.domain.repository
 
 import com.raulastete.lazypizza.domain.entity.OrderItem
+import com.raulastete.lazypizza.domain.entity.Product
 import kotlinx.coroutines.flow.Flow
 
 interface CartRepository {
+
+    suspend fun getCartItemsCountByUser(userId: String): Flow<Int>
+
     suspend fun getOrderItemsByUser(userId: String): Flow<List<OrderItem>>
 
-    suspend fun increaseProductCountInCart(productId: String)
+    suspend fun addGenericProductToCart(product: Product, userId: String)
 
-    suspend fun decreaseProductCountInCart(productId: String)
+    suspend fun removeGenericProductFromCart(productId: String, userId: String)
 
-    suspend fun deleteProductFromCart(productId: String)
+    suspend fun removeOrderItem(orderItemId: Long)
 
-    suspend fun deleteOrderItem(orderItemId: Long)
+    suspend fun updateGenericProductCount(productId: String, userId: String, count: Int)
 
-    suspend fun increaseOrderItemCountInCart(orderItemId: Long)
-
-    suspend fun decreaseOrderItemCountInCart(orderItemId: Long)
+    suspend fun updateOrderItemCount(orderItemId: Long, count: Int)
 
 }

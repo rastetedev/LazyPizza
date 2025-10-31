@@ -11,6 +11,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.raulastete.lazypizza.domain.entity.Product
 import com.raulastete.lazypizza.presentation.menu.MenuUiState
 import com.raulastete.lazypizza.presentation.ui.model.GenericProductCardUi
 import com.raulastete.lazypizza.presentation.ui.model.PizzaCardUi
@@ -20,10 +21,10 @@ fun CategorizedProductList(
     lazyListState: LazyListState,
     uiState: MenuUiState,
     navigateToPizzaDetail: (String) -> Unit,
-    addGenericProductToCard: (String) -> Unit,
+    addGenericProductToCard: (Product) -> Unit,
     removeGenericProductFromCard: (String) -> Unit,
-    increaseGenericProductCount: (String) -> Unit,
-    decreaseGenericProductCount: (String) -> Unit
+    increaseGenericProductCount: (String, Int) -> Unit,
+    decreaseGenericProductCount: (String, Int) -> Unit
 ){
     LazyColumn(
         modifier = Modifier.fillMaxSize(),
@@ -38,7 +39,7 @@ fun CategorizedProductList(
 
             items(
                 items = menuCardUis,
-                key = { it.id },
+                key = { it.product.id },
                 contentType = {
                     if (category.isPizza) {
                         PizzaCardUi::class

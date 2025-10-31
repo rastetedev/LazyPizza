@@ -23,14 +23,14 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.raulastete.lazypizza.R
+import com.raulastete.lazypizza.domain.entity.Product
 import com.raulastete.lazypizza.presentation.ui.components.LPIconButton
-import com.raulastete.lazypizza.presentation.ui.model.RecommendedProductCardUi
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 
 @Composable
 fun RecommendedProductCard(
     modifier: Modifier = Modifier,
-    recommendedProductCardUi: RecommendedProductCardUi,
+    product: Product,
     onAddToCartClick: () -> Unit
 ) {
     Card(
@@ -65,7 +65,7 @@ fun RecommendedProductCard(
                     .background(color = AppTheme.colorScheme.surfaceHighest),
                 contentAlignment = Alignment.Center
             ) {
-                AsyncImage(model = recommendedProductCardUi.imageUrl, contentDescription = null)
+                AsyncImage(model = product.imageUrl, contentDescription = null)
             }
 
             Spacer(Modifier.height(12.dp))
@@ -77,7 +77,7 @@ fun RecommendedProductCard(
                     .padding(bottom = 12.dp)
             ) {
                 Text(
-                    text = recommendedProductCardUi.name,
+                    text = product.name,
                     style = AppTheme.typography.body1Regular.copy(color = AppTheme.colorScheme.textSecondary)
                 )
 
@@ -90,7 +90,7 @@ fun RecommendedProductCard(
                 ) {
 
                     Text(
-                        text = recommendedProductCardUi.unitPrice,
+                        text = "$${product.unitPrice}",
                         style = AppTheme.typography.title1Semibold.copy(color = AppTheme.colorScheme.textPrimary)
                     )
 
@@ -109,11 +109,14 @@ fun RecommendedProductCard(
 private fun RecommendedProductCardPreview() {
     AppTheme {
         RecommendedProductCard(
-            recommendedProductCardUi = RecommendedProductCardUi(
+            product = Product(
                 id = "1",
                 name = "Pizza",
+                description = "",
                 imageUrl = "",
-                unitPrice = "$12.99"
+                unitPrice = 12.99,
+                categoryId = "",
+                toppings = null
             ),
             onAddToCartClick = {}
         )

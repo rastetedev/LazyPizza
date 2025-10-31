@@ -5,6 +5,7 @@ import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.raulastete.lazypizza.domain.entity.Product
 import com.raulastete.lazypizza.presentation.menu.MenuUiState
 import com.raulastete.lazypizza.presentation.ui.DeviceMode
 import com.raulastete.lazypizza.presentation.ui.theme.LocalDeviceMode
@@ -15,10 +16,10 @@ fun MenuItems(
     lazyListState: LazyListState,
     lazyGridState: LazyGridState,
     navigateToPizzaDetail: (String) -> Unit,
-    addGenericProductToCard: (String) -> Unit,
+    addGenericProductToCard: (Product) -> Unit,
     removeGenericProductFromCard: (String) -> Unit,
-    increaseGenericProductCount: (String) -> Unit,
-    decreaseGenericProductCount: (String) -> Unit
+    increaseGenericProductCount: (String, Int) -> Unit,
+    decreaseGenericProductCount: (String, Int) -> Unit
 ){
     val deviceMode = LocalDeviceMode.current
 

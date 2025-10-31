@@ -18,17 +18,19 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.raulastete.lazypizza.R
+import com.raulastete.lazypizza.domain.entity.Product
 import com.raulastete.lazypizza.presentation.ui.components.LPGhostButton
 import com.raulastete.lazypizza.presentation.ui.components.LPIconButton
 import com.raulastete.lazypizza.presentation.ui.components.ProductQuantityControl
-import com.raulastete.lazypizza.presentation.ui.model.GenericProductCardUi
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
 fun GenericProductCard(
     modifier: Modifier = Modifier,
-    genericProductCardUi: GenericProductCardUi,
+    product: Product,
+    count: Int,
+    totalPrice: String,
     onClickAddToCart: () -> Unit,
     onClickIncreaseCount: () -> Unit,
     onClickDecreaseCount: () -> Unit,
@@ -36,7 +38,7 @@ fun GenericProductCard(
 ) {
 
     ProductWrapperCard(
-        imageUrl = genericProductCardUi.imageUrl,
+        imageUrl = product.imageUrl,
         modifier = modifier,
     ) {
         Column(
@@ -46,18 +48,18 @@ fun GenericProductCard(
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            if (genericProductCardUi.isNotSelected) {
+            if (count == 0) {
                 ZeroItemsContent(
-                    name = genericProductCardUi.name,
-                    price = genericProductCardUi.unitPrice,
+                    name = product.name,
+                    price = "$${product.unitPrice}",
                     onClickAddToCart = onClickAddToCart,
                 )
             } else {
                 NonZeroItemsContent(
-                    name = genericProductCardUi.name,
-                    price = genericProductCardUi.unitPrice,
-                    totalPrice = genericProductCardUi.totalPrice,
-                    count = genericProductCardUi.count,
+                    name = product.name,
+                    price = "$${product.unitPrice}",
+                    totalPrice = totalPrice,
+                    count = count,
                     onClickIncreaseCount = onClickIncreaseCount,
                     onClickDecreaseCount = onClickDecreaseCount,
                     onClickRemoveFromCart = onClickRemoveFromCart,
@@ -170,14 +172,16 @@ private fun PizzaCardPreview() {
         Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
             GenericProductCard(
                 modifier = Modifier.fillMaxWidth(),
-                genericProductCardUi = GenericProductCardUi(
+                product = Product(
                     id = "",
                     imageUrl = "",
                     name = "Margharita",
-                    unitPrice = "$1.00",
-                    totalPrice = "$2.00",
-                    count = 2
+                    description = "",
+                    categoryId = "",
+                    unitPrice = 1.00,
                 ),
+                totalPrice = "$2.00",
+                count = 2,
                 onClickAddToCart = {},
                 onClickDecreaseCount = {},
                 onClickIncreaseCount = {},
@@ -186,14 +190,16 @@ private fun PizzaCardPreview() {
 
             GenericProductCard(
                 modifier = Modifier.fillMaxWidth(),
-                genericProductCardUi = GenericProductCardUi(
+                product = Product(
                     id = "",
                     imageUrl = "",
                     name = "Margharita",
-                    unitPrice = "$1.00",
-                    totalPrice = "$2.00",
-                    count = 0
+                    description = "",
+                    categoryId = "",
+                    unitPrice = 1.00,
                 ),
+                totalPrice = "$0.00",
+                count = 0,
                 onClickAddToCart = {},
                 onClickDecreaseCount = {},
                 onClickIncreaseCount = {},

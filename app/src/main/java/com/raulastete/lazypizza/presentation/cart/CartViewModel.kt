@@ -7,7 +7,6 @@ import com.raulastete.lazypizza.domain.entity.Product
 import com.raulastete.lazypizza.domain.repository.CartRepository
 import com.raulastete.lazypizza.domain.repository.MenuRepository
 import com.raulastete.lazypizza.presentation.ui.model.OrderItemCardUi
-import com.raulastete.lazypizza.presentation.ui.model.RecommendedProductCardUi
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
@@ -27,6 +26,8 @@ class CartViewModel(
 
     private val shuffledRecommendedProducts = mutableStateListOf<Product>()
 
+    private val userId = "me" //TODO: Refactor later when authentication
+
     init {
         loadInitialRecommended()
         loadCart()
@@ -40,9 +41,10 @@ class CartViewModel(
     }
 
     private fun loadCart() {
+
+
         viewModelScope.launch {
-            // 3. El combine ahora solo depende de los items del carrito y usa la lista local ya barajada
-            cartRepository.getOrderItemsByUser("me").collectLatest { orderItems ->
+            cartRepository.getOrderItemsByUser(userId).collectLatest { orderItems ->
 
                 val orderItemsUi = orderItems.map { orderItem ->
                     OrderItemCardUi(
@@ -53,7 +55,7 @@ class CartViewModel(
                         count = orderItem.count,
                         totalPrice = "$${
                             String.format(
-                                Locale.US, // Es mejor usar Locale.US para formateo de precios
+                                Locale.US,
                                 "%.2f",
                                 orderItem.count * orderItem.product.unitPrice
                             )
@@ -64,21 +66,11 @@ class CartViewModel(
 
                 val productIdsInCart = orderItems.map { it.product.id }.toSet()
 
-                // 4. Filtramos la lista local que ya está barajada
                 val filteredRecommendedItemsUi = shuffledRecommendedProducts
                     .filter { recommendedProduct ->
                         recommendedProduct.id !in productIdsInCart
                     }
-                    .map { recommendedItem ->
-                        RecommendedProductCardUi(
-                            id = recommendedItem.id,
-                            name = recommendedItem.name,
-                            imageUrl = recommendedItem.imageUrl,
-                            unitPrice = "$${recommendedItem.unitPrice}",
-                        )
-                    }
 
-                // 5. Actualizamos el estado de la UI
                 _cartUiState.update { currentState ->
                     currentState.copy(
                         orderItems = orderItemsUi,
@@ -89,32 +81,35 @@ class CartViewModel(
         }
     }
 
-    fun addProductToCart(productId: String) {
+    fun addRecommendedProductToCart(product: Product) {
         viewModelScope.launch {
-            cartRepository.increaseProductCountInCart(productId)
+            cartRepository.addGenericProductToCart(
+                product = product,
+                userId = userId
+            )
         }
     }
 
     fun removeOrderItemFromCart(orderItemId: Long) {
         viewModelScope.launch {
-            cartRepository.deleteOrderItem(orderItemId)
+            cartRepository.removeOrderItem(orderItemId)
         }
     }
 
-    fun decreaseOrderItemCount(orderItemId: Long) {
+    fun decreaseOrderItemCount(orderItemId: Long, currentCount: Int) {
         viewModelScope.launch {
-            cartRepository.decreaseOrderItemCountInCart(orderItemId)
+            cartRepository.updateOrderItemCount(orderItemId, currentCount  - 1)
         }
     }
 
-    fun increaseOrderItemCount(orderItemId: Long) {
+    fun increaseOrderItemCount(orderItemId: Long, currentCount: Int) {
         viewModelScope.launch {
-            cartRepository.increaseOrderItemCountInCart(orderItemId)
+            cartRepository.updateOrderItemCount(orderItemId, currentCount + 1)
         }
     }
 }
 
 data class CartUiState(
     val orderItems: List<OrderItemCardUi> = emptyList(),
-    val recommendedItems: List<RecommendedProductCardUi> = emptyList()
+    val recommendedItems: List<Product> = emptyList()
 )

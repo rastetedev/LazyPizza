@@ -18,6 +18,6 @@ fun ToppingDto.toDomain() =
     Topping(
         id = id,
         name = name,
-        price = price,
+        unitPrice = price,
         imageUrl = imageUrl
     )

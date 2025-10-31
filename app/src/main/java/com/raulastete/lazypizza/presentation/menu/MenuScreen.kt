@@ -21,6 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.raulastete.lazypizza.domain.entity.Category
+import com.raulastete.lazypizza.domain.entity.Product
 import com.raulastete.lazypizza.presentation.menu.components.Banner
 import com.raulastete.lazypizza.presentation.menu.components.CategoryListRow
 import com.raulastete.lazypizza.presentation.menu.components.MenuItems
@@ -46,8 +47,8 @@ fun MenuScreen(
     MenuScreenContent(
         uiState = uiState,
         searchProduct = viewModel::searchProduct,
-        addGenericProductToCard = viewModel::increaseGenericProductCount,
-        removeGenericProductFromCard = viewModel::removeGenericProductFromCard,
+        addGenericProductToCard = viewModel::addGenericProductToCart,
+        removeGenericProductFromCard = viewModel::removeGenericProductFromCart,
         increaseGenericProductCount = viewModel::increaseGenericProductCount,
         decreaseGenericProductCount = viewModel::decreaseGenericProductCount,
         navigateToPizzaDetail = navigateToPizzaDetail
@@ -60,10 +61,10 @@ private fun MenuScreenContent(
     uiState: MenuUiState,
     searchProduct: (productName: String) -> Unit,
     navigateToPizzaDetail: (pizzaId: String) -> Unit,
-    addGenericProductToCard: (genericProductId: String) -> Unit,
+    addGenericProductToCard: (product: Product) -> Unit,
     removeGenericProductFromCard: (genericProductId: String) -> Unit,
-    increaseGenericProductCount: (genericProductId: String) -> Unit,
-    decreaseGenericProductCount: (genericProductId: String) -> Unit
+    increaseGenericProductCount: (genericProductId: String, count: Int) -> Unit,
+    decreaseGenericProductCount: (genericProductId: String, count: Int) -> Unit
 
 ) {
     when {
@@ -90,10 +91,10 @@ private fun MenuContent(
     uiState: MenuUiState,
     searchProduct: (String) -> Unit,
     navigateToPizzaDetail: (String) -> Unit,
-    addGenericProductToCard: (String) -> Unit,
+    addGenericProductToCard: (Product) -> Unit,
     removeGenericProductFromCard: (String) -> Unit,
-    increaseGenericProductCount: (String) -> Unit,
-    decreaseGenericProductCount: (String) -> Unit
+    increaseGenericProductCount: (String, count: Int) -> Unit,
+    decreaseGenericProductCount: (String, count: Int) -> Unit
 ) {
 
     val lazyListState = rememberLazyListState()
@@ -198,11 +199,15 @@ private fun MenuScreenContentPreview() {
                     menuByCategory = mapOf(
                         Category(id = "PIZZA", name = "Pizza") to listOf(
                             PizzaCardUi(
-                                id = "1",
-                                imageUrl = "",
-                                name = "Pizza 1",
-                                unitPrice = "$10.0",
-                                description = "Pizza 1 description"
+                                product = Product(
+                                    id = "1",
+                                    name = "Pizza de Muzzarella",
+                                    description = "Pizza con muzzarella",
+                                    unitPrice = 10.0,
+                                    imageUrl = "",
+                                    categoryId = "",
+                                    toppings = null
+                                )
                             )
                         )
                     )
@@ -211,8 +216,8 @@ private fun MenuScreenContentPreview() {
                 navigateToPizzaDetail = {},
                 addGenericProductToCard = {},
                 removeGenericProductFromCard = {},
-                increaseGenericProductCount = {},
-                decreaseGenericProductCount = {}
+                increaseGenericProductCount = { _, _ -> },
+                decreaseGenericProductCount = { _, _ -> }
             )
         }
 

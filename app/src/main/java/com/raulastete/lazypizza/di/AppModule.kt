@@ -4,8 +4,8 @@ import androidx.room.Room
 import com.google.firebase.Firebase
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.database
-import com.raulastete.lazypizza.data.local.LazyPizzaDatabase
-import com.raulastete.lazypizza.data.local.OrderItemDao
+import com.raulastete.lazypizza.data.local.database.LazyPizzaDatabase
+import com.raulastete.lazypizza.data.local.dao.OrderItemDao
 import com.raulastete.lazypizza.data.remote.MenuRemoteDataSource
 import com.raulastete.lazypizza.data.repository.DefaultCartRepository
 import com.raulastete.lazypizza.data.repository.DefaultMenuRepository
@@ -43,7 +43,6 @@ val appModule = module {
     }
     single<CartRepository> {
         DefaultCartRepository(
-            menuRemoteDataSource = get(),
             orderItemDao = get()
         )
     }

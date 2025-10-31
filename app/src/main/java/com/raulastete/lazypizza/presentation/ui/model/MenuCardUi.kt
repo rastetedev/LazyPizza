@@ -1,25 +1,17 @@
 package com.raulastete.lazypizza.presentation.ui.model
 
+import com.raulastete.lazypizza.domain.entity.Product
+
 sealed interface MenuCardUi {
-    val id: String
-    val name: String
+    val product : Product
 }
 
 data class PizzaCardUi(
-    override val id: String,
-    override val name: String,
-    val imageUrl: String,
-    val description: String,
-    val unitPrice: String
+    override val product: Product
 ) : MenuCardUi
 
 data class GenericProductCardUi(
-    override val id: String,
-    override val name: String,
-    val imageUrl: String,
-    val unitPrice: String,
+    override val product: Product,
     val totalPrice: String,
     val count: Int = 0
-) : MenuCardUi {
-    val isNotSelected = count == 0
-}
+) : MenuCardUi

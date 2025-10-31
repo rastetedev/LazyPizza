@@ -1,113 +1,100 @@
 package com.raulastete.lazypizza.data.repository
 
-import com.raulastete.lazypizza.data.local.OrderItemDao
-import com.raulastete.lazypizza.data.local.OrderItemDto
-import com.raulastete.lazypizza.data.remote.MenuRemoteDataSource
+import com.raulastete.lazypizza.data.local.dao.OrderItemDao
+import com.raulastete.lazypizza.data.local.dto.OrderItemDto
 import com.raulastete.lazypizza.domain.entity.OrderItem
 import com.raulastete.lazypizza.domain.entity.Product
 import com.raulastete.lazypizza.domain.repository.CartRepository
 import kotlinx.coroutines.flow.Flow
-import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
 
 class DefaultCartRepository(
-    private val orderItemDao: OrderItemDao,
-    private val menuRemoteDataSource: MenuRemoteDataSource
+    private val orderItemDao: OrderItemDao
 ) : CartRepository {
+    override suspend fun getCartItemsCountByUser(userId: String): Flow<Int> {
+        return getOrderItemsByUser(userId).map { orderItems ->
+            orderItems.sumOf { it.count }
+        }
+    }
 
     //TODO: Handle later when product is not found, maybe not available in the menu
     override suspend fun getOrderItemsByUser(userId: String): Flow<List<OrderItem>> {
-        return combine(
-            orderItemDao.getOrderItemsByUser(userId),
-            menuRemoteDataSource.getAllProducts()
-        ) { orderItemsDto, productsDto ->
 
-            orderItemsDto.mapNotNull { orderItemDto ->
-                val product = productsDto.firstOrNull { it.id == orderItemDto.productId }?.let {
-                    Product(
-                        id = it.id,
-                        name = it.name,
-                        description = it.description,
-                        imageUrl = it.imageUrl,
-                        unitPrice = it.price,
-                        categoryId = it.category
-                    )
-                }
-                if (product != null) {
-                    OrderItem(
-                        id = orderItemDto.id,
-                        product = product,
-                        count = orderItemDto.count
-                    )
-                } else null
+        return orderItemDao.getOrderItemsByUser(userId).map { orderItemsDto ->
+            orderItemsDto.map {
+                OrderItem(
+                    id = it.id,
+                    product = Product(
+                        id = it.productId,
+                        name = it.productName,
+                        description = "",
+                        imageUrl = it.productImage,
+                        unitPrice = it.unitPrice,
+                        categoryId = it.productCategoryId,
+                    ),
+                    count = it.count
+                )
             }
         }
     }
 
-    override suspend fun increaseProductCountInCart(productId: String) {
-        val orderDto = orderItemDao.getOrderItemByProductId(productId)
-
-        if (orderDto != null) {
-            orderItemDao.upsert(
-                orderDto.copy(
-                    count = orderDto.count + 1
-                )
+    override suspend fun addGenericProductToCart(
+        product: Product,
+        userId: String
+    ) {
+        orderItemDao.upsertOrderItem(
+            OrderItemDto(
+                productId = product.id,
+                productCategoryId = product.categoryId,
+                userId = userId,
+                productName = product.name,
+                productImage = product.imageUrl,
+                count = 1,
+                unitPrice = product.unitPrice
             )
-        } else {
-            orderItemDao.upsert(
-                OrderItemDto(
-                    productId = productId,
-                    count = 1,
-                    userId = "me"
-                )
-            )
-        }
+        )
     }
 
-    override suspend fun decreaseProductCountInCart(productId: String) {
-        val orderDto = orderItemDao.getOrderItemByProductId(productId)
-        check(orderDto != null)
-
-        if (orderDto.count == 1) {
-            orderItemDao.deleteItem(orderDto.id)
-        } else {
-            orderItemDao.upsert(
-                orderDto.copy(
-                    count = orderDto.count - 1
-                )
-            )
-        }
+    override suspend fun removeGenericProductFromCart(
+        productId: String,
+        userId: String
+    ) {
+        orderItemDao.deleteOrderItemByProductId(
+            productId = productId,
+            userId = userId
+        )
     }
 
-    override suspend fun deleteProductFromCart(productId: String) {
-        val orderDto = orderItemDao.getOrderItemByProductId(productId)
-        check(orderDto != null)
-
-        orderItemDao.deleteItem(orderDto.id)
+    override suspend fun removeOrderItem(orderItemId: Long) {
+        orderItemDao.deleteOrderItem(orderItemId)
     }
 
-    override suspend fun deleteOrderItem(orderItemId: Long) {
-        orderItemDao.deleteItem(orderItemId)
-    }
+    override suspend fun updateGenericProductCount(
+        productId: String,
+        userId: String,
+        count: Int
+    ) {
 
-    override suspend fun increaseOrderItemCountInCart(orderItemId: Long) {
-        val orderDto = orderItemDao.getOrderItemById(orderItemId)
+        val orderItemDto =
+            orderItemDao.getOrderItemByProductId(productId = productId, userId = userId)
 
-        if (orderDto != null) {
-            orderItemDao.upsert(
-                orderDto.copy(
-                    count = orderDto.count + 1
+        if (orderItemDto != null) {
+            orderItemDao.upsertOrderItem(
+                orderItemDto.copy(
+                    count = count
                 )
             )
         }
     }
 
-    override suspend fun decreaseOrderItemCountInCart(orderItemId: Long) {
-        val orderDto = orderItemDao.getOrderItemById(orderItemId)
+    override suspend fun updateOrderItemCount(orderItemId: Long, count: Int) {
+        val orderItemDto =
+            orderItemDao.getOrderItemById(orderItemId)
 
-        if (orderDto != null) {
-            orderItemDao.upsert(
-                orderDto.copy(
-                    count = orderDto.count - 1
+        if (orderItemDto != null) {
+            orderItemDao.upsertOrderItem(
+                orderItemDto.copy(
+                    count = count
                 )
             )
         }

@@ -140,7 +140,7 @@ private fun SingleColumnPhoneMode(
                 )
                 PizzaImage(
                     modifier = Modifier.fillMaxWidth(),
-                    imageUrl = uiState.pizzaUi?.imageUrl
+                    imageUrl = uiState.pizzaUi?.product?.imageUrl
                 )
                 PizzaInfo(
                     Modifier
@@ -198,7 +198,7 @@ private fun SingleColumnTabletMode(
             )
             PizzaImage(
                 modifier = Modifier.fillMaxWidth(),
-                imageUrl = uiState.pizzaUi?.imageUrl
+                imageUrl = uiState.pizzaUi?.product?.imageUrl
             )
             PizzaInfo(
                 Modifier
@@ -254,7 +254,7 @@ private fun TwoColumnMode(
             )
             PizzaImage(
                 modifier = Modifier.fillMaxWidth(),
-                imageUrl = uiState.pizzaUi?.imageUrl
+                imageUrl = uiState.pizzaUi?.product?.imageUrl
             )
             Spacer(Modifier.height(20.dp))
             PizzaInfo(
@@ -337,7 +337,7 @@ private fun PizzaInfo(modifier: Modifier, pizzaCardUi: PizzaCardUi?) {
         modifier = modifier
     ) {
         Text(
-            pizzaCardUi?.name.orEmpty(),
+            pizzaCardUi?.product?.name.orEmpty(),
             style = AppTheme.typography.title1Semibold,
             color = AppTheme.colorScheme.textPrimary,
             modifier = Modifier.fillMaxWidth(),
@@ -345,7 +345,7 @@ private fun PizzaInfo(modifier: Modifier, pizzaCardUi: PizzaCardUi?) {
         )
         Spacer(Modifier.height(4.dp))
         Text(
-            pizzaCardUi?.description.orEmpty(),
+            pizzaCardUi?.product?.description.orEmpty(),
             style = AppTheme.typography.body3Regular,
             color = AppTheme.colorScheme.textSecondary,
             modifier = Modifier.fillMaxWidth(),

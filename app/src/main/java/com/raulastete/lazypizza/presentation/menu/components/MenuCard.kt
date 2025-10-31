@@ -2,6 +2,7 @@ package com.raulastete.lazypizza.presentation.menu.components
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import com.raulastete.lazypizza.domain.entity.Product
 import com.raulastete.lazypizza.presentation.ui.components.product.GenericProductCard
 import com.raulastete.lazypizza.presentation.ui.components.product.PizzaCard
 import com.raulastete.lazypizza.presentation.ui.model.GenericProductCardUi
@@ -13,34 +14,36 @@ fun MenuCard(
     modifier: Modifier = Modifier,
     menuCardUi: MenuCardUi,
     navigateToPizzaDetail: (String) -> Unit,
-    addGenericProductToCard: (String) -> Unit,
+    addGenericProductToCard: (Product) -> Unit,
     removeGenericProductFromCard: (String) -> Unit,
-    increaseGenericProductCount: (String) -> Unit,
-    decreaseGenericProductCount: (String) -> Unit
+    increaseGenericProductCount: (String, Int) -> Unit,
+    decreaseGenericProductCount: (String, Int) -> Unit
 ) {
     when (menuCardUi) {
         is PizzaCardUi -> PizzaCard(
             modifier = modifier,
             pizzaCardUi = menuCardUi
         ) {
-            navigateToPizzaDetail(menuCardUi.id)
+            navigateToPizzaDetail(menuCardUi.product.id)
         }
 
         is GenericProductCardUi -> GenericProductCard(
             modifier = modifier,
-            genericProductCardUi = menuCardUi,
+            product = menuCardUi.product,
             onClickAddToCart = {
-                addGenericProductToCard(menuCardUi.id)
+                addGenericProductToCard(menuCardUi.product)
             },
             onClickDecreaseCount = {
-                decreaseGenericProductCount(menuCardUi.id)
+                decreaseGenericProductCount(menuCardUi.product.id, menuCardUi.count)
             },
             onClickIncreaseCount = {
-                increaseGenericProductCount(menuCardUi.id)
+                increaseGenericProductCount(menuCardUi.product.id, menuCardUi.count)
             },
             onClickRemoveFromCart = {
-                removeGenericProductFromCard(menuCardUi.id)
-            }
+                removeGenericProductFromCard(menuCardUi.product.id)
+            },
+            count = menuCardUi.count,
+            totalPrice = menuCardUi.totalPrice
         )
     }
 }
