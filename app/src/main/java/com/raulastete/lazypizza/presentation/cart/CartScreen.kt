@@ -85,8 +85,7 @@ private fun CartScreenContent(
                     modifier = Modifier
                         .fillMaxSize()
                         .padding(paddingValues),
-                    orderItems = uiState.orderItems,
-                    recommendedItems = uiState.recommendedItems,
+                    uiState = uiState,
                     onAddRecommendedProductToCart = onAddRecommendedProductToCart,
                     onIncreaseOrderItemCount = onIncreaseOrderItemCount,
                     onDecreaseOrderItemCount = onDecreaseOrderItemCount,
@@ -100,8 +99,7 @@ private fun CartScreenContent(
 @Composable
 private fun CartList(
     modifier: Modifier = Modifier,
-    orderItems: List<OrderItemCardUi>,
-    recommendedItems: List<Product>,
+    uiState: CartUiState,
     onAddRecommendedProductToCart: (Product) -> Unit,
     onIncreaseOrderItemCount: (Long, Int) -> Unit,
     onDecreaseOrderItemCount: (Long, Int) -> Unit,
@@ -112,7 +110,7 @@ private fun CartList(
             .fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(orderItems, key = { it.id }) { orderItem ->
+        items(uiState.orderItems, key = { it.id }) { orderItem ->
             OrderItemCard(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -124,7 +122,7 @@ private fun CartList(
             )
         }
 
-        if (recommendedItems.isNotEmpty()) {
+        if (uiState.recommendedItems.isNotEmpty()) {
             item(key = "recommended_section") {
                 Column {
                     Spacer(Modifier.height(12.dp))
@@ -143,7 +141,7 @@ private fun CartList(
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         item { Spacer(Modifier.width(16.dp)) }
-                        items(recommendedItems, key = { it.id }) { product ->
+                        items(uiState.recommendedItems, key = { it.id }) { product ->
                             RecommendedProductCard(
                                 product = product,
                                 onAddToCartClick = {
@@ -164,7 +162,7 @@ private fun CartList(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(horizontal = 16.dp),
-                    text = stringResource(R.string.proceed_to_checkout_button)
+                    text = stringResource(R.string.proceed_to_checkout_button, uiState.totalPrice)
                 ) { }
                 Spacer(Modifier.height(16.dp))
             }

@@ -19,5 +19,5 @@
 
     <string name="no_results_message">No results. Try something else.</string>
     <string name="recommended_section_title">RECOMMENDED TO ADD TO YOUR ORDER</string>
-    <string name="proceed_to_checkout_button">Proceed to Checkout</string>
+    <string name="proceed_to_checkout_button">Proceed to Checkout %1s</string>
 </resources>

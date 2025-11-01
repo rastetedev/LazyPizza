@@ -47,17 +47,27 @@ class CartViewModel(
             cartRepository.getOrderItemsByUser(userId).collectLatest { orderItems ->
 
                 val orderItemsUi = orderItems.map { orderItem ->
+
+                    val toppingsTotal = orderItem.toppings?.map { (topping, count) ->
+                        topping.unitPrice * count
+                    }?.sum() ?: 0.0
+
+                    val orderUnitPrice = (orderItem.product.unitPrice + toppingsTotal)
+
+                    val totalPrice =
+                        orderItem.count * orderUnitPrice
+
                     OrderItemCardUi(
                         id = orderItem.id,
                         name = orderItem.product.name,
                         imageUrl = orderItem.product.imageUrl,
-                        unitPrice = "$${orderItem.product.unitPrice}",
+                        unitPrice = "$${orderUnitPrice}",
                         count = orderItem.count,
                         totalPrice = "$${
                             String.format(
                                 Locale.US,
                                 "%.2f",
-                                orderItem.count * orderItem.product.unitPrice
+                                totalPrice
                             )
                         }",
                         toppings = orderItem.toppings?.map { (topping, count) ->
@@ -76,7 +86,13 @@ class CartViewModel(
                 _cartUiState.update { currentState ->
                     currentState.copy(
                         orderItems = orderItemsUi,
-                        recommendedItems = filteredRecommendedItemsUi
+                        recommendedItems = filteredRecommendedItemsUi,
+                        totalPrice = "$${
+                            String.format(
+                                Locale.US,
+                                "%.2f",
+                                orderItemsUi.sumOf { it.totalPrice.removePrefix("$").toDouble() })
+                        }"
                     )
                 }
             }
@@ -113,5 +129,6 @@ class CartViewModel(
 
 data class CartUiState(
     val orderItems: List<OrderItemCardUi> = emptyList(),
-    val recommendedItems: List<Product> = emptyList()
+    val recommendedItems: List<Product> = emptyList(),
+    val totalPrice: String = ""
 )
