@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -16,9 +15,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 import androidx.compose.foundation.layout.RowScope
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.AsyncImage
 
@@ -58,12 +60,13 @@ fun ProductWrapperCard(
         ) {
             Box(
                 Modifier
-                    .size(120.dp)
+                    .width(120.dp)
+                    .fillMaxHeight()
                     .clip(shape = imageContainerShape)
                     .background(color = AppTheme.colorScheme.surfaceHighest),
                 contentAlignment = Alignment.Center
             ) {
-                AsyncImage(model = imageUrl, contentDescription = null)
+                AsyncImage(model = imageUrl, contentDescription = null, contentScale = ContentScale.FillBounds)
             }
 
             content()
