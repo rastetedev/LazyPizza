@@ -120,7 +120,7 @@ class PizzaDetailViewModel(
                 selectedToppingsMap.put(toppingCardUi.topping, toppingCardUi.count)
             }
 
-            cartRepository.addPizzaToCart(
+            cartRepository.addOrUpdatePizzaInCart(
                 product = _uiState.value.pizzaUi!!.product,
                 toppings = selectedToppingsMap,
                 userId = userId

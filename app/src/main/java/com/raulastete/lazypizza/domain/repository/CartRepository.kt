@@ -13,7 +13,7 @@ interface CartRepository {
 
     suspend fun addGenericProductToCart(product: Product, userId: String)
 
-    suspend fun addPizzaToCart(product: Product, toppings: Map<Topping, Int>, userId: String)
+    suspend fun addOrUpdatePizzaInCart(product: Product, toppings: Map<Topping, Int>, userId: String) : Boolean
 
     suspend fun removeGenericProductFromCart(productId: String, userId: String)
 

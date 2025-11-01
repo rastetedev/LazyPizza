@@ -77,26 +77,38 @@ class DefaultCartRepository(
         )
     }
 
-    override suspend fun addPizzaToCart(
+    override suspend fun addOrUpdatePizzaInCart(
         product: Product,
         toppings: Map<Topping, Int>,
         userId: String
-    ) {
+    ) : Boolean {
 
-        val orderItemId = orderItemDao.upsertOrderItem(
-            OrderItemDto(
-                productId = product.id,
-                productCategoryId = product.categoryId,
-                userId = userId,
-                productName = product.name,
-                productImage = product.imageUrl,
-                count = 1,
-                unitPrice = product.unitPrice
-            )
+        val existingOrderItems =  orderItemDao.getOrderItemsByProductId(product.id, userId)
+
+        for (item in existingOrderItems) {
+            val toppingsInCart = orderItemToppingDao.getToppingsByOrderItem(item.id)
+            val toppingsInCartIds = toppingsInCart.associate { it.toppingId to it.count }
+            val newToppingsIds = toppings.entries.associate { it.key.id to it.value }
+
+            if (toppingsInCartIds == newToppingsIds) {
+                val updatedItem = item.copy(count = item.count + 1)
+                orderItemDao.upsertOrderItem(updatedItem)
+                return true
+            }
+        }
+
+        val newOrderItem = OrderItemDto(
+            productId = product.id,
+            productCategoryId = product.categoryId,
+            userId = userId,
+            productName = product.name,
+            productImage = product.imageUrl,
+            count = 1,
+            unitPrice = product.unitPrice
         )
-
-        if (orderItemId == -1L) {
-            return
+        val newOrderItemId = orderItemDao.upsertOrderItem(newOrderItem)
+        if (newOrderItemId == -1L) {
+            return false
         }
 
         val orderItemToppings = toppings.map { (topping, count) ->
@@ -105,11 +117,13 @@ class DefaultCartRepository(
                 toppingName = topping.name,
                 count = count,
                 price = topping.unitPrice,
-                orderItemId = orderItemId
+                orderItemId = newOrderItemId
             )
         }
 
         orderItemToppingDao.insertToppings(orderItemToppings)
+
+        return true
     }
 
     override suspend fun removeGenericProductFromCart(
@@ -135,7 +149,7 @@ class DefaultCartRepository(
     ) {
 
         val orderItemDto =
-            orderItemDao.getOrderItemByProductId(productId = productId, userId = userId)
+            orderItemDao.getOrderItemsByProductId(productId = productId, userId = userId).firstOrNull()
 
         if (orderItemDto != null) {
             orderItemDao.upsertOrderItem(

@@ -25,5 +25,5 @@ interface OrderItemDao {
     suspend fun getOrderItemById(orderItemId: Long): OrderItemDto?
 
     @Query("SELECT * FROM order_items WHERE productId = :productId AND userId = :userId")
-    suspend fun getOrderItemByProductId(productId: String, userId: String): OrderItemDto?
+    suspend fun getOrderItemsByProductId(productId: String, userId: String): List<OrderItemDto>
 }
