@@ -81,69 +81,70 @@ fun MenuScreenContent(
             )
         }
 
-        item(span = { GridItemSpan(2) }) {
-            if (uiState.showEmptyResultsForQuery) {
+        if (uiState.showEmptyResultsForQuery) {
+            item(span = { GridItemSpan(2) }) {
                 NoProductsFound(
                     Modifier
                         .fillMaxWidth()
                         .padding(top = 24.dp)
                 )
             }
-        }
+        } else {
 
-        item(span = { GridItemSpan(2) }) {
-            CategoryListRow(
-                modifier = Modifier.padding(horizontal = 16.dp),
-                categories = uiState.categoryNameList
-            ) { categoryName ->
-                navigateToStickyHeader(
-                    coroutineScope = coroutineScope,
-                    categoryName = categoryName,
-                    menu = uiState.menuByCategory,
-                    lazyGridState = lazyGridState
-                )
-            }
-        }
-
-        uiState.menuByCategory.forEach { (category, menuCardUis) ->
-            stickyHeader(key = category.id) {
-                CategoryHeader(
-                    category.name
-                )
+            item(span = { GridItemSpan(2) }) {
+                CategoryListRow(
+                    modifier = Modifier.padding(horizontal = 16.dp),
+                    categories = uiState.categoryNameList
+                ) { categoryName ->
+                    navigateToStickyHeader(
+                        coroutineScope = coroutineScope,
+                        categoryName = categoryName,
+                        menu = uiState.menuByCategory,
+                        lazyGridState = lazyGridState
+                    )
+                }
             }
 
-            itemsIndexed(
-                items = menuCardUis,
-                key = { index, item -> item.product.id },
-                span = { index, item -> productItemGridSpan },
-                contentType = { index, item ->
-                    if (category.isPizza) {
-                        PizzaCardUi::class
-                    } else {
-                        GenericProductCardUi::class
-                    }
-                },
-            ) { index, menuCardUi ->
-                MenuCard(
-                    menuCardUi = menuCardUi,
-                    navigateToPizzaDetail = navigateToPizzaDetail,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(
-                            if (deviceMode == DeviceMode.PhonePortrait) {
-                                PaddingValues(horizontal = 16.dp)
-                            } else {
-                                PaddingValues(
-                                    start = if (index % 2 == 0) 16.dp else 0.dp,
-                                    end = if (index % 2 == 0) 0.dp else 16.dp
-                                )
-                            }
-                        ),
-                    addGenericProductToCard = addGenericProductToCard,
-                    removeGenericProductFromCard = removeGenericProductFromCard,
-                    increaseGenericProductCount = increaseGenericProductCount,
-                    decreaseGenericProductCount = decreaseGenericProductCount
-                )
+            uiState.menuByCategory.forEach { (category, menuCardUis) ->
+                stickyHeader(key = category.id) {
+                    CategoryHeader(
+                        category.name
+                    )
+                }
+
+                itemsIndexed(
+                    items = menuCardUis,
+                    key = { index, item -> item.product.id },
+                    span = { index, item -> productItemGridSpan },
+                    contentType = { index, item ->
+                        if (category.isPizza) {
+                            PizzaCardUi::class
+                        } else {
+                            GenericProductCardUi::class
+                        }
+                    },
+                ) { index, menuCardUi ->
+                    MenuCard(
+                        menuCardUi = menuCardUi,
+                        navigateToPizzaDetail = navigateToPizzaDetail,
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(
+                                if (deviceMode == DeviceMode.PhonePortrait) {
+                                    PaddingValues(horizontal = 16.dp)
+                                } else {
+                                    PaddingValues(
+                                        start = if (index % 2 == 0) 16.dp else 0.dp,
+                                        end = if (index % 2 == 0) 0.dp else 16.dp
+                                    )
+                                }
+                            ),
+                        addGenericProductToCard = addGenericProductToCard,
+                        removeGenericProductFromCard = removeGenericProductFromCard,
+                        increaseGenericProductCount = increaseGenericProductCount,
+                        decreaseGenericProductCount = decreaseGenericProductCount
+                    )
+                }
             }
         }
     }
