@@ -23,7 +23,8 @@ import androidx.compose.ui.unit.dp
 fun FadingEdgeVerticalList(
     modifier: Modifier = Modifier,
     listState: ScrollableState,
-    fadeHeight: Dp = 40.dp,
+    topFadeHeight: Dp = 40.dp,
+    bottomFadeHeight: Dp = 40.dp,
     fadeColor: Color = Color.White,
     list: @Composable () -> Unit
 ) {
@@ -48,7 +49,7 @@ fun FadingEdgeVerticalList(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(fadeHeight)
+                    .height(topFadeHeight)
                     .background(
                         brush = Brush.verticalGradient(
                             colors = listOf(
@@ -69,7 +70,7 @@ fun FadingEdgeVerticalList(
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(fadeHeight)
+                    .height(bottomFadeHeight)
                     .background(
                         brush = Brush.verticalGradient(
                             colors = listOf(

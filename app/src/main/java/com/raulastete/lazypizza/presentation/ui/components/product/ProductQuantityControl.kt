@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.presentation.ui.components
+package com.raulastete.lazypizza.presentation.ui.components.product
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -10,6 +10,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.raulastete.lazypizza.R
+import com.raulastete.lazypizza.presentation.ui.components.LPIconButton
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 
 @Composable

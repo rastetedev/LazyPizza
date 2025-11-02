@@ -27,7 +27,7 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil3.compose.AsyncImage
 import com.raulastete.lazypizza.domain.entity.Topping
-import com.raulastete.lazypizza.presentation.ui.components.ProductQuantityControl
+import com.raulastete.lazypizza.presentation.ui.components.product.ProductQuantityControl
 import com.raulastete.lazypizza.presentation.ui.model.ToppingCardUi
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 
