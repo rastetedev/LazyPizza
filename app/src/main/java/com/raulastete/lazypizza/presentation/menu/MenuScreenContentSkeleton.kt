@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.presentation.menu.components
+package com.raulastete.lazypizza.presentation.menu
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
@@ -20,7 +20,7 @@ import com.raulastete.lazypizza.presentation.ui.components.Skeleton
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 
 @Composable
-fun MenuSkeleton() {
+fun MenuScreenContentSkeleton() {
 
     ShimmerContainer { brush ->
         Column(
@@ -90,5 +90,5 @@ fun MenuSkeleton() {
 @Composable
 @Preview(showSystemUi = true)
 fun MenuSkeletonPreview() {
-    MenuSkeleton()
+    MenuScreenContentSkeleton()
 }
