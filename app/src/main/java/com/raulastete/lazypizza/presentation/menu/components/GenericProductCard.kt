@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.presentation.ui.components.product
+package com.raulastete.lazypizza.presentation.menu.components
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.layout.Arrangement
@@ -22,6 +22,7 @@ import com.raulastete.lazypizza.domain.entity.Product
 import com.raulastete.lazypizza.presentation.ui.components.LPGhostButton
 import com.raulastete.lazypizza.presentation.ui.components.LPIconButton
 import com.raulastete.lazypizza.presentation.ui.components.ProductQuantityControl
+import com.raulastete.lazypizza.presentation.ui.components.product.ProductWrapperCard
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 
 @OptIn(ExperimentalSharedTransitionApi::class)

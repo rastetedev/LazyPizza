@@ -3,8 +3,6 @@ package com.raulastete.lazypizza.presentation.menu.components
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import com.raulastete.lazypizza.domain.entity.Product
-import com.raulastete.lazypizza.presentation.ui.components.product.GenericProductCard
-import com.raulastete.lazypizza.presentation.ui.components.product.PizzaCard
 import com.raulastete.lazypizza.presentation.ui.model.GenericProductCardUi
 import com.raulastete.lazypizza.presentation.ui.model.MenuCardUi
 import com.raulastete.lazypizza.presentation.ui.model.PizzaCardUi

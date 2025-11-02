@@ -20,7 +20,7 @@ import com.raulastete.lazypizza.domain.entity.Product
 import com.raulastete.lazypizza.presentation.menu.components.Banner
 import com.raulastete.lazypizza.presentation.menu.components.CategoryHeader
 import com.raulastete.lazypizza.presentation.menu.components.CategoryListRow
-import com.raulastete.lazypizza.presentation.menu.components.EmptyMessage
+import com.raulastete.lazypizza.presentation.menu.components.NoProductsFound
 import com.raulastete.lazypizza.presentation.menu.components.MenuCard
 import com.raulastete.lazypizza.presentation.ui.DeviceMode
 import com.raulastete.lazypizza.presentation.ui.components.LPSearchBar
@@ -83,7 +83,7 @@ fun MenuScreenContent(
 
         item(span = { GridItemSpan(2) }) {
             if (uiState.showEmptyResultsForQuery) {
-                EmptyMessage(
+                NoProductsFound(
                     Modifier
                         .fillMaxWidth()
                         .padding(top = 24.dp)
@@ -104,8 +104,6 @@ fun MenuScreenContent(
                 )
             }
         }
-
-
 
         uiState.menuByCategory.forEach { (category, menuCardUis) ->
             stickyHeader(key = category.id) {

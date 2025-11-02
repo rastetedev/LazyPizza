@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.presentation.ui.components.product
+package com.raulastete.lazypizza.presentation.menu.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -14,6 +14,7 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.raulastete.lazypizza.domain.entity.Product
+import com.raulastete.lazypizza.presentation.ui.components.product.ProductWrapperCard
 import com.raulastete.lazypizza.presentation.ui.model.PizzaCardUi
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 

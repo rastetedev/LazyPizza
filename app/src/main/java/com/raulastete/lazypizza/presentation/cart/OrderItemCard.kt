@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.presentation.ui.components.product
+package com.raulastete.lazypizza.presentation.cart
 
 import androidx.compose.animation.ExperimentalSharedTransitionApi
 import androidx.compose.foundation.layout.Arrangement
@@ -20,6 +20,7 @@ import androidx.compose.ui.unit.dp
 import com.raulastete.lazypizza.R
 import com.raulastete.lazypizza.presentation.ui.components.LPIconButton
 import com.raulastete.lazypizza.presentation.ui.components.ProductQuantityControl
+import com.raulastete.lazypizza.presentation.ui.components.product.ProductWrapperCard
 import com.raulastete.lazypizza.presentation.ui.model.OrderItemCardUi
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 

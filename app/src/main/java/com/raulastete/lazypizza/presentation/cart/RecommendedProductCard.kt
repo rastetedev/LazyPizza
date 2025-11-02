@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.presentation.ui.components.product
+package com.raulastete.lazypizza.presentation.cart
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement

@@ -39,7 +39,6 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.raulastete.lazypizza.R
-import com.raulastete.lazypizza.presentation.ui.components.product.ToppingCard
 import com.raulastete.lazypizza.presentation.ui.DeviceMode
 import com.raulastete.lazypizza.presentation.ui.components.FadingEdgeVerticalList
 import com.raulastete.lazypizza.presentation.ui.components.LPPrimaryButton

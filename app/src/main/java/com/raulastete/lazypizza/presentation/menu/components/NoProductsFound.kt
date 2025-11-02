@@ -11,11 +11,11 @@ import com.raulastete.lazypizza.R
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 
 @Composable
-fun EmptyMessage(
+fun NoProductsFound(
     modifier: Modifier = Modifier
 ) {
     Box(
-       modifier,
+        modifier,
         contentAlignment = Alignment.Center
     ) {
         Text(

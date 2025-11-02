@@ -30,8 +30,6 @@ import com.raulastete.lazypizza.presentation.ui.DeviceMode
 import com.raulastete.lazypizza.presentation.ui.components.LPCenterTopbar
 import com.raulastete.lazypizza.presentation.ui.components.LPPrimaryButton
 import com.raulastete.lazypizza.presentation.ui.components.MessageFullScreen
-import com.raulastete.lazypizza.presentation.ui.components.product.OrderItemCard
-import com.raulastete.lazypizza.presentation.ui.components.product.RecommendedProductCard
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 import com.raulastete.lazypizza.presentation.ui.theme.LocalDeviceMode
 import org.koin.androidx.compose.koinViewModel
