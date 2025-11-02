@@ -106,7 +106,7 @@ fun OrderItemCard(
 
 @Preview
 @Composable
-private fun PizzaCardPreview() {
+private fun OrderItemCardPreview() {
     AppTheme {
         OrderItemCard(
             orderItemCardUi = OrderItemCardUi(

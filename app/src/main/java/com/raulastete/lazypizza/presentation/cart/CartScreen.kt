@@ -22,7 +22,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.raulastete.lazypizza.R
@@ -33,7 +32,6 @@ import com.raulastete.lazypizza.presentation.ui.components.LPPrimaryButton
 import com.raulastete.lazypizza.presentation.ui.components.MessageFullScreen
 import com.raulastete.lazypizza.presentation.ui.components.product.OrderItemCard
 import com.raulastete.lazypizza.presentation.ui.components.product.RecommendedProductCard
-import com.raulastete.lazypizza.presentation.ui.model.OrderItemCardUi
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 import com.raulastete.lazypizza.presentation.ui.theme.LocalDeviceMode
 import org.koin.androidx.compose.koinViewModel
@@ -286,48 +284,5 @@ private fun TwoColumnCartList(
                 )
             ) { }
         }
-    }
-}
-
-
-@Preview(showBackground = true, name = "Empty List")
-@Composable
-private fun EmptyCartScreenContentPreview() {
-    AppTheme {
-        CartScreenContent(
-            uiState = CartUiState(),
-            navigateToMenu = {},
-            onAddRecommendedProductToCart = {},
-            onRemoveOrderItemFromCartClick = {},
-            onIncreaseOrderItemCount = { _, _ -> },
-            onDecreaseOrderItemCount = { _, _ -> }
-        )
-    }
-}
-
-@Preview(showBackground = true, name = "WithContent")
-@Composable
-private fun CartScreenContentPreview() {
-    AppTheme {
-        CartScreenContent(
-            uiState = CartUiState(
-                orderItems = listOf(
-                    OrderItemCardUi(
-                        id = 0L,
-                        imageUrl = "",
-                        totalPrice = "$10.00",
-                        name = "Product 1",
-                        unitPrice = "$10.00",
-                        count = 1,
-                        toppings = null
-                    )
-                )
-            ),
-            navigateToMenu = {},
-            onAddRecommendedProductToCart = {},
-            onRemoveOrderItemFromCartClick = {},
-            onIncreaseOrderItemCount = { _, _ -> },
-            onDecreaseOrderItemCount = { _, _ -> }
-        )
     }
 }

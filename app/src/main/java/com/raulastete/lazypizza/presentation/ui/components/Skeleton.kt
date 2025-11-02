@@ -14,37 +14,32 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.composed
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.RectangleShape
 import androidx.compose.ui.graphics.Shape
-import androidx.compose.ui.graphics.TileMode
+import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
+import com.raulastete.lazypizza.presentation.ui.theme.WhisperGray
 
 
 @Composable
-fun Skeleton(
-    modifier: Modifier = Modifier,
-    shape: Shape
+fun ShimmerContainer(
+    content: @Composable (brush: Brush) -> Unit
 ) {
-    Box(modifier = modifier.shimmerBackground(shape))
-}
-
-fun Modifier.shimmerBackground(shape: Shape = RectangleShape): Modifier = composed {
-    val transition = rememberInfiniteTransition()
-
+    val transition = rememberInfiniteTransition(label = "shimmerTransition")
     val translateAnimation by transition.animateFloat(
         initialValue = 0f,
-        targetValue = 400f,
+        targetValue = 1000f, // Un valor grande para cubrir toda la pantalla
         animationSpec = infiniteRepeatable(
             tween(durationMillis = 1500, easing = LinearOutSlowInEasing),
             RepeatMode.Restart
         ),
+        label = "shimmerTranslateAnimation"
     )
+
     val shimmerColors = listOf(
         Color.LightGray.copy(alpha = 0.7f),
         Color.LightGray.copy(alpha = 0.8f),
@@ -54,9 +49,18 @@ fun Modifier.shimmerBackground(shape: Shape = RectangleShape): Modifier = compos
         colors = shimmerColors,
         start = Offset(translateAnimation, translateAnimation),
         end = Offset(translateAnimation + 100f, translateAnimation + 100f),
-        tileMode = TileMode.Mirror,
     )
-    return@composed background(brush, shape)
+
+    content(brush)
+}
+
+@Composable
+fun Skeleton(
+    modifier: Modifier = Modifier,
+    shape: Shape,
+    brush: Brush
+) {
+    Box(modifier = modifier.background(brush, shape))
 }
 
 @Preview
@@ -64,8 +68,11 @@ fun Modifier.shimmerBackground(shape: Shape = RectangleShape): Modifier = compos
 private fun SkeletonPreview() {
     AppTheme {
         Skeleton(
-            modifier = Modifier.fillMaxWidth().height(60.dp),
-            shape = RoundedCornerShape(50.dp)
+            modifier = Modifier
+                .fillMaxWidth()
+                .height(60.dp),
+            shape = RoundedCornerShape(50.dp),
+            brush = SolidColor(WhisperGray)
         )
     }
 }

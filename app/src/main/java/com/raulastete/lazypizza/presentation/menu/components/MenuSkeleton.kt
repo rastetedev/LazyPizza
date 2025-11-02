@@ -9,68 +9,78 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.raulastete.lazypizza.presentation.ui.components.ShimmerContainer
 import com.raulastete.lazypizza.presentation.ui.components.Skeleton
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 
 @Composable
 fun MenuSkeleton() {
-    Column(
-        Modifier
-            .background(AppTheme.colorScheme.background)
-            .padding(16.dp)
-            .statusBarsPadding()
-    ) {
 
-        Skeleton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(120.dp), shape = RoundedCornerShape(28.dp)
-        )
+    ShimmerContainer { brush ->
+        Column(
+            Modifier
+                .background(AppTheme.colorScheme.background)
+                .padding(16.dp)
+                .statusBarsPadding()
+        ) {
 
-        Spacer(Modifier.height(16.dp))
+            Skeleton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(120.dp),
+                shape = RoundedCornerShape(28.dp),
+                brush = brush
+            )
 
-        Skeleton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(58.dp), shape = RoundedCornerShape(28.dp)
-        )
+            Spacer(Modifier.height(16.dp))
 
-        Spacer(Modifier.height(16.dp))
+            Skeleton(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(58.dp),
+                shape = RoundedCornerShape(28.dp),
+                brush = brush
+            )
 
-        LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-            items(4) {
-                Skeleton(
-                    modifier = Modifier
-                        .width(80.dp)
-                        .height(40.dp), shape = RoundedCornerShape(8.dp)
-                )
+            Spacer(Modifier.height(16.dp))
+
+            LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                items(4) {
+                    Skeleton(
+                        modifier = Modifier
+                            .width(80.dp)
+                            .height(40.dp),
+                        shape = RoundedCornerShape(8.dp),
+                        brush = brush
+                    )
+                }
             }
-        }
 
-        Spacer(Modifier.height(16.dp))
+            Spacer(Modifier.height(16.dp))
 
-        LazyColumn(verticalArrangement = Arrangement.spacedBy(8.dp)) {
-            item {
-                Skeleton(
-                    modifier = Modifier
-                        .width(80.dp)
-                        .height(40.dp),
-                    shape = RoundedCornerShape(8.dp)
-                )
-            }
-            items(6) {
+            Skeleton(
+                modifier = Modifier
+                    .width(80.dp)
+                    .height(40.dp),
+                shape = RoundedCornerShape(8.dp),
+                brush = brush
+            )
+
+            repeat(3) {
+                Spacer(Modifier.height(8.dp))
+
                 Skeleton(
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(120.dp),
-                    shape = RoundedCornerShape(8.dp)
+                    shape = RoundedCornerShape(8.dp),
+                    brush = brush
                 )
             }
         }
