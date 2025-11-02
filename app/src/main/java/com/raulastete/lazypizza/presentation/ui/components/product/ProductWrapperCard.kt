@@ -20,7 +20,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Text
-import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.tooling.preview.Preview
 import coil3.compose.AsyncImage
 
@@ -66,7 +65,7 @@ fun ProductWrapperCard(
                     .background(color = AppTheme.colorScheme.surfaceHighest),
                 contentAlignment = Alignment.Center
             ) {
-                AsyncImage(model = imageUrl, contentDescription = null, contentScale = ContentScale.FillBounds)
+                AsyncImage(model = imageUrl, contentDescription = null)
             }
 
             content()
