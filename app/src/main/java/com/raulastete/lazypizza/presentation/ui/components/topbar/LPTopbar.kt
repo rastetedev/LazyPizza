@@ -1,14 +1,12 @@
-package com.raulastete.lazypizza.presentation.ui.components
+package com.raulastete.lazypizza.presentation.ui.components.topbar
 
-import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
+import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -24,22 +22,20 @@ import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LPTopbar(
-    modifier: Modifier,
-    backgroundColor: Color = AppTheme.colorScheme.background
+    modifier: Modifier
 ) {
-    Row(
-        modifier = modifier
-            .height(
-                TopAppBarDefaults.MediumAppBarCollapsedHeight
-            )
-            .background(backgroundColor)
-            .padding(horizontal = 16.dp),
-        horizontalArrangement = Arrangement.SpaceBetween,
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        AppLogo()
-        StorePhoneNumber()
-    }
+    TopAppBar(
+        colors = TopAppBarDefaults.topAppBarColors(
+            containerColor = AppTheme.colorScheme.background
+        ),
+        modifier = modifier,
+        title = {
+            AppLogo()
+        },
+        actions = {
+            StorePhoneNumber()
+        }
+    )
 }
 
 @Composable

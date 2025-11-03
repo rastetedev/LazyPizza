@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -20,14 +19,15 @@ import com.raulastete.lazypizza.presentation.ui.components.Skeleton
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 
 @Composable
-fun MenuScreenContentSkeleton() {
+fun MenuScreenContentSkeleton(
+    modifier: Modifier = Modifier
+) {
 
     ShimmerContainer { brush ->
         Column(
-            Modifier
+            modifier
                 .background(AppTheme.colorScheme.background)
-                .padding(16.dp)
-                .statusBarsPadding()
+                .padding(horizontal = 16.dp)
         ) {
 
             Skeleton(

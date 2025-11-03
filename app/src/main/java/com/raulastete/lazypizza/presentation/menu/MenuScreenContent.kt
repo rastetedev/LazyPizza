@@ -2,7 +2,9 @@ package com.raulastete.lazypizza.presentation.menu
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.lazy.grid.GridCells.Fixed
 import androidx.compose.foundation.lazy.grid.GridItemSpan
@@ -59,7 +61,6 @@ fun MenuScreenContent(
         modifier = modifier,
         state = lazyGridState,
         columns = Fixed(2),
-        contentPadding = PaddingValues(vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp),
         horizontalArrangement = Arrangement.spacedBy(8.dp),
     ) {
@@ -146,6 +147,10 @@ fun MenuScreenContent(
                     )
                 }
             }
+
+            item {
+                Spacer(Modifier.height(32.dp))
+            }
         }
     }
 }
@@ -159,13 +164,13 @@ private fun navigateToStickyHeader(
     val headerIndex = menu.keys.indexOfFirst { it.name == categoryName.uppercase() }
     if (headerIndex == -1) return
 
-    var absoluteIndex = 4 // For banner, search bar, categories, empty message
+    var absoluteIndex = 3 // For banner, search bar, categories
     menu.entries.take(headerIndex).forEach { entry ->
         absoluteIndex += 1 // 1 por el header
         absoluteIndex += entry.value.size // N por los ítems
     }
 
     coroutineScope.launch {
-        lazyGridState.animateScrollToItem(absoluteIndex, scrollOffset = 32)
+        lazyGridState.animateScrollToItem(absoluteIndex)
     }
 }

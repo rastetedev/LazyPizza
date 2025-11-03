@@ -9,7 +9,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import com.raulastete.lazypizza.R
-import com.raulastete.lazypizza.presentation.ui.components.LPCenterTopbar
+import com.raulastete.lazypizza.presentation.ui.components.topbar.LPCenterTopbar
 import com.raulastete.lazypizza.presentation.ui.components.MessageFullScreen
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 

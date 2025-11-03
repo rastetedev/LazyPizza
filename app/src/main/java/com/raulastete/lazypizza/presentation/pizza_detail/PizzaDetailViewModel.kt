@@ -9,7 +9,7 @@ import com.raulastete.lazypizza.domain.repository.CartRepository
 import com.raulastete.lazypizza.domain.repository.MenuRepository
 import com.raulastete.lazypizza.presentation.ui.model.PizzaCardUi
 import com.raulastete.lazypizza.presentation.ui.model.ToppingCardUi
-import com.raulastete.lazypizza.presentation.ui.navigation.menu_navigation.PizzaDetailDestination.Companion.PIZZA_ID_ARG
+import com.raulastete.lazypizza.presentation.ui.navigation.MenuRoute.Pizza.Companion.PIZZA_ID_ARG
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow

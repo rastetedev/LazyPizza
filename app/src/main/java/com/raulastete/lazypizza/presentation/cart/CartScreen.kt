@@ -28,8 +28,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.raulastete.lazypizza.R
 import com.raulastete.lazypizza.domain.entity.Product
 import com.raulastete.lazypizza.presentation.ui.DeviceMode
-import com.raulastete.lazypizza.presentation.ui.components.FadingEdgeVerticalList
-import com.raulastete.lazypizza.presentation.ui.components.LPCenterTopbar
+import com.raulastete.lazypizza.presentation.ui.components.topbar.LPCenterTopbar
 import com.raulastete.lazypizza.presentation.ui.components.LPPrimaryButton
 import com.raulastete.lazypizza.presentation.ui.components.MessageFullScreen
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
@@ -127,73 +126,80 @@ private fun SingleColumnCartList(
 ) {
     val lazyListState = rememberLazyListState()
 
-    FadingEdgeVerticalList(
+    LazyColumn(
         modifier = modifier
             .fillMaxWidth(),
-        topFadeHeight = 60.dp,
-        bottomFadeHeight = 100.dp,
-        listState = lazyListState,
+        state = lazyListState,
+        verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        LazyColumn(
-            state = lazyListState,
-            verticalArrangement = Arrangement.spacedBy(8.dp)
-        ) {
-            items(uiState.orderItems, key = { it.id }) { orderItem ->
-                OrderItemCard(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp),
-                    orderItemCardUi = orderItem,
-                    onClickIncreaseCount = { onIncreaseOrderItemCount(orderItem.id, orderItem.count) },
-                    onClickDecreaseCount = { onDecreaseOrderItemCount(orderItem.id, orderItem.count) },
-                    onClickRemoveFromCart = { onRemoveOrderItemFromCartClick(orderItem.id) }
-                )
-            }
+        items(uiState.orderItems, key = { it.id }) { orderItem ->
+            OrderItemCard(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 16.dp),
+                orderItemCardUi = orderItem,
+                onClickIncreaseCount = {
+                    onIncreaseOrderItemCount(
+                        orderItem.id,
+                        orderItem.count
+                    )
+                },
+                onClickDecreaseCount = {
+                    onDecreaseOrderItemCount(
+                        orderItem.id,
+                        orderItem.count
+                    )
+                },
+                onClickRemoveFromCart = { onRemoveOrderItemFromCartClick(orderItem.id) }
+            )
+        }
 
-            if (uiState.recommendedItems.isNotEmpty()) {
-                item(key = "recommended_section") {
-                    Column {
-                        Spacer(Modifier.height(12.dp))
+        if (uiState.recommendedItems.isNotEmpty()) {
+            item(key = "recommended_section") {
+                Column {
+                    Spacer(Modifier.height(12.dp))
 
-                        Text(
-                            modifier = Modifier.padding(horizontal = 16.dp),
-                            text = stringResource(R.string.recommended_section_title),
-                            style = AppTheme.typography.label2Semibold.copy(color = AppTheme.colorScheme.textSecondary)
-                        )
+                    Text(
+                        modifier = Modifier.padding(horizontal = 16.dp),
+                        text = stringResource(R.string.recommended_section_title),
+                        style = AppTheme.typography.label2Semibold.copy(color = AppTheme.colorScheme.textSecondary)
+                    )
 
-                        Spacer(Modifier.height(8.dp))
+                    Spacer(Modifier.height(8.dp))
 
-                        LazyRow(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            item { Spacer(Modifier.width(16.dp)) }
-                            items(uiState.recommendedItems, key = { it.id }) { product ->
-                                RecommendedProductCard(
-                                    product = product,
-                                    onAddToCartClick = {
-                                        onAddRecommendedProductToCart(product)
-                                    }
-                                )
-                            }
-                            item { Spacer(Modifier.width(16.dp)) }
+                    LazyRow(
+                        modifier = Modifier
+                            .fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(8.dp)
+                    ) {
+                        item { Spacer(Modifier.width(16.dp)) }
+                        items(uiState.recommendedItems, key = { it.id }) { product ->
+                            RecommendedProductCard(
+                                product = product,
+                                onAddToCartClick = {
+                                    onAddRecommendedProductToCart(product)
+                                }
+                            )
                         }
+                        item { Spacer(Modifier.width(16.dp)) }
                     }
                 }
             }
+        }
 
-            item(key = "checkout_button") {
-                Column {
-                    Spacer(Modifier.height(12.dp))
-                    LPPrimaryButton(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
-                        text = stringResource(R.string.proceed_to_checkout_button, uiState.totalPrice)
-                    ) { }
-                    Spacer(Modifier.height(16.dp))
-                }
+        item(key = "checkout_button") {
+            Column {
+                Spacer(Modifier.height(12.dp))
+                LPPrimaryButton(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp),
+                    text = stringResource(
+                        R.string.proceed_to_checkout_button,
+                        uiState.totalPrice
+                    )
+                ) { }
+                Spacer(Modifier.height(16.dp))
             }
         }
     }
@@ -209,9 +215,11 @@ private fun TwoColumnCartList(
     onRemoveOrderItemFromCartClick: (Long) -> Unit
 ) {
     Row(modifier) {
+        val lazyListState = rememberLazyListState()
+
         LazyColumn(
-            modifier = Modifier
-                .weight(1f),
+            modifier = Modifier.weight(1f),
+            state = lazyListState,
             verticalArrangement = Arrangement.spacedBy(8.dp),
         ) {
             items(uiState.orderItems, key = { it.id }) { orderItem ->
@@ -262,9 +270,11 @@ private fun TwoColumnCartList(
                     )
                     Spacer(Modifier.height(8.dp))
 
+                    val horizontalListState = rememberLazyListState()
+
                     LazyRow(
-                        modifier = Modifier
-                            .fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth(),
+                        state = horizontalListState,
                         horizontalArrangement = Arrangement.spacedBy(8.dp)
                     ) {
                         item { Spacer(Modifier.width(8.dp)) }

@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.presentation.ui.components
+package com.raulastete.lazypizza.presentation.ui.components.topbar
 
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.material3.CenterAlignedTopAppBar

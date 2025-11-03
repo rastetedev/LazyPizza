@@ -10,7 +10,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.raulastete.lazypizza.domain.entity.Product
-import com.raulastete.lazypizza.presentation.ui.components.LPTopbar
+import com.raulastete.lazypizza.presentation.ui.components.topbar.LPTopbar
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 import org.koin.androidx.compose.koinViewModel
 
@@ -51,7 +51,11 @@ private fun MenuScreen(
 
         when {
             uiState.isLoading -> {
-                MenuScreenContentSkeleton()
+                MenuScreenContentSkeleton(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .padding(contentPadding)
+                )
             }
 
             else -> {
