@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,6 +19,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.raulastete.lazypizza.R
 import com.raulastete.lazypizza.presentation.ui.components.LPIconButton
 import com.raulastete.lazypizza.presentation.ui.components.product.ProductQuantityControl
@@ -40,26 +43,28 @@ fun OrderItemCard(
     ) {
         Column(
             Modifier
-                .weight(1f)
                 .fillMaxHeight()
                 .padding(horizontal = 16.dp, vertical = 12.dp),
             verticalArrangement = Arrangement.SpaceBetween
         ) {
-            Row(Modifier.fillMaxWidth()) {
+            Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
                 Text(
+                    modifier = Modifier.weight(1f),
                     text = orderItemCardUi.name,
+                    maxLines = 2,
                     textAlign = TextAlign.Start,
                     overflow = TextOverflow.Ellipsis,
                     style = AppTheme.typography.body1Medium,
                     color = AppTheme.colorScheme.textPrimary
                 )
 
-                Spacer(Modifier.weight(1f))
-
-                LPIconButton(
-                    icon = R.drawable.ic_trash,
-                    onClick = onClickRemoveFromCart
-                )
+                Row {
+                    Spacer(Modifier.width(8.dp))
+                    LPIconButton(
+                        icon = R.drawable.ic_trash,
+                        onClick = onClickRemoveFromCart
+                    )
+                }
             }
 
             Spacer(Modifier.weight(1f))
@@ -76,29 +81,45 @@ fun OrderItemCard(
             }
 
             Row(
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                ProductQuantityControl(
-                    count = orderItemCardUi.count,
-                    onClickDecreaseCount = onClickDecreaseCount,
-                    onClickIncreaseCount = onClickIncreaseCount,
-                    isDecreaseButtonEnabled = orderItemCardUi.canDecreaseQuantity
-                )
-
-                Spacer(Modifier.weight(1f))
-
-                Column(horizontalAlignment = Alignment.End) {
-                    Text(
-                        text = orderItemCardUi.totalPrice,
-                        style = AppTheme.typography.title1Semibold,
-                        color = AppTheme.colorScheme.textPrimary
+                Row {
+                    ProductQuantityControl(
+                        count = orderItemCardUi.count,
+                        onClickDecreaseCount = onClickDecreaseCount,
+                        onClickIncreaseCount = onClickIncreaseCount,
+                        isDecreaseButtonEnabled = orderItemCardUi.canDecreaseQuantity
                     )
-                    Text(
-                        "${orderItemCardUi.count} x ${orderItemCardUi.unitPrice}",
-                        style = AppTheme.typography.body4Regular,
-                        color = AppTheme.colorScheme.textSecondary
-                    )
+                    Spacer(Modifier.width(8.dp))
+                }
+
+                Row {
+                    Column(
+                        horizontalAlignment = Alignment.End
+                    ) {
+                        Text(
+                            text = orderItemCardUi.totalPrice,
+                            style = AppTheme.typography.title1Semibold,
+                            autoSize = TextAutoSize.StepBased(
+                                minFontSize = 12.sp,
+                                maxFontSize = AppTheme.typography.title1Semibold.fontSize,
+                            ),
+                            maxLines = 1,
+                            color = AppTheme.colorScheme.textPrimary
+                        )
+                        Text(
+                            "${orderItemCardUi.count} x ${orderItemCardUi.unitPrice}",
+                            autoSize = TextAutoSize.StepBased(
+                                minFontSize = 12.sp,
+                                maxFontSize = AppTheme.typography.body4Regular.fontSize,
+                            ),
+                            maxLines = 1,
+                            style = AppTheme.typography.body4Regular,
+                            color = AppTheme.colorScheme.textSecondary
+                        )
+                    }
                 }
             }
         }

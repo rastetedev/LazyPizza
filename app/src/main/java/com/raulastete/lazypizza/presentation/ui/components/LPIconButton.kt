@@ -2,6 +2,7 @@ package com.raulastete.lazypizza.presentation.ui.components
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.layout.requiredSize
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedIconButton
@@ -23,7 +24,7 @@ fun LPIconButton(
     onClick: () -> Unit,
 ) {
     OutlinedIconButton(
-        modifier = Modifier.size(22.dp),
+        modifier = Modifier.requiredSize(22.dp),
         onClick = onClick,
         enabled = enabled,
         border = BorderStroke(

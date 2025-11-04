@@ -15,6 +15,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -43,7 +44,7 @@ fun LPGhostButton(
                 color =AppTheme.colorScheme.primary8,
                 shape = AppTheme.shape.button
             )
-            .padding(horizontal = 24.dp, vertical = 10.dp),
+            .padding(10.dp),
     ) {
         Text(
             text = text,
@@ -53,6 +54,7 @@ fun LPGhostButton(
             ),
             style = AppTheme.typography.title3,
             color = AppTheme.colorScheme.primary,
+            overflow = TextOverflow.Ellipsis,
             maxLines = 1
         )
     }

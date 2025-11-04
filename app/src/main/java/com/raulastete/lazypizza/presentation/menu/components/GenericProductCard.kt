@@ -9,6 +9,9 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.requiredSizeIn
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -17,6 +20,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.raulastete.lazypizza.R
 import com.raulastete.lazypizza.domain.entity.Product
 import com.raulastete.lazypizza.presentation.ui.components.LPGhostButton
@@ -87,24 +91,30 @@ private fun ColumnScope.ZeroItemsContent(
         color = AppTheme.colorScheme.textPrimary
     )
 
-    Spacer(Modifier.weight(1f))
-
     Row(
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = price,
+            autoSize = TextAutoSize.StepBased(
+                minFontSize = 12.sp,
+                maxFontSize = AppTheme.typography.title1Semibold.fontSize,
+            ),
+            maxLines = 1,
             textAlign = TextAlign.Start,
             style = AppTheme.typography.title1Semibold,
             color = AppTheme.colorScheme.textPrimary
         )
-        Spacer(Modifier.weight(1f))
-
-        LPGhostButton(
-            text = "Add to cart",
-            onClick = onClickAddToCart
-        )
+        Row {
+            Spacer(Modifier.width(8.dp))
+            LPGhostButton(
+                modifier = Modifier.requiredSizeIn(minWidth = 85.dp),
+                text = "Add to cart",
+                onClick = onClickAddToCart
+            )
+        }
     }
 }
 
@@ -120,17 +130,17 @@ private fun ColumnScope.NonZeroItemsContent(
     onClickRemoveFromCart: () -> Unit
 ) {
 
-    Row(Modifier.fillMaxWidth()) {
+    Row(Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween) {
         Text(
+            modifier = Modifier.weight(1f),
             text = name,
             textAlign = TextAlign.Start,
-            overflow = TextOverflow.Ellipsis,
+            maxLines = 2,
+            overflow = TextOverflow.Clip,
             style = AppTheme.typography.body1Medium,
             color = AppTheme.colorScheme.textPrimary
         )
-
-        Spacer(Modifier.weight(1f))
-
+        Spacer(Modifier.width(8.dp))
         LPIconButton(
             icon = R.drawable.ic_trash,
             onClick = onClickRemoveFromCart
@@ -140,6 +150,7 @@ private fun ColumnScope.NonZeroItemsContent(
     Spacer(Modifier.weight(1f))
 
     Row(
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -149,16 +160,27 @@ private fun ColumnScope.NonZeroItemsContent(
             onClickIncreaseCount = onClickIncreaseCount
         )
 
-        Spacer(Modifier.weight(1f))
-
-        Column(horizontalAlignment = Alignment.End) {
+        Column(
+            modifier = Modifier.padding(start = 8.dp),
+            horizontalAlignment = Alignment.End
+        ) {
             Text(
                 text = price,
+                autoSize = TextAutoSize.StepBased(
+                    minFontSize = 12.sp,
+                    maxFontSize = AppTheme.typography.title1Semibold.fontSize,
+                ),
+                maxLines = 1,
                 style = AppTheme.typography.title1Semibold,
                 color = AppTheme.colorScheme.textPrimary
             )
             Text(
                 "$count x $totalPrice",
+                autoSize = TextAutoSize.StepBased(
+                    minFontSize = 12.sp,
+                    maxFontSize = AppTheme.typography.body4Regular.fontSize,
+                ),
+                maxLines = 1,
                 style = AppTheme.typography.body4Regular,
                 color = AppTheme.colorScheme.textSecondary
             )

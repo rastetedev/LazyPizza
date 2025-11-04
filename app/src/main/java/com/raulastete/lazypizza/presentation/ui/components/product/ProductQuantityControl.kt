@@ -3,12 +3,14 @@ package com.raulastete.lazypizza.presentation.ui.components.product
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.widthIn
+import androidx.compose.foundation.text.TextAutoSize
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.raulastete.lazypizza.R
 import com.raulastete.lazypizza.presentation.ui.components.LPIconButton
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
@@ -38,9 +40,13 @@ fun ProductQuantityControl(
             text = count.toString(),
             textAlign = TextAlign.Center,
             modifier = Modifier
-                .widthIn(min = 40.dp, max = 80.dp),
+                .widthIn(min = 30.dp, max = 50.dp),
             style = AppTheme.typography.title2,
             maxLines = 1,
+            autoSize = TextAutoSize.StepBased(
+                minFontSize = 12.sp,
+                maxFontSize = AppTheme.typography.title2.fontSize,
+            ),
             color = AppTheme.colorScheme.textPrimary
         )
 
