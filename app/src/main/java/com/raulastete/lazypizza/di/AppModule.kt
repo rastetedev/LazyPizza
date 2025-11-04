@@ -52,7 +52,7 @@ val appModule = module {
             orderItemToppingDao = get()
         )
     }
-    viewModel { PizzaDetailViewModel(menuRepository = get(), cartRepository = get(), savedStateHandle = get()) }
+    viewModel { PizzaDetailViewModel(menuRepository = get(), cartRepository = get()) }
     viewModel { MenuViewModel(menuRepository = get(), cartRepository = get()) }
     viewModel { CartViewModel(menuRepository = get(), cartRepository = get()) }
 }

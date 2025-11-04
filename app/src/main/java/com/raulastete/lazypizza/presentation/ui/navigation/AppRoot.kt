@@ -13,10 +13,13 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.toRoute
+import com.raulastete.lazypizza.domain.entity.Product
 import com.raulastete.lazypizza.presentation.cart.CartScreen
 import com.raulastete.lazypizza.presentation.menu.MenuScreen
 import com.raulastete.lazypizza.presentation.order_history.OrderHistoryScreen
 import com.raulastete.lazypizza.presentation.pizza_detail.PizzaDetailScreen
+import kotlin.reflect.typeOf
 
 @Composable
 fun AppRoot() {
@@ -68,8 +71,15 @@ private fun LazyPizzaNavHost(
                     )
                 }
 
-                composable<MenuRoute.Pizza> {
-                    PizzaDetailScreen(navigateBack = { innerNavController.navigateUp() })
+                composable<MenuRoute.Pizza>(
+                    typeMap = mapOf(
+                        typeOf<Product>() to CustomNavType.ProductType
+                    )
+                ) {
+                    val pizzaProduct = it.toRoute<MenuRoute.Pizza>().pizza
+                    PizzaDetailScreen(
+                        pizzaProduct = pizzaProduct,
+                        navigateBack = { innerNavController.navigateUp() })
                 }
             }
         }

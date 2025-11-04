@@ -17,7 +17,7 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun MenuScreen(
     viewModel: MenuViewModel = koinViewModel<MenuViewModel>(),
-    navigateToPizzaDetail: (String) -> Unit
+    navigateToPizzaDetail: (Product) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -37,7 +37,7 @@ fun MenuScreen(
 private fun MenuScreen(
     uiState: MenuUiState,
     searchProduct: (productName: String) -> Unit,
-    navigateToPizzaDetail: (pizzaId: String) -> Unit,
+    navigateToPizzaDetail: (product: Product) -> Unit,
     addGenericProductToCard: (product: Product) -> Unit,
     removeGenericProductFromCard: (genericProductId: String) -> Unit,
     increaseGenericProductCount: (genericProductId: String, count: Int) -> Unit,

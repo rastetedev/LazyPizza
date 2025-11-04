@@ -5,6 +5,7 @@ import androidx.annotation.StringRes
 import androidx.navigation.NavGraph.Companion.findStartDestination
 import androidx.navigation.NavHostController
 import com.raulastete.lazypizza.R
+import com.raulastete.lazypizza.domain.entity.Product
 import kotlinx.serialization.Serializable
 
 sealed interface Route {
@@ -23,11 +24,7 @@ sealed interface MenuRoute {
     data object Home : MenuRoute
 
     @Serializable
-    data class Pizza(val pizzaId: String) : MenuRoute {
-        companion object {
-            const val PIZZA_ID_ARG = "pizzaId"
-        }
-    }
+    data class Pizza(val pizza: Product) : MenuRoute
 }
 
 data class LazyPizzaTopLevelDestination(

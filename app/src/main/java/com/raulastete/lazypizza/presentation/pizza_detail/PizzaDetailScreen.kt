@@ -39,10 +39,10 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.raulastete.lazypizza.R
+import com.raulastete.lazypizza.domain.entity.Product
 import com.raulastete.lazypizza.presentation.ui.DeviceMode
 import com.raulastete.lazypizza.presentation.ui.components.FadingEdgeVerticalList
 import com.raulastete.lazypizza.presentation.ui.components.LPPrimaryButton
-import com.raulastete.lazypizza.presentation.ui.model.PizzaCardUi
 import com.raulastete.lazypizza.presentation.ui.model.ToppingCardUi
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 import com.raulastete.lazypizza.presentation.ui.theme.LocalDeviceMode
@@ -50,18 +50,21 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun PizzaDetailScreen(
+    pizzaProduct: Product,
     viewModel: PizzaDetailViewModel = koinViewModel<PizzaDetailViewModel>(),
     navigateBack: () -> Unit
 ) {
-
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
+
     ProductDetailScreenContent(
         uiState = uiState,
+        pizzaProduct = pizzaProduct,
         navigateBack = navigateBack,
         onSelectTopping = viewModel::selectTopping,
         onIncreaseToppingQuantity = viewModel::increaseToppingQuantity,
         onDecreaseToppingQuantity = viewModel::decreaseToppingQuantity,
-        addPizzaToCart = viewModel::addPizzaToCart
+        onTotalPrice = { viewModel.getTotalPrice(pizzaProduct.unitPrice) },
+        addPizzaToCart = { viewModel.addPizzaToCart(pizzaProduct) }
     )
 }
 
@@ -70,9 +73,11 @@ fun PizzaDetailScreen(
 private fun ProductDetailScreenContent(
     uiState: PizzaDetailUiState,
     navigateBack: () -> Unit,
+    pizzaProduct: Product,
     onSelectTopping: (toppingId: String) -> Unit,
     onIncreaseToppingQuantity: (toppingId: String) -> Unit,
     onDecreaseToppingQuantity: (toppingId: String) -> Unit,
+    onTotalPrice: () -> String,
     addPizzaToCart: () -> Unit
 ) {
 
@@ -92,31 +97,37 @@ private fun ProductDetailScreenContent(
             DeviceMode.PhoneLandscape, DeviceMode.TabletLandscape -> {
                 TwoColumnMode(
                     uiState = uiState,
+                    pizzaProduct = pizzaProduct,
                     navigateBack = navigateBack,
                     onSelectTopping = onSelectTopping,
                     onIncreaseToppingQuantity = onIncreaseToppingQuantity,
                     onDecreaseToppingQuantity = onDecreaseToppingQuantity,
+                    onTotalPrice = onTotalPrice,
                     addPizzaToCart = addPizzaToCart
                 )
             }
 
             DeviceMode.PhonePortrait -> SingleColumnPhoneMode(
                 uiState = uiState,
+                pizzaProduct = pizzaProduct,
                 navigateBack = navigateBack,
                 onSelectTopping = onSelectTopping,
                 onIncreaseToppingQuantity = onIncreaseToppingQuantity,
                 onDecreaseToppingQuantity = onDecreaseToppingQuantity,
-                addPizzaToCart = addPizzaToCart
+                addPizzaToCart = addPizzaToCart,
+                onTotalPrice = onTotalPrice
             )
 
 
             DeviceMode.TabletPortrait -> SingleColumnTabletMode(
                 uiState = uiState,
+                pizzaProduct = pizzaProduct,
                 navigateBack = navigateBack,
                 onSelectTopping = onSelectTopping,
                 onIncreaseToppingQuantity = onIncreaseToppingQuantity,
                 onDecreaseToppingQuantity = onDecreaseToppingQuantity,
-                addPizzaToCart = addPizzaToCart
+                addPizzaToCart = addPizzaToCart,
+                onTotalPrice = onTotalPrice
             )
         }
     }
@@ -125,11 +136,13 @@ private fun ProductDetailScreenContent(
 @Composable
 private fun SingleColumnPhoneMode(
     uiState: PizzaDetailUiState,
+    pizzaProduct: Product,
     navigateBack: () -> Unit,
     onSelectTopping: (toppingId: String) -> Unit,
     onIncreaseToppingQuantity: (toppingId: String) -> Unit,
     onDecreaseToppingQuantity: (toppingId: String) -> Unit,
-    addPizzaToCart: () -> Unit
+    addPizzaToCart: () -> Unit,
+    onTotalPrice: () -> String
 ) {
     Box(Modifier.background(AppTheme.colorScheme.surfaceHigher)) {
         Column {
@@ -145,7 +158,7 @@ private fun SingleColumnPhoneMode(
                 )
                 PizzaImage(
                     modifier = Modifier.fillMaxWidth(),
-                    imageUrl = uiState.pizzaUi?.product?.imageUrl
+                    imageUrl = pizzaProduct.imageUrl
                 )
                 PizzaInfo(
                     Modifier
@@ -156,7 +169,7 @@ private fun SingleColumnPhoneMode(
                         )
                         .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
                         .padding(16.dp),
-                    pizzaCardUi = uiState.pizzaUi
+                    product = pizzaProduct
                 )
             }
             ToppingsSection(
@@ -176,7 +189,7 @@ private fun SingleColumnPhoneMode(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
                 .padding(bottom = 32.dp),
-            text = "Add to Cart for ${uiState.totalPrice}",
+            text = onTotalPrice(),
             onClick = addPizzaToCart
         )
     }
@@ -185,10 +198,12 @@ private fun SingleColumnPhoneMode(
 @Composable
 private fun SingleColumnTabletMode(
     uiState: PizzaDetailUiState,
+    pizzaProduct: Product,
     navigateBack: () -> Unit,
     onSelectTopping: (toppingId: String) -> Unit,
     onIncreaseToppingQuantity: (toppingId: String) -> Unit,
     onDecreaseToppingQuantity: (toppingId: String) -> Unit,
+    onTotalPrice: () -> String,
     addPizzaToCart: () -> Unit
 ) {
 
@@ -205,7 +220,7 @@ private fun SingleColumnTabletMode(
             )
             PizzaImage(
                 modifier = Modifier.fillMaxWidth(),
-                imageUrl = uiState.pizzaUi?.product?.imageUrl
+                imageUrl = pizzaProduct.imageUrl
             )
             PizzaInfo(
                 Modifier
@@ -216,7 +231,7 @@ private fun SingleColumnTabletMode(
                     )
                     .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
                     .padding(16.dp),
-                pizzaCardUi = uiState.pizzaUi
+                product = pizzaProduct
             )
         }
         ToppingsSection(
@@ -235,7 +250,7 @@ private fun SingleColumnTabletMode(
                 .fillMaxWidth()
                 .padding(horizontal = 16.dp)
                 .padding(bottom = 32.dp),
-            text = "Add to Cart for ${uiState.totalPrice}",
+            text = onTotalPrice(),
             onClick = addPizzaToCart
         )
     }
@@ -244,7 +259,9 @@ private fun SingleColumnTabletMode(
 @Composable
 private fun TwoColumnMode(
     uiState: PizzaDetailUiState,
+    pizzaProduct: Product,
     navigateBack: () -> Unit,
+    onTotalPrice: () -> String,
     onSelectTopping: (toppingId: String) -> Unit,
     onIncreaseToppingQuantity: (toppingId: String) -> Unit,
     onDecreaseToppingQuantity: (toppingId: String) -> Unit,
@@ -263,14 +280,14 @@ private fun TwoColumnMode(
             )
             PizzaImage(
                 modifier = Modifier.fillMaxWidth(),
-                imageUrl = uiState.pizzaUi?.product?.imageUrl
+                imageUrl = pizzaProduct.imageUrl
             )
             Spacer(Modifier.height(20.dp))
             PizzaInfo(
                 Modifier
                     .fillMaxWidth()
                     .padding(16.dp),
-                pizzaCardUi = uiState.pizzaUi
+                product = pizzaProduct
             )
         }
         Box(
@@ -301,7 +318,7 @@ private fun TwoColumnMode(
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
                     .padding(bottom = 32.dp),
-                text = "Add to Cart for ${uiState.totalPrice}",
+                text = onTotalPrice(),
                 onClick = addPizzaToCart
             )
         }
@@ -342,12 +359,12 @@ private fun PizzaImage(modifier: Modifier = Modifier, imageUrl: String?) {
 }
 
 @Composable
-private fun PizzaInfo(modifier: Modifier, pizzaCardUi: PizzaCardUi?) {
+private fun PizzaInfo(modifier: Modifier, product: Product) {
     Column(
         modifier = modifier
     ) {
         Text(
-            pizzaCardUi?.product?.name.orEmpty(),
+            product.name,
             style = AppTheme.typography.title1Semibold,
             color = AppTheme.colorScheme.textPrimary,
             modifier = Modifier.fillMaxWidth(),
@@ -355,7 +372,7 @@ private fun PizzaInfo(modifier: Modifier, pizzaCardUi: PizzaCardUi?) {
         )
         Spacer(Modifier.height(4.dp))
         Text(
-            pizzaCardUi?.product?.description.orEmpty(),
+            product.description,
             style = AppTheme.typography.body3Regular,
             color = AppTheme.colorScheme.textSecondary,
             modifier = Modifier.fillMaxWidth(),
@@ -424,11 +441,20 @@ private fun ProductDetailScreenContentPreview() {
     AppTheme {
         ProductDetailScreenContent(
             uiState = PizzaDetailUiState(),
+            pizzaProduct = Product(
+                id = "1",
+                name = "Pizza Pepperoni",
+                description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore",
+                imageUrl = "",
+                unitPrice = 10.0,
+                categoryId = ""
+            ),
             navigateBack = {},
             onSelectTopping = {},
             onIncreaseToppingQuantity = {},
             onDecreaseToppingQuantity = {},
-            addPizzaToCart = {}
+            addPizzaToCart = {},
+            onTotalPrice = { "" }
         )
     }
 }

@@ -3,7 +3,9 @@ package com.raulastete.lazypizza.domain.entity
 import com.raulastete.lazypizza.domain.entity.Category.Companion.DRINKS_CATEGORY_ID
 import com.raulastete.lazypizza.domain.entity.Category.Companion.PIZZA_CATEGORY_ID
 import com.raulastete.lazypizza.domain.entity.Category.Companion.SAUCES_CATEGORY_ID
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class Product(
     val id: String,
     val name: String,

@@ -61,7 +61,13 @@ class CartViewModel(
                         id = orderItem.id,
                         name = orderItem.product.name,
                         imageUrl = orderItem.product.imageUrl,
-                        unitPrice = "$${orderUnitPrice}",
+                        unitPrice = "$${
+                            String.format(
+                                Locale.US,
+                                "%.2f",
+                                orderUnitPrice
+                            )
+                        }",
                         count = orderItem.count,
                         totalPrice = "$${
                             String.format(

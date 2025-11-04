@@ -87,26 +87,5 @@ class MenuRemoteDataSource(
             categoriesRef.removeEventListener(listener)
         }
     }
-    
-    fun getProductById(productId: String): Flow<ProductDto?> = callbackFlow {
-        val listener = object : ValueEventListener {
-            override fun onDataChange(snapshot: DataSnapshot) {
-                val product = snapshot.getValue(ProductDto::class.java)
-                product?.id = snapshot.key ?: ""
-                trySend(product)
-                close()
-            }
-
-            override fun onCancelled(error: DatabaseError) {
-                close(error.toException())
-            }
-        }
-
-        productsRef.child(productId).addListenerForSingleValueEvent(listener)
-
-        awaitClose {
-           //Not needed
-        }
-    }
 
 }

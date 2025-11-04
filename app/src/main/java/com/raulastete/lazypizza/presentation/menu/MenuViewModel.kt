@@ -143,11 +143,18 @@ class MenuViewModel(
 
     fun decreaseGenericProductCount(genericProductId: String, currentCount: Int) {
         viewModelScope.launch {
-            cartRepository.updateGenericProductCount(
-                productId = genericProductId,
-                userId = userId,
-                count = currentCount - 1
-            )
+            if (currentCount == 1) {
+                cartRepository.removeGenericProductFromCart(
+                    productId = genericProductId,
+                    userId = userId
+                )
+            } else {
+                cartRepository.updateGenericProductCount(
+                    productId = genericProductId,
+                    userId = userId,
+                    count = currentCount - 1
+                )
+            }
         }
     }
 

@@ -81,9 +81,9 @@ class DefaultCartRepository(
         product: Product,
         toppings: Map<Topping, Int>,
         userId: String
-    ) : Boolean {
+    ): Boolean {
 
-        val existingOrderItems =  orderItemDao.getOrderItemsByProductId(product.id, userId)
+        val existingOrderItems = orderItemDao.getOrderItemsByProductId(product.id, userId)
 
         for (item in existingOrderItems) {
             val toppingsInCart = orderItemToppingDao.getToppingsByOrderItem(item.id)
@@ -147,9 +147,9 @@ class DefaultCartRepository(
         userId: String,
         count: Int
     ) {
-
         val orderItemDto =
-            orderItemDao.getOrderItemsByProductId(productId = productId, userId = userId).firstOrNull()
+            orderItemDao.getOrderItemsByProductId(productId = productId, userId = userId)
+                .firstOrNull()
 
         if (orderItemDto != null) {
             orderItemDao.upsertOrderItem(

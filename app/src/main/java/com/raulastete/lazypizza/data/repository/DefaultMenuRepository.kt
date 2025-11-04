@@ -69,19 +69,4 @@ class DefaultMenuRepository(
             list.map { dto -> dto.toDomain() }
         }
     }
-
-    override fun getProductById(productId: String): Flow<Product?> {
-        return remoteDataSource.getProductById(productId).map { productDto ->
-            productDto?.let {
-                Product(
-                    id = productDto.id,
-                    name = productDto.name,
-                    description = productDto.description,
-                    unitPrice = productDto.price,
-                    imageUrl = productDto.imageUrl,
-                    categoryId = productDto.category
-                )
-            }
-        }
-    }
 }

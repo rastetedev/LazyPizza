@@ -11,5 +11,4 @@ interface MenuRepository {
 
     fun getRecommendedProducts(): Flow<List<Product>>
     fun getToppings(): Flow<List<Topping>>
-    fun getProductById(productId: String): Flow<Product?>
 }

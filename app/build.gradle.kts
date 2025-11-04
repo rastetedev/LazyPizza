@@ -2,7 +2,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    id("org.jetbrains.kotlin.plugin.serialization") version "2.2.20"
+    alias(libs.plugins.kotlin.serialization.json)
     id("com.google.gms.google-services")
     id("com.google.devtools.ksp") version "2.2.20-2.0.3"
 }
@@ -73,6 +73,8 @@ dependencies {
     implementation(libs.koin.core)
     implementation(libs.koin.android)
     implementation(libs.koin.compose)
+
+    implementation(libs.kotlin.serialization.json)
 
     implementation(libs.coil.compose)
     implementation(libs.coil.network.okhttp)

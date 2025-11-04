@@ -11,7 +11,7 @@ import com.raulastete.lazypizza.presentation.ui.model.PizzaCardUi
 fun MenuCard(
     modifier: Modifier = Modifier,
     menuCardUi: MenuCardUi,
-    navigateToPizzaDetail: (String) -> Unit,
+    navigateToPizzaDetail: (Product) -> Unit,
     addGenericProductToCard: (Product) -> Unit,
     removeGenericProductFromCard: (String) -> Unit,
     increaseGenericProductCount: (String, Int) -> Unit,
@@ -22,7 +22,7 @@ fun MenuCard(
             modifier = modifier,
             pizzaCardUi = menuCardUi
         ) {
-            navigateToPizzaDetail(menuCardUi.product.id)
+            navigateToPizzaDetail(menuCardUi.product)
         }
 
         is GenericProductCardUi -> GenericProductCard(

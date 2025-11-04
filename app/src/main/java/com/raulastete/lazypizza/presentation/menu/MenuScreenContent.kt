@@ -37,7 +37,7 @@ import kotlinx.coroutines.launch
 fun MenuScreenContent(
     modifier: Modifier,
     uiState: MenuUiState,
-    navigateToPizzaDetail: (String) -> Unit,
+    navigateToPizzaDetail: (Product) -> Unit,
     addGenericProductToCard: (Product) -> Unit,
     searchProduct: (String) -> Unit,
     removeGenericProductFromCard: (String) -> Unit,
