@@ -7,10 +7,12 @@ import com.raulastete.lazypizza.domain.entity.Topping
 import com.raulastete.lazypizza.domain.repository.CartRepository
 import com.raulastete.lazypizza.domain.repository.MenuRepository
 import com.raulastete.lazypizza.presentation.ui.model.ToppingCardUi
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.collectLatest
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.util.Locale
@@ -22,6 +24,9 @@ class PizzaDetailViewModel(
 
     private val _uiState = MutableStateFlow(PizzaDetailUiState(isLoading = true))
     val uiState: StateFlow<PizzaDetailUiState> = _uiState.asStateFlow()
+
+    private val _event = Channel<PizzaDetailEvent?>()
+    val event = _event.receiveAsFlow()
 
     private val userId = "me"
 
@@ -95,7 +100,7 @@ class PizzaDetailViewModel(
 
         val toppingsPrice = getToppingsPrice()
 
-        return String.format(Locale.US, "Add to Cart for %.2f", pizzaUnitPrice + toppingsPrice)
+        return String.format(Locale.US, "Add to Cart for $%.2f", pizzaUnitPrice + toppingsPrice)
     }
 
     private fun getToppingsPrice(): Double {
@@ -112,11 +117,15 @@ class PizzaDetailViewModel(
                 selectedToppingsMap.put(toppingCardUi.topping, toppingCardUi.count)
             }
 
-            cartRepository.addOrUpdatePizzaInCart(
+            val result = cartRepository.addOrUpdatePizzaInCart(
                 product = product,
                 toppings = selectedToppingsMap,
                 userId = userId
             )
+
+            if(result){
+                _event.send(PizzaDetailEvent.OnPizzaAddedToCart)
+            }
         }
     }
 }
@@ -125,3 +134,7 @@ data class PizzaDetailUiState(
     val isLoading: Boolean = false,
     val toppingCardUis: List<ToppingCardUi> = emptyList(),
 )
+
+sealed interface PizzaDetailEvent {
+    object OnPizzaAddedToCart : PizzaDetailEvent
+}

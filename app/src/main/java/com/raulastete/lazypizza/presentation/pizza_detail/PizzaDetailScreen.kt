@@ -1,48 +1,20 @@
 package com.raulastete.lazypizza.presentation.pizza_detail
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
-import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.lazy.grid.GridCells
-import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
-import androidx.compose.foundation.lazy.grid.items
-import androidx.compose.foundation.lazy.grid.rememberLazyGridState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
-import androidx.compose.material3.FilledIconButton
-import androidx.compose.material3.Icon
-import androidx.compose.material3.IconButtonDefaults
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.vector.ImageVector
-import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
-import coil3.compose.AsyncImage
-import com.raulastete.lazypizza.R
 import com.raulastete.lazypizza.domain.entity.Product
+import com.raulastete.lazypizza.domain.entity.Topping
 import com.raulastete.lazypizza.presentation.ui.DeviceMode
-import com.raulastete.lazypizza.presentation.ui.components.FadingEdgeVerticalList
-import com.raulastete.lazypizza.presentation.ui.components.LPPrimaryButton
+import com.raulastete.lazypizza.presentation.ui.ObserveAsEvents
 import com.raulastete.lazypizza.presentation.ui.model.ToppingCardUi
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 import com.raulastete.lazypizza.presentation.ui.theme.LocalDeviceMode
@@ -56,7 +28,14 @@ fun PizzaDetailScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
-    ProductDetailScreenContent(
+    ObserveAsEvents(viewModel.event) {
+        when (it) {
+            PizzaDetailEvent.OnPizzaAddedToCart -> navigateBack()
+            else -> {}
+        }
+    }
+
+    PizzaDetailScreen(
         uiState = uiState,
         pizzaProduct = pizzaProduct,
         navigateBack = navigateBack,
@@ -70,7 +49,7 @@ fun PizzaDetailScreen(
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-private fun ProductDetailScreenContent(
+private fun PizzaDetailScreen(
     uiState: PizzaDetailUiState,
     navigateBack: () -> Unit,
     pizzaProduct: Product,
@@ -133,328 +112,121 @@ private fun ProductDetailScreenContent(
     }
 }
 
-@Composable
-private fun SingleColumnPhoneMode(
-    uiState: PizzaDetailUiState,
-    pizzaProduct: Product,
-    navigateBack: () -> Unit,
-    onSelectTopping: (toppingId: String) -> Unit,
-    onIncreaseToppingQuantity: (toppingId: String) -> Unit,
-    onDecreaseToppingQuantity: (toppingId: String) -> Unit,
-    addPizzaToCart: () -> Unit,
-    onTotalPrice: () -> String
-) {
-    Box(Modifier.background(AppTheme.colorScheme.surfaceHigher)) {
-        Column {
-            Column(
-                Modifier
-                    .background(AppTheme.colorScheme.background)
-            ) {
-                BackButton(
-                    modifier = Modifier
-                        .statusBarsPadding()
-                        .padding(start = 10.dp, top = 8.dp),
-                    onClick = navigateBack
-                )
-                PizzaImage(
-                    modifier = Modifier.fillMaxWidth(),
-                    imageUrl = pizzaProduct.imageUrl
-                )
-                PizzaInfo(
-                    Modifier
-                        .fillMaxWidth()
-                        .background(
-                            color = AppTheme.colorScheme.surfaceHigher,
-                            shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
-                        )
-                        .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-                        .padding(16.dp),
-                    product = pizzaProduct
-                )
-            }
-            ToppingsSection(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                toppings = uiState.toppingCardUis,
-                listPadding = PaddingValues(bottom = 64.dp),
-                onSelectTopping = onSelectTopping,
-                onIncreaseToppingQuantity = onIncreaseToppingQuantity,
-                onDecreaseToppingQuantity = onDecreaseToppingQuantity,
-            )
-        }
-        LPPrimaryButton(
-            modifier = Modifier
-                .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 32.dp),
-            text = onTotalPrice(),
-            onClick = addPizzaToCart
+private val samplePizza = Product(
+    id = "1",
+    name = "Pizza Margarita",
+    description = "La pizza margarita es una pizza típica de Nápoles (Italia), cuyos ingredientes son tomate, mozzarella, albahaca fresca, sal y aceite. Es la pizza napolitana más popular, junto con la marinera.",
+    unitPrice = 8.99,
+    imageUrl = "",
+    categoryId = "PIZZA"
+)
+
+private val sampleToppings = listOf(
+    Topping(id = "t1", name = "Extra Queso", unitPrice = 1.50, imageUrl = ""),
+    Topping(id = "t2", name = "Champiñones", unitPrice = 0.75, imageUrl = ""),
+    Topping(id = "t3", name = "Peperoni", unitPrice = 1.25, imageUrl = ""),
+    Topping(id = "t4", name = "Extra Queso", unitPrice = 1.50, imageUrl = ""),
+    Topping(id = "t5", name = "Champiñones", unitPrice = 0.75, imageUrl = ""),
+    Topping(id = "t6", name = "Peperoni", unitPrice = 1.25, imageUrl = ""),
+    Topping(id = "t7", name = "Extra Queso", unitPrice = 1.50, imageUrl = ""),
+    Topping(id = "t8", name = "Champiñones", unitPrice = 0.75, imageUrl = ""),
+    Topping(id = "t9", name = "Peperoni", unitPrice = 1.25, imageUrl = "")
+)
+
+private val sampleUiState = PizzaDetailUiState(
+    isLoading = false,
+    toppingCardUis = sampleToppings.map {
+        ToppingCardUi(
+            topping = it,
+            count = if (it.id == "t2") 1 else 0
         )
     }
-}
+)
 
+@Preview(name = "Phone Portrait", showBackground = true, widthDp = 360, heightDp = 780)
 @Composable
-private fun SingleColumnTabletMode(
-    uiState: PizzaDetailUiState,
-    pizzaProduct: Product,
-    navigateBack: () -> Unit,
-    onSelectTopping: (toppingId: String) -> Unit,
-    onIncreaseToppingQuantity: (toppingId: String) -> Unit,
-    onDecreaseToppingQuantity: (toppingId: String) -> Unit,
-    onTotalPrice: () -> String,
-    addPizzaToCart: () -> Unit
-) {
+private fun PizzaDetailScreenPreview_SingleColumnPhone() {
 
-    Column(Modifier.background(AppTheme.colorScheme.surfaceHigher)) {
-        Column(
-            Modifier
-                .background(AppTheme.colorScheme.background)
-        ) {
-            BackButton(
-                modifier = Modifier
-                    .statusBarsPadding()
-                    .padding(start = 10.dp, top = 8.dp),
-                onClick = navigateBack
-            )
-            PizzaImage(
-                modifier = Modifier.fillMaxWidth(),
-                imageUrl = pizzaProduct.imageUrl
-            )
-            PizzaInfo(
-                Modifier
-                    .fillMaxWidth()
-                    .background(
-                        color = AppTheme.colorScheme.surfaceHigher,
-                        shape = RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp)
-                    )
-                    .clip(RoundedCornerShape(topStart = 24.dp, topEnd = 24.dp))
-                    .padding(16.dp),
-                product = pizzaProduct
-            )
-        }
-        ToppingsSection(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-                .weight(1f),
-            toppings = uiState.toppingCardUis,
-            listPadding = PaddingValues(bottom = 64.dp),
-            onSelectTopping = onSelectTopping,
-            onIncreaseToppingQuantity = onIncreaseToppingQuantity,
-            onDecreaseToppingQuantity = onDecreaseToppingQuantity,
-        )
-        LPPrimaryButton(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp)
-                .padding(bottom = 32.dp),
-            text = onTotalPrice(),
-            onClick = addPizzaToCart
-        )
-    }
-}
-
-@Composable
-private fun TwoColumnMode(
-    uiState: PizzaDetailUiState,
-    pizzaProduct: Product,
-    navigateBack: () -> Unit,
-    onTotalPrice: () -> String,
-    onSelectTopping: (toppingId: String) -> Unit,
-    onIncreaseToppingQuantity: (toppingId: String) -> Unit,
-    onDecreaseToppingQuantity: (toppingId: String) -> Unit,
-    addPizzaToCart: () -> Unit
-) {
-    Row(
-        Modifier
-            .background(color = AppTheme.colorScheme.background)
-            .statusBarsPadding(),
+    CompositionLocalProvider(
+        LocalDeviceMode provides DeviceMode.PhonePortrait,
     ) {
-        Column(Modifier.weight(1f)) {
-            BackButton(
-                modifier = Modifier
-                    .padding(start = 10.dp, top = 8.dp),
-                onClick = navigateBack
+        AppTheme {
+            PizzaDetailScreen(
+                uiState = sampleUiState,
+                navigateBack = {},
+                pizzaProduct = samplePizza,
+                onSelectTopping = {},
+                onIncreaseToppingQuantity = {},
+                onDecreaseToppingQuantity = {},
+                onTotalPrice = { "Add to Cart for $100.00" },
+                addPizzaToCart = {}
             )
-            PizzaImage(
-                modifier = Modifier.fillMaxWidth(),
-                imageUrl = pizzaProduct.imageUrl
-            )
-            Spacer(Modifier.height(20.dp))
-            PizzaInfo(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                product = pizzaProduct
-            )
-        }
-        Box(
-            Modifier
-                .weight(1f)
-                .background(
-                    color = AppTheme.colorScheme.surfaceHigher,
-                    shape = RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)
-                )
-                .shadow(
-                    elevation = 2.dp,
-                    shape = RoundedCornerShape(topStart = 16.dp, bottomStart = 16.dp)
-                ),
-        ) {
-            ToppingsSection(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(16.dp),
-                toppings = uiState.toppingCardUis,
-                listPadding = PaddingValues(bottom = 64.dp),
-                onSelectTopping = onSelectTopping,
-                onIncreaseToppingQuantity = onIncreaseToppingQuantity,
-                onDecreaseToppingQuantity = onDecreaseToppingQuantity
-            )
-            LPPrimaryButton(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 32.dp),
-                text = onTotalPrice(),
-                onClick = addPizzaToCart
-            )
-        }
-    }
-
-}
-
-@Composable
-private fun BackButton(modifier: Modifier, onClick: () -> Unit) {
-    FilledIconButton(
-        modifier = modifier,
-        onClick = onClick, colors = IconButtonDefaults.filledIconButtonColors(
-            containerColor = AppTheme.colorScheme.textSecondary8
-        )
-    ) {
-        Icon(
-            imageVector = ImageVector.vectorResource(R.drawable.ic_arrow_left),
-            contentDescription = null,
-            tint = AppTheme.colorScheme.textSecondary
-        )
-    }
-}
-
-@Composable
-private fun PizzaImage(modifier: Modifier = Modifier, imageUrl: String?) {
-    Box(
-        modifier = modifier,
-        contentAlignment = Alignment.Center
-    ) {
-        AsyncImage(
-            model = imageUrl,
-            contentDescription = null,
-            modifier = Modifier.size(200.dp),
-            contentScale = ContentScale.FillHeight,
-            alignment = Alignment.BottomCenter
-        )
-    }
-}
-
-@Composable
-private fun PizzaInfo(modifier: Modifier, product: Product) {
-    Column(
-        modifier = modifier
-    ) {
-        Text(
-            product.name,
-            style = AppTheme.typography.title1Semibold,
-            color = AppTheme.colorScheme.textPrimary,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Start
-        )
-        Spacer(Modifier.height(4.dp))
-        Text(
-            product.description,
-            style = AppTheme.typography.body3Regular,
-            color = AppTheme.colorScheme.textSecondary,
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Start
-        )
-    }
-}
-
-@Composable
-private fun ToppingsSection(
-    modifier: Modifier = Modifier,
-    toppings: List<ToppingCardUi>,
-    listPadding: PaddingValues,
-    onSelectTopping: (toppingId: String) -> Unit,
-    onIncreaseToppingQuantity: (toppingId: String) -> Unit,
-    onDecreaseToppingQuantity: (toppingId: String) -> Unit
-) {
-
-    val lazyGridState = rememberLazyGridState()
-
-    Column(
-        modifier = modifier
-    ) {
-        Text(
-            "ADD EXTRA TOPPINGS",
-            modifier = Modifier.fillMaxWidth(),
-            textAlign = TextAlign.Start,
-            style = AppTheme.typography.label2Semibold,
-            color = AppTheme.colorScheme.textSecondary
-        )
-        Spacer(Modifier.height(12.dp))
-
-        FadingEdgeVerticalList(
-            listState = lazyGridState,
-        ) {
-            LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
-                state = lazyGridState,
-                verticalArrangement = Arrangement.spacedBy(8.dp),
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                contentPadding = listPadding
-            ) {
-                items(toppings) {
-                    ToppingCard(
-                        modifier = Modifier.weight(1f),
-                        toppingCardUi = it,
-                        onClick = {
-                            onSelectTopping(it.topping.id)
-                        },
-                        onClickIncreaseCount = {
-                            onIncreaseToppingQuantity(it.topping.id)
-                        },
-                        onClickDecreaseCount = {
-                            onDecreaseToppingQuantity(it.topping.id)
-                        }
-                    )
-                }
-            }
         }
     }
 }
 
-@Preview
+@Preview(name = "Phone Portrait", showBackground = true, widthDp = 780, heightDp = 360)
 @Composable
-private fun ProductDetailScreenContentPreview() {
-    AppTheme {
-        ProductDetailScreenContent(
-            uiState = PizzaDetailUiState(),
-            pizzaProduct = Product(
-                id = "1",
-                name = "Pizza Pepperoni",
-                description = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore",
-                imageUrl = "",
-                unitPrice = 10.0,
-                categoryId = ""
-            ),
-            navigateBack = {},
-            onSelectTopping = {},
-            onIncreaseToppingQuantity = {},
-            onDecreaseToppingQuantity = {},
-            addPizzaToCart = {},
-            onTotalPrice = { "" }
-        )
+private fun PizzaDetailScreenPreview_TwoColumnPhone() {
+
+    CompositionLocalProvider(
+        LocalDeviceMode provides DeviceMode.PhoneLandscape,
+    ) {
+        AppTheme {
+            PizzaDetailScreen(
+                uiState = sampleUiState,
+                navigateBack = {},
+                pizzaProduct = samplePizza,
+                onSelectTopping = {},
+                onIncreaseToppingQuantity = {},
+                onDecreaseToppingQuantity = {},
+                onTotalPrice = { "Add to Cart for $100.00" },
+                addPizzaToCart = {}
+            )
+        }
+    }
+}
+
+@Preview(name = "Tablet Portrait", showBackground = true, widthDp = 800, heightDp = 1200)
+@Composable
+private fun PizzaDetailScreenPreview_SingleColumnTablet() {
+
+    CompositionLocalProvider(
+        LocalDeviceMode provides DeviceMode.TabletPortrait,
+    ) {
+        AppTheme {
+            PizzaDetailScreen(
+                uiState = sampleUiState,
+                navigateBack = {},
+                pizzaProduct = samplePizza,
+                onSelectTopping = {},
+                onIncreaseToppingQuantity = {},
+                onDecreaseToppingQuantity = {},
+                onTotalPrice = { "Add to Cart for $100.00" },
+                addPizzaToCart = {}
+            )
+        }
+    }
+}
+
+@Preview(name = "Tablet Landscape", showBackground = true, widthDp = 1200, heightDp = 800)
+@Composable
+private fun PizzaDetailScreenPreview_TwoColumnTablet() {
+
+    CompositionLocalProvider(
+        LocalDeviceMode provides DeviceMode.TabletLandscape,
+    ) {
+        AppTheme {
+            PizzaDetailScreen(
+                uiState = sampleUiState,
+                navigateBack = {},
+                pizzaProduct = samplePizza,
+                onSelectTopping = {},
+                onIncreaseToppingQuantity = {},
+                onDecreaseToppingQuantity = {},
+                onTotalPrice = { "Add to Cart for $100.00" },
+                addPizzaToCart = {}
+            )
+        }
     }
 }

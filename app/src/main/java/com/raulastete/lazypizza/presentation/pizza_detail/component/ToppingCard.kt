@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.presentation.pizza_detail
+package com.raulastete.lazypizza.presentation.pizza_detail.component
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
