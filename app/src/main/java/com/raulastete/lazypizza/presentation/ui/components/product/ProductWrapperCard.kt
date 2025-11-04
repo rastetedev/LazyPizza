@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.RowScope
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -62,7 +63,7 @@ fun ProductWrapperCard(
                     .background(color = AppTheme.colorScheme.surfaceHighest),
                 contentAlignment = Alignment.Center
             ) {
-                AsyncImage(model = imageUrl, contentDescription = null)
+                AsyncImage(model = imageUrl, contentDescription = null, modifier = Modifier.size(108.dp))
             }
 
             content()
