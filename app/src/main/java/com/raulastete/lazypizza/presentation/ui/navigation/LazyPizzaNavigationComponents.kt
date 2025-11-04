@@ -2,11 +2,13 @@ package com.raulastete.lazypizza.presentation.ui.navigation
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -18,11 +20,14 @@ import androidx.compose.material3.NavigationRailItem
 import androidx.compose.material3.NavigationRailItemDefaults
 import androidx.compose.material3.PermanentDrawerSheet
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteScaffoldLayout
 import androidx.compose.material3.adaptive.navigationsuite.NavigationSuiteType
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
+import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -80,7 +85,10 @@ fun LazyPizzaBottomNavigationBar(
     navigateToTopLevelDestination: (LazyPizzaTopLevelDestination) -> Unit
 ) {
     NavigationBar(
-        modifier = Modifier.fillMaxWidth(),
+        modifier = Modifier
+            .fillMaxWidth()
+            .shadow(elevation = 12.dp, shape = RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
+            .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp)),
         containerColor = AppTheme.colorScheme.surfaceHigher,
     ) {
         TOP_LEVEL_DESTINATIONS.forEach { topLevelDestination ->
@@ -118,41 +126,44 @@ fun LazyPizzaNavigationRail(
 ) {
     NavigationRail(
         modifier = Modifier.fillMaxHeight(),
-        containerColor = AppTheme.colorScheme.surfaceHigher,
+        containerColor = AppTheme.colorScheme.background,
     ) {
-        Column(
-            horizontalAlignment = Alignment.CenterHorizontally,
-            verticalArrangement = Arrangement.spacedBy(4.dp),
-        ) {
-            Spacer(Modifier.weight(1f))
-            TOP_LEVEL_DESTINATIONS.forEach { topLevelDestination ->
-                NavigationRailItem(
-                    selected = currentDestination.hasRoute(topLevelDestination),
-                    onClick = { navigateToTopLevelDestination(topLevelDestination) },
-                    icon = {
-                        Icon(
-                            painter = painterResource(id = topLevelDestination.icon),
-                            contentDescription = stringResource(
-                                id = topLevelDestination.title,
-                            ),
+        Row {
+            Column(
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.spacedBy(4.dp),
+            ) {
+                Spacer(Modifier.weight(1f))
+                TOP_LEVEL_DESTINATIONS.forEach { topLevelDestination ->
+                    NavigationRailItem(
+                        selected = currentDestination.hasRoute(topLevelDestination),
+                        onClick = { navigateToTopLevelDestination(topLevelDestination) },
+                        icon = {
+                            Icon(
+                                painter = painterResource(id = topLevelDestination.icon),
+                                contentDescription = stringResource(
+                                    id = topLevelDestination.title,
+                                ),
+                            )
+                        },
+                        label = {
+                            Text(
+                                stringResource(topLevelDestination.title),
+                                style = AppTheme.typography.title4
+                            )
+                        },
+                        colors = NavigationRailItemDefaults.colors(
+                            indicatorColor = AppTheme.colorScheme.primary8,
+                            unselectedIconColor = AppTheme.colorScheme.textSecondary,
+                            selectedIconColor = AppTheme.colorScheme.primary,
+                            selectedTextColor = AppTheme.colorScheme.textPrimary,
+                            unselectedTextColor = AppTheme.colorScheme.textSecondary
                         )
-                    },
-                    label = {
-                        Text(
-                            stringResource(topLevelDestination.title),
-                            style = AppTheme.typography.title4
-                        )
-                    },
-                    colors = NavigationRailItemDefaults.colors(
-                        indicatorColor = AppTheme.colorScheme.primary8,
-                        unselectedIconColor = AppTheme.colorScheme.textSecondary,
-                        selectedIconColor = AppTheme.colorScheme.primary,
-                        selectedTextColor = AppTheme.colorScheme.textPrimary,
-                        unselectedTextColor = AppTheme.colorScheme.textSecondary
                     )
-                )
+                }
+                Spacer(Modifier.weight(1f))
             }
-            Spacer(Modifier.weight(1f))
+            VerticalDivider()
         }
     }
 }
@@ -164,10 +175,9 @@ fun PermanentNavigationDrawerContent(
 ) {
     PermanentDrawerSheet(
         modifier = Modifier.sizeIn(minWidth = 200.dp, maxWidth = 300.dp),
-        drawerContainerColor = AppTheme.colorScheme.surfaceHigher,
+        drawerContainerColor = AppTheme.colorScheme.background,
     ) {
         Spacer(Modifier.weight(1f))
-
         Column(Modifier.padding(horizontal = 16.dp)) {
             TOP_LEVEL_DESTINATIONS.forEach { topLevelDestination ->
                 NavigationDrawerItem(
@@ -190,14 +200,13 @@ fun PermanentNavigationDrawerContent(
                         selectedContainerColor = AppTheme.colorScheme.primary8,
                         selectedIconColor = AppTheme.colorScheme.primary,
                         unselectedIconColor = AppTheme.colorScheme.textSecondary,
-                        selectedBadgeColor = AppTheme.colorScheme.primary,
-                        unselectedBadgeColor = AppTheme.colorScheme.primary
+                        selectedTextColor = AppTheme.colorScheme.textPrimary,
+                        unselectedTextColor = AppTheme.colorScheme.textSecondary
                     ),
                     onClick = { navigateToTopLevelDestination(topLevelDestination) },
                 )
             }
         }
-
         Spacer(Modifier.weight(1f))
     }
 }

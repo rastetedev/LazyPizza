@@ -40,7 +40,7 @@ fun ProductQuantityControl(
             text = count.toString(),
             textAlign = TextAlign.Center,
             modifier = Modifier
-                .widthIn(min = 30.dp, max = 50.dp),
+                .widthIn(min = 35.dp, max = 50.dp),
             style = AppTheme.typography.title2,
             maxLines = 1,
             autoSize = TextAutoSize.StepBased(
