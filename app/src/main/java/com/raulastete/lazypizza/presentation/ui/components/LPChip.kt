@@ -1,8 +1,8 @@
 package com.raulastete.lazypizza.presentation.ui.components
 
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.material3.AssistChip
 import androidx.compose.material3.AssistChipDefaults
-import androidx.compose.material3.ElevatedAssistChip
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -17,7 +17,7 @@ fun LPChip(
     text: String,
     onClick: () -> Unit,
 ) {
-    ElevatedAssistChip(
+    AssistChip(
         modifier = modifier,
         onClick = onClick,
         label = {
@@ -30,7 +30,6 @@ fun LPChip(
         colors = AssistChipDefaults.assistChipColors(
             containerColor = Color.Transparent,
         ),
-        elevation = null,
         border = BorderStroke(width = 1.dp, color = AppTheme.colorScheme.outline)
     )
 }
