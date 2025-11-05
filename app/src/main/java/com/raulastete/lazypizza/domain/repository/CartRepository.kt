@@ -7,7 +7,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface CartRepository {
 
-    suspend fun getCartItemsCountByUser(userId: String): Flow<Int>
+    fun getCartItemsCountByUser(userId: String): Flow<Int>
 
     suspend fun getOrderItemsByUser(userId: String): Flow<List<OrderItem>>
 

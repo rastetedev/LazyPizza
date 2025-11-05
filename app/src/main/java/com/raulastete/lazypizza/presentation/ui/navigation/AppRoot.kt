@@ -4,6 +4,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -15,16 +16,21 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import androidx.navigation.toRoute
 import com.raulastete.lazypizza.domain.entity.Product
+import com.raulastete.lazypizza.domain.repository.CartRepository
 import com.raulastete.lazypizza.presentation.cart.CartScreen
 import com.raulastete.lazypizza.presentation.menu.MenuScreen
 import com.raulastete.lazypizza.presentation.order_history.OrderHistoryScreen
 import com.raulastete.lazypizza.presentation.pizza_detail.PizzaDetailScreen
+import org.koin.compose.koinInject
 import kotlin.reflect.typeOf
 
 @Composable
 fun AppRoot() {
 
     val navController = rememberNavController()
+    val userId = "me" // TODO: Get from auth
+    val cartRepository = koinInject<CartRepository>()
+    val cartCount by cartRepository.getCartItemsCountByUser(userId).collectAsState(0)
 
     val navigationActions = remember(navController) { LazyPizzaNavigationActions(navController) }
     val navBackStackEntry by navController.currentBackStackEntryAsState()
@@ -32,12 +38,13 @@ fun AppRoot() {
 
     LazyPizzaNavigationWrapper(
         currentDestination = currentDestination,
+        cartCount = cartCount,
         navigateToTopLevelDestination = navigationActions::navigateTo
     ) {
         LazyPizzaNavHost(
             modifier = Modifier
                 .fillMaxSize()
-                .consumeWindowInsets(PaddingValues(100.dp)), //Hack to deal with NavigationSuiteScaffold
+                .consumeWindowInsets(PaddingValues(100.dp)), //Hack to deal with NavigationSuiteScaffold top spacer
             navController = navController
         )
     }

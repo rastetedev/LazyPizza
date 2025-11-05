@@ -6,9 +6,12 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.Badge
+import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -41,6 +44,7 @@ import com.raulastete.lazypizza.presentation.ui.theme.LocalDeviceMode
 @Composable
 fun LazyPizzaNavigationWrapper(
     currentDestination: NavDestination?,
+    cartCount: Int,
     navigateToTopLevelDestination: (LazyPizzaTopLevelDestination) -> Unit,
     content: @Composable () -> Unit,
 ) {
@@ -60,16 +64,19 @@ fun LazyPizzaNavigationWrapper(
             when (navLayoutType) {
                 NavigationSuiteType.NavigationBar -> LazyPizzaBottomNavigationBar(
                     currentDestination = currentDestination,
+                    cartCount = cartCount,
                     navigateToTopLevelDestination = navigateToTopLevelDestination,
                 )
 
                 NavigationSuiteType.NavigationRail -> LazyPizzaNavigationRail(
                     currentDestination = currentDestination,
+                    cartCount = cartCount,
                     navigateToTopLevelDestination = navigateToTopLevelDestination
                 )
 
                 NavigationSuiteType.NavigationDrawer -> PermanentNavigationDrawerContent(
                     currentDestination = currentDestination,
+                    cartCount = cartCount,
                     navigateToTopLevelDestination = navigateToTopLevelDestination,
                 )
             }
@@ -82,6 +89,7 @@ fun LazyPizzaNavigationWrapper(
 @Composable
 fun LazyPizzaBottomNavigationBar(
     currentDestination: NavDestination?,
+    cartCount: Int,
     navigateToTopLevelDestination: (LazyPizzaTopLevelDestination) -> Unit
 ) {
     NavigationBar(
@@ -96,10 +104,24 @@ fun LazyPizzaBottomNavigationBar(
                 selected = currentDestination.hasRoute(topLevelDestination),
                 onClick = { navigateToTopLevelDestination(topLevelDestination) },
                 icon = {
-                    Icon(
-                        painter = painterResource(id = topLevelDestination.icon),
-                        contentDescription = stringResource(id = topLevelDestination.title),
-                    )
+                    BadgedBox(
+                        badge = {
+                            if (topLevelDestination.route == Route.Cart && cartCount > 0) {
+                                Badge(
+                                    modifier = Modifier.offset(x = 8.dp, y = (-8).dp),
+                                    containerColor = AppTheme.colorScheme.primary,
+                                    contentColor = AppTheme.colorScheme.textOnPrimary
+                                ) {
+                                    Text(cartCount.toString())
+                                }
+                            }
+                        }
+                    ) {
+                        Icon(
+                            painter = painterResource(id = topLevelDestination.icon),
+                            contentDescription = stringResource(id = topLevelDestination.title),
+                        )
+                    }
                 },
                 label = {
                     Text(
@@ -122,6 +144,7 @@ fun LazyPizzaBottomNavigationBar(
 @Composable
 fun LazyPizzaNavigationRail(
     currentDestination: NavDestination?,
+    cartCount: Int,
     navigateToTopLevelDestination: (LazyPizzaTopLevelDestination) -> Unit
 ) {
     NavigationRail(
@@ -139,12 +162,24 @@ fun LazyPizzaNavigationRail(
                         selected = currentDestination.hasRoute(topLevelDestination),
                         onClick = { navigateToTopLevelDestination(topLevelDestination) },
                         icon = {
-                            Icon(
-                                painter = painterResource(id = topLevelDestination.icon),
-                                contentDescription = stringResource(
-                                    id = topLevelDestination.title,
-                                ),
-                            )
+                            BadgedBox(
+                                badge = {
+                                    if (topLevelDestination.route == Route.Cart && cartCount > 0) {
+                                        Badge(
+                                            modifier = Modifier.offset(x = 8.dp, y = (-8).dp),
+                                            containerColor = AppTheme.colorScheme.primary,
+                                            contentColor = AppTheme.colorScheme.textOnPrimary
+                                        ) {
+                                            Text(cartCount.toString())
+                                        }
+                                    }
+                                }
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = topLevelDestination.icon),
+                                    contentDescription = stringResource(id = topLevelDestination.title),
+                                )
+                            }
                         },
                         label = {
                             Text(
@@ -171,6 +206,7 @@ fun LazyPizzaNavigationRail(
 @Composable
 fun PermanentNavigationDrawerContent(
     currentDestination: NavDestination?,
+    cartCount: Int,
     navigateToTopLevelDestination: (LazyPizzaTopLevelDestination) -> Unit,
 ) {
     PermanentDrawerSheet(
@@ -203,6 +239,16 @@ fun PermanentNavigationDrawerContent(
                         selectedTextColor = AppTheme.colorScheme.textPrimary,
                         unselectedTextColor = AppTheme.colorScheme.textSecondary
                     ),
+                    badge = {
+                        if (topLevelDestination.route == Route.Cart && cartCount > 0) {
+                            Badge(
+                                containerColor = AppTheme.colorScheme.primary,
+                                contentColor = AppTheme.colorScheme.textOnPrimary
+                            ) {
+                                Text(cartCount.toString())
+                            }
+                        }
+                    },
                     onClick = { navigateToTopLevelDestination(topLevelDestination) },
                 )
             }

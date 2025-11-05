@@ -16,9 +16,12 @@ class DefaultCartRepository(
     private val orderItemDao: OrderItemDao,
     private val orderItemToppingDao: OrderItemToppingDao
 ) : CartRepository {
-    override suspend fun getCartItemsCountByUser(userId: String): Flow<Int> {
-        return getOrderItemsByUser(userId).map { orderItems ->
-            orderItems.sumOf { it.count }
+
+    override fun getCartItemsCountByUser(userId: String): Flow<Int> {
+        return orderItemDao.getOrderItemsByUser(userId).map { orderItemsDto ->
+            orderItemsDto.sumOf { dto ->
+                dto.count
+            }
         }
     }
 
