@@ -129,12 +129,3 @@ class PizzaDetailViewModel(
         }
     }
 }
-
-data class PizzaDetailUiState(
-    val isLoading: Boolean = false,
-    val toppingCardUis: List<ToppingCardUi> = emptyList(),
-)
-
-sealed interface PizzaDetailEvent {
-    object OnPizzaAddedToCart : PizzaDetailEvent
-}

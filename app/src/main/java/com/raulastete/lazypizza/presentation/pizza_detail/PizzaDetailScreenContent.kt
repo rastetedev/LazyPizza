@@ -27,6 +27,7 @@ import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 
 @Composable
 fun SingleColumnPhoneMode(
+    modifier: Modifier,
     uiState: PizzaDetailUiState,
     pizzaProduct: Product,
     navigateBack: () -> Unit,
@@ -36,7 +37,7 @@ fun SingleColumnPhoneMode(
     addPizzaToCart: () -> Unit,
     onTotalPrice: () -> String
 ) {
-    Box(Modifier.background(AppTheme.colorScheme.surfaceHigher)) {
+    Box(modifier.background(AppTheme.colorScheme.surfaceHigher)) {
         Column {
             Column(
                 Modifier
@@ -44,8 +45,7 @@ fun SingleColumnPhoneMode(
             ) {
                 BackButton(
                     modifier = Modifier
-                        .statusBarsPadding()
-                        .padding(start = 10.dp, top = 8.dp),
+                        .padding(start = 16.dp, top = 24.dp),
                     onClick = navigateBack
                 )
                 PizzaImage(
@@ -89,6 +89,7 @@ fun SingleColumnPhoneMode(
 
 @Composable
 fun SingleColumnTabletMode(
+    modifier: Modifier,
     uiState: PizzaDetailUiState,
     pizzaProduct: Product,
     navigateBack: () -> Unit,
@@ -99,7 +100,7 @@ fun SingleColumnTabletMode(
     addPizzaToCart: () -> Unit
 ) {
 
-    Column(Modifier.background(AppTheme.colorScheme.surfaceHigher)) {
+    Column(modifier.background(AppTheme.colorScheme.surfaceHigher)) {
         Column(
             Modifier
                 .background(AppTheme.colorScheme.background)
@@ -150,6 +151,7 @@ fun SingleColumnTabletMode(
 
 @Composable
 fun TwoColumnMode(
+    modifier : Modifier,
     uiState: PizzaDetailUiState,
     pizzaProduct: Product,
     navigateBack: () -> Unit,
@@ -160,9 +162,8 @@ fun TwoColumnMode(
     addPizzaToCart: () -> Unit
 ) {
     Row(
-        Modifier
+        modifier
             .background(color = AppTheme.colorScheme.background)
-            .statusBarsPadding(),
     ) {
         Column(Modifier.weight(1f)) {
             BackButton(

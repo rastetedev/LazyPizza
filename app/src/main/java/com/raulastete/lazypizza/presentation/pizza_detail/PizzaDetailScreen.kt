@@ -2,13 +2,17 @@ package com.raulastete.lazypizza.presentation.pizza_detail
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
+import androidx.compose.material3.Scaffold
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.hapticfeedback.HapticFeedbackType
+import androidx.compose.ui.platform.LocalHapticFeedback
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.raulastete.lazypizza.domain.entity.Product
@@ -28,28 +32,40 @@ fun PizzaDetailScreen(
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
+    val hapticFeedback = LocalHapticFeedback.current
+
     ObserveAsEvents(viewModel.event) {
         when (it) {
-            PizzaDetailEvent.OnPizzaAddedToCart -> navigateBack()
+            PizzaDetailEvent.OnPizzaAddedToCart -> {
+                hapticFeedback.performHapticFeedback(HapticFeedbackType.Confirm)
+                navigateBack()
+            }
+
             else -> {}
         }
     }
 
-    PizzaDetailScreen(
-        uiState = uiState,
-        pizzaProduct = pizzaProduct,
-        navigateBack = navigateBack,
-        onSelectTopping = viewModel::selectTopping,
-        onIncreaseToppingQuantity = viewModel::increaseToppingQuantity,
-        onDecreaseToppingQuantity = viewModel::decreaseToppingQuantity,
-        onTotalPrice = { viewModel.getTotalPrice(pizzaProduct.unitPrice) },
-        addPizzaToCart = { viewModel.addPizzaToCart(pizzaProduct) }
-    )
+    Scaffold { paddingValues ->
+        PizzaDetailScreen(
+            modifier = Modifier
+                .fillMaxSize()
+                .padding(paddingValues),
+            uiState = uiState,
+            pizzaProduct = pizzaProduct,
+            navigateBack = navigateBack,
+            onSelectTopping = viewModel::selectTopping,
+            onIncreaseToppingQuantity = viewModel::increaseToppingQuantity,
+            onDecreaseToppingQuantity = viewModel::decreaseToppingQuantity,
+            onTotalPrice = { viewModel.getTotalPrice(pizzaProduct.unitPrice) },
+            addPizzaToCart = { viewModel.addPizzaToCart(pizzaProduct) }
+        )
+    }
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 private fun PizzaDetailScreen(
+    modifier: Modifier = Modifier,
     uiState: PizzaDetailUiState,
     navigateBack: () -> Unit,
     pizzaProduct: Product,
@@ -64,53 +80,55 @@ private fun PizzaDetailScreen(
 
     if (uiState.isLoading) {
         Box(
-            Modifier
-                .fillMaxSize(),
+            Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
         ) {
             CircularProgressIndicator()
         }
-    } else {
+    }
 
-        when (deviceMode) {
-            DeviceMode.PhoneLandscape, DeviceMode.TabletLandscape -> {
-                TwoColumnMode(
-                    uiState = uiState,
-                    pizzaProduct = pizzaProduct,
-                    navigateBack = navigateBack,
-                    onSelectTopping = onSelectTopping,
-                    onIncreaseToppingQuantity = onIncreaseToppingQuantity,
-                    onDecreaseToppingQuantity = onDecreaseToppingQuantity,
-                    onTotalPrice = onTotalPrice,
-                    addPizzaToCart = addPizzaToCart
-                )
-            }
-
-            DeviceMode.PhonePortrait -> SingleColumnPhoneMode(
+    when (deviceMode) {
+        DeviceMode.PhoneLandscape, DeviceMode.TabletLandscape -> {
+            TwoColumnMode(
+                modifier = modifier,
                 uiState = uiState,
                 pizzaProduct = pizzaProduct,
                 navigateBack = navigateBack,
                 onSelectTopping = onSelectTopping,
                 onIncreaseToppingQuantity = onIncreaseToppingQuantity,
                 onDecreaseToppingQuantity = onDecreaseToppingQuantity,
-                addPizzaToCart = addPizzaToCart,
-                onTotalPrice = onTotalPrice
-            )
-
-
-            DeviceMode.TabletPortrait -> SingleColumnTabletMode(
-                uiState = uiState,
-                pizzaProduct = pizzaProduct,
-                navigateBack = navigateBack,
-                onSelectTopping = onSelectTopping,
-                onIncreaseToppingQuantity = onIncreaseToppingQuantity,
-                onDecreaseToppingQuantity = onDecreaseToppingQuantity,
-                addPizzaToCart = addPizzaToCart,
-                onTotalPrice = onTotalPrice
+                onTotalPrice = onTotalPrice,
+                addPizzaToCart = addPizzaToCart
             )
         }
+
+        DeviceMode.PhonePortrait -> SingleColumnPhoneMode(
+            modifier = modifier,
+            uiState = uiState,
+            pizzaProduct = pizzaProduct,
+            navigateBack = navigateBack,
+            onSelectTopping = onSelectTopping,
+            onIncreaseToppingQuantity = onIncreaseToppingQuantity,
+            onDecreaseToppingQuantity = onDecreaseToppingQuantity,
+            addPizzaToCart = addPizzaToCart,
+            onTotalPrice = onTotalPrice
+        )
+
+
+        DeviceMode.TabletPortrait -> SingleColumnTabletMode(
+            modifier = modifier,
+            uiState = uiState,
+            pizzaProduct = pizzaProduct,
+            navigateBack = navigateBack,
+            onSelectTopping = onSelectTopping,
+            onIncreaseToppingQuantity = onIncreaseToppingQuantity,
+            onDecreaseToppingQuantity = onDecreaseToppingQuantity,
+            addPizzaToCart = addPizzaToCart,
+            onTotalPrice = onTotalPrice
+        )
     }
 }
+
 
 private val samplePizza = Product(
     id = "1",
