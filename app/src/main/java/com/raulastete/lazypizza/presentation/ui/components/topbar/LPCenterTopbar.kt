@@ -16,7 +16,6 @@ fun LPCenterTopbar(
     modifier: Modifier,
     title: String,
 ) {
-
     CenterAlignedTopAppBar(
         modifier = modifier,
         title = {

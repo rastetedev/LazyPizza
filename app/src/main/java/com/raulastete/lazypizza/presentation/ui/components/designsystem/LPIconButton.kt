@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.presentation.ui.components
+package com.raulastete.lazypizza.presentation.ui.components.designsystem
 
 import androidx.annotation.DrawableRes
 import androidx.compose.foundation.BorderStroke

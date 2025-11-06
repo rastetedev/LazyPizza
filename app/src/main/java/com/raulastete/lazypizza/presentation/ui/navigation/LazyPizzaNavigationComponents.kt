@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.sizeIn
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Badge
 import androidx.compose.material3.BadgedBox
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -38,6 +37,7 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavDestination
 import androidx.navigation.NavDestination.Companion.hasRoute
 import com.raulastete.lazypizza.presentation.ui.DeviceMode
+import com.raulastete.lazypizza.presentation.ui.components.designsystem.LPBadge
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 import com.raulastete.lazypizza.presentation.ui.theme.LocalDeviceMode
 
@@ -104,30 +104,13 @@ fun LazyPizzaBottomNavigationBar(
                 selected = currentDestination.hasRoute(topLevelDestination),
                 onClick = { navigateToTopLevelDestination(topLevelDestination) },
                 icon = {
-                    BadgedBox(
-                        badge = {
-                            if (topLevelDestination.route == Route.Cart && cartCount > 0) {
-                                Badge(
-                                    modifier = Modifier.offset(x = 8.dp, y = (-8).dp),
-                                    containerColor = AppTheme.colorScheme.primary,
-                                    contentColor = AppTheme.colorScheme.textOnPrimary
-                                ) {
-                                    Text(cartCount.toString())
-                                }
-                            }
-                        }
-                    ) {
-                        Icon(
-                            painter = painterResource(id = topLevelDestination.icon),
-                            contentDescription = stringResource(id = topLevelDestination.title),
-                        )
-                    }
+                    NavigationItemIcon(
+                        topLevelDestination = topLevelDestination,
+                        cartCount = cartCount
+                    )
                 },
                 label = {
-                    Text(
-                        stringResource(topLevelDestination.title),
-                        style = AppTheme.typography.title4
-                    )
+                    NavigationItemLabel(topLevelDestination = topLevelDestination)
                 },
                 colors = NavigationBarItemDefaults.colors(
                     indicatorColor = AppTheme.colorScheme.primary8,
@@ -162,30 +145,13 @@ fun LazyPizzaNavigationRail(
                         selected = currentDestination.hasRoute(topLevelDestination),
                         onClick = { navigateToTopLevelDestination(topLevelDestination) },
                         icon = {
-                            BadgedBox(
-                                badge = {
-                                    if (topLevelDestination.route == Route.Cart && cartCount > 0) {
-                                        Badge(
-                                            modifier = Modifier.offset(x = 8.dp, y = (-8).dp),
-                                            containerColor = AppTheme.colorScheme.primary,
-                                            contentColor = AppTheme.colorScheme.textOnPrimary
-                                        ) {
-                                            Text(cartCount.toString())
-                                        }
-                                    }
-                                }
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = topLevelDestination.icon),
-                                    contentDescription = stringResource(id = topLevelDestination.title),
-                                )
-                            }
+                            NavigationItemIcon(
+                                topLevelDestination = topLevelDestination,
+                                cartCount = cartCount
+                            )
                         },
                         label = {
-                            Text(
-                                stringResource(topLevelDestination.title),
-                                style = AppTheme.typography.title4
-                            )
+                            NavigationItemLabel(topLevelDestination = topLevelDestination)
                         },
                         colors = NavigationRailItemDefaults.colors(
                             indicatorColor = AppTheme.colorScheme.primary8,
@@ -219,10 +185,9 @@ fun PermanentNavigationDrawerContent(
                 NavigationDrawerItem(
                     selected = currentDestination.hasRoute(topLevelDestination),
                     label = {
-                        Text(
-                            text = stringResource(id = topLevelDestination.title),
+                        NavigationItemLabel(
                             modifier = Modifier.padding(horizontal = 16.dp),
-                            style = AppTheme.typography.title4
+                            topLevelDestination = topLevelDestination
                         )
                     },
                     icon = {
@@ -241,12 +206,7 @@ fun PermanentNavigationDrawerContent(
                     ),
                     badge = {
                         if (topLevelDestination.route == Route.Cart && cartCount > 0) {
-                            Badge(
-                                containerColor = AppTheme.colorScheme.primary,
-                                contentColor = AppTheme.colorScheme.textOnPrimary
-                            ) {
-                                Text(cartCount.toString())
-                            }
+                            LPBadge(cartCount = cartCount)
                         }
                     },
                     onClick = { navigateToTopLevelDestination(topLevelDestination) },
@@ -255,6 +215,40 @@ fun PermanentNavigationDrawerContent(
         }
         Spacer(Modifier.weight(1f))
     }
+}
+
+@Composable
+private fun NavigationItemIcon(
+    topLevelDestination: LazyPizzaTopLevelDestination,
+    cartCount: Int
+) {
+    BadgedBox(
+        badge = {
+            if (topLevelDestination.route == Route.Cart && cartCount > 0) {
+                LPBadge(
+                    modifier = Modifier.offset(x = 8.dp, y = (-8).dp),
+                    cartCount = cartCount
+                )
+            }
+        }
+    ) {
+        Icon(
+            painter = painterResource(id = topLevelDestination.icon),
+            contentDescription = stringResource(id = topLevelDestination.title),
+        )
+    }
+}
+
+@Composable
+private fun NavigationItemLabel(
+    modifier: Modifier = Modifier,
+    topLevelDestination: LazyPizzaTopLevelDestination
+) {
+    Text(
+        modifier = modifier,
+        text = stringResource(topLevelDestination.title),
+        style = AppTheme.typography.title4
+    )
 }
 
 fun NavDestination?.hasRoute(destination: LazyPizzaTopLevelDestination): Boolean =

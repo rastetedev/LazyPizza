@@ -8,6 +8,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
+import com.raulastete.lazypizza.presentation.ui.components.designsystem.LPPrimaryButton
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 
 @Composable
@@ -22,7 +23,7 @@ fun MessageFullScreen(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Spacer(Modifier.weight(1f))
+        Spacer(Modifier.height(120.dp))
         Text(title, style = AppTheme.typography.title1Medium)
         Text(
             subtitle,
@@ -33,6 +34,5 @@ fun MessageFullScreen(
         LPPrimaryButton(text = buttonText) {
             onClick()
         }
-        Spacer(Modifier.weight(2f))
     }
 }

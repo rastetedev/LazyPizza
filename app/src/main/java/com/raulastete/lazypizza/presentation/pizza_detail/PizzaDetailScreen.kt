@@ -41,25 +41,21 @@ fun PizzaDetailScreen(
                 navigateBack()
             }
 
-            else -> {}
+            else -> Unit
         }
     }
 
-    Scaffold { paddingValues ->
-        PizzaDetailScreen(
-            modifier = Modifier
-                .fillMaxSize()
-                .padding(paddingValues),
-            uiState = uiState,
-            pizzaProduct = pizzaProduct,
-            navigateBack = navigateBack,
-            onSelectTopping = viewModel::selectTopping,
-            onIncreaseToppingQuantity = viewModel::increaseToppingQuantity,
-            onDecreaseToppingQuantity = viewModel::decreaseToppingQuantity,
-            onTotalPrice = { viewModel.getTotalPrice(pizzaProduct.unitPrice) },
-            addPizzaToCart = { viewModel.addPizzaToCart(pizzaProduct) }
-        )
-    }
+    PizzaDetailScreen(
+        uiState = uiState,
+        pizzaProduct = pizzaProduct,
+        navigateBack = navigateBack,
+        onSelectTopping = viewModel::selectTopping,
+        onIncreaseToppingQuantity = viewModel::increaseToppingQuantity,
+        onDecreaseToppingQuantity = viewModel::decreaseToppingQuantity,
+        onTotalPrice = { viewModel.getTotalPrice(pizzaProduct.unitPrice) },
+        addPizzaToCart = { viewModel.addPizzaToCart(pizzaProduct) }
+    )
+
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -79,18 +75,19 @@ private fun PizzaDetailScreen(
     val deviceMode = LocalDeviceMode.current
 
     if (uiState.isLoading) {
-        Box(
-            Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            CircularProgressIndicator()
+        Scaffold { paddingValues ->
+            Box(
+                Modifier.fillMaxSize().padding(paddingValues),
+                contentAlignment = Alignment.Center
+            ) {
+                CircularProgressIndicator()
+            }
         }
     }
 
     when (deviceMode) {
         DeviceMode.PhoneLandscape, DeviceMode.TabletLandscape -> {
-            TwoColumnMode(
-                modifier = modifier,
+            ExpandedWidthMode(
                 uiState = uiState,
                 pizzaProduct = pizzaProduct,
                 navigateBack = navigateBack,
@@ -102,7 +99,7 @@ private fun PizzaDetailScreen(
             )
         }
 
-        DeviceMode.PhonePortrait -> SingleColumnPhoneMode(
+        DeviceMode.PhonePortrait -> PhonePortraitMode(
             modifier = modifier,
             uiState = uiState,
             pizzaProduct = pizzaProduct,
@@ -115,8 +112,7 @@ private fun PizzaDetailScreen(
         )
 
 
-        DeviceMode.TabletPortrait -> SingleColumnTabletMode(
-            modifier = modifier,
+        DeviceMode.TabletPortrait -> TabletPortraitMode(
             uiState = uiState,
             pizzaProduct = pizzaProduct,
             navigateBack = navigateBack,
@@ -128,7 +124,6 @@ private fun PizzaDetailScreen(
         )
     }
 }
-
 
 private val samplePizza = Product(
     id = "1",

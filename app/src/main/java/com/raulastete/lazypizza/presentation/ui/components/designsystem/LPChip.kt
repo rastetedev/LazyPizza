@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.presentation.ui.components
+package com.raulastete.lazypizza.presentation.ui.components.designsystem
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.material3.AssistChip

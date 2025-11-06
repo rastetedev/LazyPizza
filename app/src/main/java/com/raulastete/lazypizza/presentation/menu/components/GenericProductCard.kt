@@ -23,8 +23,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.raulastete.lazypizza.R
 import com.raulastete.lazypizza.domain.entity.Product
-import com.raulastete.lazypizza.presentation.ui.components.LPGhostButton
-import com.raulastete.lazypizza.presentation.ui.components.LPIconButton
+import com.raulastete.lazypizza.presentation.ui.components.designsystem.LPGhostButton
+import com.raulastete.lazypizza.presentation.ui.components.designsystem.LPIconButton
 import com.raulastete.lazypizza.presentation.ui.components.product.ProductQuantityControl
 import com.raulastete.lazypizza.presentation.ui.components.product.ProductWrapperCard
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
@@ -77,7 +77,7 @@ fun GenericProductCard(
 
 @OptIn(ExperimentalSharedTransitionApi::class)
 @Composable
-private fun ColumnScope.ZeroItemsContent(
+private fun ZeroItemsContent(
     name: String,
     price: String,
     onClickAddToCart: () -> Unit,

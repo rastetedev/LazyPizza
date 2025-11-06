@@ -21,7 +21,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.raulastete.lazypizza.R
-import com.raulastete.lazypizza.presentation.ui.components.LPIconButton
+import com.raulastete.lazypizza.presentation.ui.components.designsystem.LPIconButton
 import com.raulastete.lazypizza.presentation.ui.components.product.ProductQuantityControl
 import com.raulastete.lazypizza.presentation.ui.components.product.ProductWrapperCard
 import com.raulastete.lazypizza.presentation.ui.model.OrderItemCardUi

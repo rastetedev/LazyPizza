@@ -16,6 +16,8 @@ import com.raulastete.lazypizza.presentation.cart.CartViewModel
 import com.raulastete.lazypizza.presentation.menu.MenuViewModel
 import com.raulastete.lazypizza.presentation.pizza_detail.PizzaDetailViewModel
 import org.koin.android.ext.koin.androidApplication
+import org.koin.core.module.dsl.bind
+import org.koin.core.module.dsl.singleOf
 import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
@@ -40,18 +42,11 @@ val appModule = module {
         get<LazyPizzaDatabase>().orderItemToppingDao()
     }
 
-    single<MenuRemoteDataSource> {
-        MenuRemoteDataSource(database = get())
-    }
-    single<MenuRepository> {
-        DefaultMenuRepository(remoteDataSource = get())
-    }
-    single<CartRepository> {
-        DefaultCartRepository(
-            orderItemDao = get(),
-            orderItemToppingDao = get()
-        )
-    }
+    singleOf(::MenuRemoteDataSource)
+
+    singleOf(::DefaultMenuRepository) { bind<MenuRepository>() }
+    singleOf(::DefaultCartRepository) { bind<CartRepository>() }
+
     viewModel { PizzaDetailViewModel(menuRepository = get(), cartRepository = get()) }
     viewModel { MenuViewModel(menuRepository = get(), cartRepository = get()) }
     viewModel { CartViewModel(menuRepository = get(), cartRepository = get()) }

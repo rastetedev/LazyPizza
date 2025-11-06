@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -60,7 +59,6 @@ fun ToppingCard(
     ) {
         Column(
             modifier = Modifier.padding(12.dp),
-            verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Box(
@@ -70,22 +68,23 @@ fun ToppingCard(
                 contentAlignment = Alignment.Center
             ) {
                 AsyncImage(
+                    modifier = Modifier.size(56.dp),
                     model = toppingCardUi.topping.imageUrl,
                     contentDescription = null,
                 )
             }
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(8.dp))
             Text(
                 text = toppingCardUi.topping.name,
                 style = AppTheme.typography.body3Regular,
                 color = AppTheme.colorScheme.textSecondary,
                 maxLines = 1,
                 autoSize = TextAutoSize.StepBased(
-                    minFontSize = 10.sp,
+                    minFontSize = 12.sp,
                     maxFontSize = AppTheme.typography.body3Regular.fontSize
                 )
             )
-            Spacer(Modifier.height(12.dp))
+            Spacer(Modifier.height(8.dp))
             if (toppingCardUi.isSelected.not())
                 Text(
                     modifier = Modifier.fillMaxWidth(),

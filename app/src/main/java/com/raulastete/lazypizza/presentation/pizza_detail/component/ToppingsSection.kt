@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
@@ -22,6 +23,7 @@ import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 @Composable
 fun ToppingsSection(
     modifier: Modifier = Modifier,
+    gridCells: GridCells = GridCells.Fixed(3),
     toppings: List<ToppingCardUi>,
     listPadding: PaddingValues,
     onSelectTopping: (toppingId: String) -> Unit,
@@ -47,7 +49,7 @@ fun ToppingsSection(
             listState = lazyGridState,
         ) {
             LazyVerticalGrid(
-                columns = GridCells.Fixed(3),
+                columns = gridCells,
                 state = lazyGridState,
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -55,7 +57,8 @@ fun ToppingsSection(
             ) {
                 items(toppings) {
                     ToppingCard(
-                        modifier = Modifier.weight(1f),
+                        modifier = Modifier
+                            .size(width = 124.dp, height = 142.dp),
                         toppingCardUi = it,
                         onClick = {
                             onSelectTopping(it.topping.id)

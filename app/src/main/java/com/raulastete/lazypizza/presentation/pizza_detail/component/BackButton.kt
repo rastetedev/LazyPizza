@@ -11,7 +11,7 @@ import com.raulastete.lazypizza.R
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 
 @Composable
-fun BackButton(modifier: Modifier, onClick: () -> Unit) {
+fun BackButton(modifier: Modifier = Modifier, onClick: () -> Unit) {
     FilledIconButton(
         modifier = modifier,
         onClick = onClick, colors = IconButtonDefaults.filledIconButtonColors(

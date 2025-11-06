@@ -25,7 +25,7 @@ import com.raulastete.lazypizza.presentation.menu.components.CategoryListRow
 import com.raulastete.lazypizza.presentation.menu.components.NoProductsFound
 import com.raulastete.lazypizza.presentation.menu.components.MenuCard
 import com.raulastete.lazypizza.presentation.ui.DeviceMode
-import com.raulastete.lazypizza.presentation.ui.components.LPSearchBar
+import com.raulastete.lazypizza.presentation.ui.components.designsystem.LPSearchBar
 import com.raulastete.lazypizza.presentation.ui.model.GenericProductCardUi
 import com.raulastete.lazypizza.presentation.ui.model.MenuCardUi
 import com.raulastete.lazypizza.presentation.ui.model.PizzaCardUi

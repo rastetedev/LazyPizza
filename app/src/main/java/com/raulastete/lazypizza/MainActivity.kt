@@ -26,15 +26,13 @@ class MainActivity : ComponentActivity() {
                 val windowSizeClass = calculateWindowSizeClass(this)
                 val configuration = LocalConfiguration.current
 
-                val deviceModeManager = remember(windowSizeClass, configuration) {
+                val currentDeviceMode = remember(windowSizeClass, configuration) {
                     DeviceModeManager(
                         windowSizeClass.widthSizeClass,
                         windowSizeClass.heightSizeClass,
                         configuration
-                    )
+                    ).getDeviceMode()
                 }
-
-                val currentDeviceMode = deviceModeManager.getDeviceMode()
 
                 CompositionLocalProvider(
                     LocalDeviceMode provides currentDeviceMode,

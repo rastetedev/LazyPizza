@@ -24,7 +24,7 @@ import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.raulastete.lazypizza.R
 import com.raulastete.lazypizza.domain.entity.Product
-import com.raulastete.lazypizza.presentation.ui.components.LPIconButton
+import com.raulastete.lazypizza.presentation.ui.components.designsystem.LPIconButton
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 
 @Composable

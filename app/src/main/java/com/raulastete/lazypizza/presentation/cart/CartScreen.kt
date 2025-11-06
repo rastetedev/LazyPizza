@@ -29,7 +29,7 @@ import com.raulastete.lazypizza.R
 import com.raulastete.lazypizza.domain.entity.Product
 import com.raulastete.lazypizza.presentation.ui.DeviceMode
 import com.raulastete.lazypizza.presentation.ui.components.topbar.LPCenterTopbar
-import com.raulastete.lazypizza.presentation.ui.components.LPPrimaryButton
+import com.raulastete.lazypizza.presentation.ui.components.designsystem.LPPrimaryButton
 import com.raulastete.lazypizza.presentation.ui.components.MessageFullScreen
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 import com.raulastete.lazypizza.presentation.ui.theme.LocalDeviceMode

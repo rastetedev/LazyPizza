@@ -8,7 +8,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.raulastete.lazypizza.presentation.ui.components.LPChip
+import com.raulastete.lazypizza.presentation.ui.components.designsystem.LPChip
 import com.raulastete.lazypizza.presentation.ui.theme.AppTheme
 
 @Composable
