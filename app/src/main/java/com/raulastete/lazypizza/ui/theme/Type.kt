@@ -167,7 +167,7 @@ val Typography.body4Regular: TextStyle
     @Composable
     get() = TextStyle(
         fontFamily = instrumentSans,
-        fontWeight = FontWeight.Bold,
+        fontWeight = FontWeight.Normal,
         fontSize = 12.sp,
         lineHeight = 16.sp
     )
