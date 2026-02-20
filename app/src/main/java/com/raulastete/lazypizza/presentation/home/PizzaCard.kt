@@ -18,7 +18,7 @@ data class PizzaCardDetails(
     val image: String,
     val name: String,
     val ingredients: String,
-    val price: String
+    val unitPrice: String
 )
 
 @Composable
@@ -33,7 +33,7 @@ fun PizzaCard(
         Details(
             details.name,
             details.ingredients,
-            details.price
+            details.unitPrice
         )
     }
 }

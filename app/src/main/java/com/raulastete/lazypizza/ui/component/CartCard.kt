@@ -7,13 +7,12 @@ import androidx.compose.animation.fadeOut
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -22,26 +21,27 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.res.vectorResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.raulastete.lazypizza.R
 import com.raulastete.lazypizza.ui.theme.LazyPizzaTheme
 import com.raulastete.lazypizza.ui.theme.body1Medium
+import com.raulastete.lazypizza.ui.theme.body3Regular
 import com.raulastete.lazypizza.ui.theme.body4Regular
 import com.raulastete.lazypizza.ui.theme.title1Semibold
 
-data class CountableProductDetails(
+data class CartDetails(
     val image: String,
     val name: String,
     val unitPrice: String,
     val totalPrice: String,
-    val count: Int = 0
+    val count: Int = 0,
+    val extras: List<String>? = null
 )
 
 @Composable
-fun CountableProductCard(
-    details: CountableProductDetails,
+fun CartCard(
+    details: CartDetails,
     modifier: Modifier,
     onClickAddToCartButton: () -> Unit,
     onClickDeleteFromCartButton: () -> Unit,
@@ -53,10 +53,7 @@ fun CountableProductCard(
         image = details.image
     ) {
         Details(
-            details.name,
-            details.unitPrice,
-            details.totalPrice,
-            details.count,
+            details = details,
             onClickAddToCartButton = onClickAddToCartButton,
             onClickDeleteFromCartButton = onClickDeleteFromCartButton,
             onClickDecreaseCountButton = onClickDecreaseCountButton,
@@ -67,10 +64,7 @@ fun CountableProductCard(
 
 @Composable
 private fun Details(
-    name: String,
-    unitPrice: String,
-    totalPrice: String,
-    count: Int,
+    details: CartDetails,
     onClickAddToCartButton: () -> Unit,
     onClickDeleteFromCartButton: () -> Unit,
     onClickDecreaseCountButton: () -> Unit,
@@ -78,15 +72,20 @@ private fun Details(
 ) {
     Column(Modifier.fillMaxWidth()) {
         Header(
-            name = name,
-            count = count,
+            name = details.name,
+            count = details.count,
             onClickDeleteFromCartButton = onClickDeleteFromCartButton
         )
+        if (details.extras != null && details.extras.isNotEmpty()) {
+            Spacer(Modifier.height(4.dp))
+            Extras(extras = details.extras)
+            Spacer(Modifier.height(8.dp))
+        }
         Spacer(Modifier.weight(1f))
         Footer(
-            count = count,
-            unitPrice = unitPrice,
-            totalPrice = totalPrice,
+            count = details.count,
+            unitPrice = details.unitPrice,
+            totalPrice = details.totalPrice,
             onClickAddToCartButton = onClickAddToCartButton,
             onClickDecreaseCountButton = onClickDecreaseCountButton,
             onClickIncreaseCountButton = onClickIncreaseCountButton
@@ -110,6 +109,18 @@ private fun Header(
         DeleteFromCartButton(
             visible = count > 0,
             onClick = onClickDeleteFromCartButton
+        )
+    }
+}
+
+@Composable
+private fun Extras(extras: List<String>) {
+    extras.forEach { extra ->
+        Text(
+            text = extra,
+            style = MaterialTheme.typography.body3Regular.copy(
+                color = MaterialTheme.colorScheme.onSurfaceVariant
+            )
         )
     }
 }
@@ -193,8 +204,6 @@ private fun AddToCartButton(
     )
 }
 
-
-
 @Composable
 private fun PricesInfo(
     count: Int,
@@ -216,37 +225,11 @@ private fun PricesInfo(
 }
 
 @Composable
-private fun Counter(
-    count: Int,
-    onClickDecreaseCountButton: () -> Unit,
-    onClickIncreaseCountButton: () -> Unit,
-    modifier: Modifier = Modifier,
-) {
-    Row(modifier = modifier) {
-        SecondaryIconButton(
-            icon = ImageVector.vectorResource(R.drawable.minus_icon),
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            onClick = onClickDecreaseCountButton,
-            modifier = Modifier.size(22.dp)
-        )
-        Box(Modifier.width(52.dp), contentAlignment = Alignment.Center) {
-            Text("$count", textAlign = TextAlign.Center)
-        }
-        SecondaryIconButton(
-            icon = ImageVector.vectorResource(R.drawable.plus_icon),
-            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-            onClick = onClickIncreaseCountButton,
-            modifier = Modifier.size(22.dp)
-        )
-    }
-}
-
-@Composable
 @Preview(name = "With count")
-private fun CountableProductCardPreview1() {
+private fun CartCardPreview1() {
     LazyPizzaTheme {
-        CountableProductCard(
-            details = CountableProductDetails(
+        CartCard(
+            details = CartDetails(
                 image = "",
                 name = "Margherita",
                 unitPrice = "$8.99",
@@ -264,15 +247,42 @@ private fun CountableProductCardPreview1() {
 
 @Composable
 @Preview(name = "Without count")
-private fun CountableProductCardPreview2() {
+private fun CartCardPreview2() {
     LazyPizzaTheme {
-        CountableProductCard(
-            details = CountableProductDetails(
+        CartCard(
+            details = CartDetails(
                 image = "",
                 name = "Margherita",
                 unitPrice = "$8.99",
                 count = 0,
                 totalPrice = "$17.98"
+            ),
+            modifier = Modifier.fillMaxWidth(),
+            onClickAddToCartButton = { },
+            onClickDeleteFromCartButton = { },
+            onClickDecreaseCountButton = { },
+            onClickIncreaseCountButton = { }
+        )
+    }
+}
+
+@Composable
+@Preview(name = "With extras")
+private fun CartCardPreview3() {
+    LazyPizzaTheme {
+        CartCard(
+            details = CartDetails(
+                image = "",
+                name = "Margherita",
+                unitPrice = "$8.99",
+                count = 0,
+                totalPrice = "$17.98",
+                extras = listOf(
+                    "1 x Tomato sauce",
+                    "2 x Mozzarella",
+                    "1 x Fresh basil",
+                    "1 x Olive oil"
+                )
             ),
             modifier = Modifier.fillMaxWidth(),
             onClickAddToCartButton = { },

@@ -3,10 +3,12 @@ package com.raulastete.lazypizza.ui.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
@@ -32,7 +34,8 @@ fun ItemCardWrapper(
     Card(
         onClick = { onClick?.invoke() },
         modifier = modifier
-            .height(120.dp),
+            .height(IntrinsicSize.Min)
+            .heightIn(min = 120.dp),
         shape = RoundedCornerShape(12.dp),
         colors = CardDefaults.cardColors(
             containerColor = MaterialTheme.colorScheme.surface,
@@ -40,6 +43,8 @@ fun ItemCardWrapper(
     ) {
         Row(
             modifier = Modifier
+                .height(IntrinsicSize.Min)
+                .heightIn(min = 120.dp)
                 .fillMaxWidth()
                 .padding(2.dp)
         ) {
