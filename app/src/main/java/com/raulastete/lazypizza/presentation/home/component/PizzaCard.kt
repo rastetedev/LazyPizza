@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.presentation.home
+package com.raulastete.lazypizza.presentation.home.component
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -8,32 +8,29 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
-import com.raulastete.lazypizza.ui.component.ItemCardWrapper
+import com.raulastete.lazypizza.presentation.model.PizzaUi
+import com.raulastete.lazypizza.ui.component.ProductCardWrapper
 import com.raulastete.lazypizza.ui.theme.body1Medium
 import com.raulastete.lazypizza.ui.theme.body3Regular
 import com.raulastete.lazypizza.ui.theme.title1Semibold
 
-data class PizzaCardDetails(
-    val image: String,
-    val name: String,
-    val ingredients: String,
-    val unitPrice: String
-)
-
 @Composable
 fun PizzaCard(
-    details: PizzaCardDetails,
+    pizza: PizzaUi,
+    onClick: () -> Unit,
     modifier: Modifier
 ) {
-    ItemCardWrapper(
+    ProductCardWrapper(
         modifier = modifier,
-        image = details.image
+        image = pizza.image,
+        onClick = onClick
     ) {
         Details(
-            details.name,
-            details.ingredients,
-            details.unitPrice
+            pizza.name,
+            pizza.ingredients,
+            pizza.unitPrice
         )
     }
 }
@@ -48,12 +45,14 @@ private fun Details(
         Text(
             text = name,
             style = MaterialTheme.typography.body1Medium,
-            maxLines = 1
+            maxLines = 1,
+            overflow = TextOverflow.Ellipsis
         )
         Text(
             text = ingredients,
             style = MaterialTheme.typography.body3Regular.copy(color = MaterialTheme.colorScheme.onSurfaceVariant),
-            maxLines = 2
+            maxLines = 2,
+            overflow = TextOverflow.Ellipsis
         )
         Spacer(Modifier.height(10.dp))
         Text(
