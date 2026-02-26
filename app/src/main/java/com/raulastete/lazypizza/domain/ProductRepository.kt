@@ -6,8 +6,7 @@ interface ProductRepository {
 
     fun getProductsByCategory(): Flow<Map<Category, List<Product>>>
 
-    suspend fun searchProducts(query: String): Flow<List<Product>>
-
     suspend fun getProductById(productId: String): Product?
 
+    fun getToppings(): Flow<List<Topping>>
 }

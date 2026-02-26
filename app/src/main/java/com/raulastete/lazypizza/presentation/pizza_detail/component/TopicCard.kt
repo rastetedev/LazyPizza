@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.presentation.pizza_detail
+package com.raulastete.lazypizza.presentation.pizza_detail.component
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.animateColorAsState
@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -21,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
@@ -42,7 +42,8 @@ fun TopicCard(
     details: TopicDetails,
     onClick: () -> Unit,
     onClickDecreaseCountButton: () -> Unit,
-    onClickIncreaseCountButton: () -> Unit
+    onClickIncreaseCountButton: () -> Unit,
+    modifier: Modifier = Modifier
 ) {
 
     val strokeColor: Color by animateColorAsState(
@@ -50,9 +51,8 @@ fun TopicCard(
     )
     Card(
         onClick = onClick,
-        modifier = Modifier
-            .height(142.dp)
-            .width(124.dp),
+        modifier = modifier
+            .height(142.dp),
         shape = RoundedCornerShape(12.dp),
         border = BorderStroke(width = 1.dp, color = strokeColor),
         colors = CardDefaults.cardColors(
@@ -95,7 +95,8 @@ private fun ImageContainer(
         ) {
             AsyncImage(
                 model = image,
-                contentDescription = null
+                contentDescription = null,
+                contentScale = ContentScale.Crop
             )
         }
     }

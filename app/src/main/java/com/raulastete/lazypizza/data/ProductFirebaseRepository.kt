@@ -6,13 +6,15 @@ import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
 import com.raulastete.lazypizza.domain.Category
+import com.raulastete.lazypizza.domain.Category.Companion.PIZZA_CATEGORY_DEFAULT
 import com.raulastete.lazypizza.domain.Product
 import com.raulastete.lazypizza.domain.ProductRepository
+import com.raulastete.lazypizza.domain.Topping
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.emptyFlow
+import kotlinx.coroutines.tasks.await
 
 class ProductFirebaseRepository : ProductRepository {
 
@@ -20,6 +22,7 @@ class ProductFirebaseRepository : ProductRepository {
 
     private val categoryReference = database.getReference("categories")
     private val productsReference = database.getReference("products")
+    private val toppingsReference = database.getReference("toppings")
 
     override fun getProductsByCategory(): Flow<Map<Category, List<Product>>> {
         val productsFlow = callbackFlow {
@@ -92,11 +95,42 @@ class ProductFirebaseRepository : ProductRepository {
         }
     }
 
-    override suspend fun searchProducts(query: String): Flow<List<Product>> {
-        return emptyFlow()
+    override suspend fun getProductById(productId: String): Product? {
+        val snapshot = productsReference.child(productId).get().await()
+        val productDto = snapshot.getValue(ProductDto::class.java) ?: return null
+
+        return Product(
+            id = productId,
+            imageUrl = productDto.imageUrl,
+            name = productDto.name,
+            description = productDto.description,
+            unitPrice = productDto.price.toBigDecimal(),
+            category = PIZZA_CATEGORY_DEFAULT
+        )
     }
 
-    override suspend fun getProductById(productId: String): Product? {
-        return null
+    override fun getToppings(): Flow<List<Topping>> = callbackFlow {
+        val listener = object : ValueEventListener {
+            override fun onDataChange(snapshot: DataSnapshot) {
+                val toppings = snapshot.children.mapNotNull { toppingSnapshot ->
+                    val topping = toppingSnapshot.getValue(ToppingDto::class.java)
+                    toppingSnapshot.key?.let { key ->
+                        Topping(
+                            id = key,
+                            name = topping?.name ?: "",
+                            imageUrl = topping?.imageUrl ?: "",
+                            unitPrice = topping?.price?.toBigDecimal() ?: 0.0.toBigDecimal()
+                        )
+                    }
+                }
+                trySend(toppings).isSuccess
+            }
+
+            override fun onCancelled(error: DatabaseError) {
+                close(error.toException())
+            }
+        }
+        toppingsReference.addValueEventListener(listener)
+        awaitClose { toppingsReference.removeEventListener(listener) }
     }
 }

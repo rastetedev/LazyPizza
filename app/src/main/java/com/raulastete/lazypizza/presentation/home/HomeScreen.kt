@@ -20,6 +20,7 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
@@ -58,13 +59,20 @@ import org.koin.androidx.compose.koinViewModel
 
 @Composable
 fun HomeScreen(
-    viewModel: HomeViewModel = koinViewModel()
+    viewModel: HomeViewModel = koinViewModel(),
+    onNavigateToPizzaDetail: (String) -> Unit
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
     HomeScreenContent(
         uiState = uiState,
-        onAction = viewModel::onAction
+        onAction = { action ->
+            if (action is HomeAction.OnClickPizzaCard) {
+                onNavigateToPizzaDetail(action.pizzaId)
+            } else {
+                viewModel.onAction(action)
+            }
+        }
     )
 }
 
@@ -220,7 +228,7 @@ private fun CategoryChips(
         contentPadding = PaddingValues(horizontal = 16.dp)
     ) {
 
-        items(categories) { category ->
+        itemsIndexed(categories) { index, category ->
             AssistChip(
                 onClick = {},
                 label = {

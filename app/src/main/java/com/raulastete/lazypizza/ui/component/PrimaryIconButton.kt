@@ -5,18 +5,21 @@ import androidx.compose.material3.FilledIconButton
 import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import com.raulastete.lazypizza.ui.theme.Primary8
 
 @Composable
 fun PrimaryIconButton(
+    containerColor: Color = Primary8,
     onClick: () -> Unit,
-    icon: @Composable () -> Unit,
     modifier: Modifier = Modifier,
+
+    icon: @Composable () -> Unit,
 ) {
     FilledIconButton(
         onClick = onClick,
         colors = IconButtonDefaults.filledIconButtonColors(
-            containerColor = Primary8
+            containerColor = containerColor
         ),
         modifier = modifier,
         shape = CircleShape
