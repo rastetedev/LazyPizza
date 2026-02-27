@@ -7,6 +7,7 @@ import androidx.navigation.toRoute
 import com.raulastete.lazypizza.NavRoute
 import com.raulastete.lazypizza.domain.Product
 import com.raulastete.lazypizza.domain.ProductRepository
+import com.raulastete.lazypizza.presentation.model.ToppingUi
 import com.raulastete.lazypizza.ui.util.formatCurrency
 import kotlinx.coroutines.flow.*
 import kotlinx.coroutines.launch
@@ -52,7 +53,7 @@ class PizzaDetailViewModel(
         
         PizzaDetailUiState(
             pizzaName = pizza?.name ?: "",
-            pizzaDescription = pizza?.description ?: "",
+            ingredientsText = pizza?.description ?: "",
             pizzaImage = pizza?.imageUrl ?: "",
             toppings = toppings.map { topping ->
                 ToppingUi(

@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.presentation.pizza_detail
+package com.raulastete.lazypizza.presentation.model
 
 data class ToppingUi(
     val id: String,

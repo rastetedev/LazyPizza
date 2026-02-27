@@ -15,6 +15,7 @@ import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.grid.GridCells
 import androidx.compose.foundation.lazy.grid.GridItemSpan
+import androidx.compose.foundation.lazy.grid.LazyGridState
 import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.grid.rememberLazyGridState
@@ -38,8 +39,8 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import coil3.compose.AsyncImage
 import com.raulastete.lazypizza.R
+import com.raulastete.lazypizza.presentation.model.ToppingUi
 import com.raulastete.lazypizza.presentation.pizza_detail.component.TopicCard
-import com.raulastete.lazypizza.presentation.pizza_detail.component.TopicDetails
 import com.raulastete.lazypizza.ui.component.PrimaryButton
 import com.raulastete.lazypizza.ui.component.PrimaryIconButton
 import com.raulastete.lazypizza.ui.theme.TextSecondary8
@@ -80,22 +81,7 @@ private fun PizzaDetailContent(
         topBar = {
             TopAppBar(
                 navigationIcon = {
-                    Row {
-                        Spacer(Modifier.width(16.dp))
-                        PrimaryIconButton(
-                            containerColor = TextSecondary8,
-                            modifier = Modifier.size(32.dp),
-                            onClick = { onAction(PizzaDetailAction.OnClickBackButton) },
-                            icon = {
-                                Icon(
-                                    modifier = Modifier.size(16.dp),
-                                    imageVector = ImageVector.vectorResource(R.drawable.arrow_left_icon),
-                                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                                    contentDescription = null
-                                )
-                            }
-                        )
-                    }
+                    BackButton(onAction = onAction)
                 },
                 title = {},
                 colors = TopAppBarDefaults.topAppBarColors(
@@ -110,20 +96,12 @@ private fun PizzaDetailContent(
                 .padding(it)
         ) {
             Column {
-                Box(
-                    Modifier
+                ImageContainer(
+                    modifier = Modifier
                         .fillMaxWidth()
-                        .weight(3f)
-                        .background(MaterialTheme.colorScheme.background),
-                    contentAlignment = Alignment.Center
-                ) {
-                    AsyncImage(
-                        model = uiState.pizzaImage,
-                        contentDescription = null,
-                        modifier = Modifier.fillMaxSize(),
-                        contentScale = ContentScale.Fit
-                    )
-                }
+                        .weight(3f),
+                    image = uiState.pizzaImage
+                )
 
                 Column(
                     Modifier
@@ -132,78 +110,153 @@ private fun PizzaDetailContent(
                         .weight(7f)
                         .background(MaterialTheme.colorScheme.surface)
                 ) {
-                    Text(
-                        text = uiState.pizzaName,
-                        style = MaterialTheme.typography.title1Semibold,
-                        modifier = Modifier
-                            .padding(horizontal = 16.dp)
-                            .padding(top = 20.dp)
-                    )
+                    Name(name = uiState.pizzaName)
                     Spacer(Modifier.height(4.dp))
-                    Text(
-                        text = uiState.pizzaDescription,
-                        style = MaterialTheme.typography.body3Regular.copy(
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        ),
-                        modifier = Modifier.padding(horizontal = 16.dp)
-                    )
+                    Ingredients(ingredients = uiState.ingredientsText)
                     Spacer(Modifier.height(16.dp))
-                    Text(
-                        text = "ADD EXTRA TOPPINGS",
-                        style = MaterialTheme.typography.label2Semibold.copy(
-                            color = MaterialTheme.colorScheme.onSurfaceVariant
-                        ),
-                        modifier = Modifier.padding(horizontal = 16.dp)
+                    Toppings(
+                        gridState = gridState,
+                        toppings = uiState.toppings,
+                        onAction = onAction
                     )
-                    Spacer(Modifier.height(8.dp))
-                    LazyVerticalGrid(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .bottomFadingEdge(
-                                state = gridState,
-                                height = 120.dp,
-                                color = MaterialTheme.colorScheme.surface
-                            ),
-                        state = gridState,
-                        columns = GridCells.Fixed(3),
-                        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
-                        horizontalArrangement = Arrangement.spacedBy(8.dp),
-                        verticalArrangement = Arrangement.spacedBy(8.dp)
-                    ) {
-                        items(uiState.toppings, key = { it.id }) { topping ->
-                            TopicCard(
-                                modifier = Modifier.fillMaxWidth(),
-                                onClick = { onAction(PizzaDetailAction.OnIncrementTopping(topping.id)) },
-                                onClickDecreaseCountButton = {
-                                    onAction(PizzaDetailAction.OnDecreaseTopping(topping.id))
-                                },
-                                onClickIncreaseCountButton = {
-                                    onAction(PizzaDetailAction.OnIncrementTopping(topping.id))
-                                },
-                                details = TopicDetails(
-                                    image = topping.image,
-                                    name = topping.name,
-                                    unitPrice = topping.unitPrice,
-                                    count = topping.count
-                                )
-                            )
-                        }
-                        item(span = { GridItemSpan(3) }) {
-                            Spacer(Modifier.height(60.dp))
-                        }
-                    }
                 }
             }
 
-            PrimaryButton(
-                text = "Add to cart for ${uiState.totalPrice}",
-                onClick = { onAction(PizzaDetailAction.OnClickAddToCart) },
+            AddToCartButton(
+                totalPrice = uiState.totalPrice,
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 16.dp)
                     .padding(bottom = 16.dp)
-                    .align(Alignment.BottomCenter)
+                    .align(Alignment.BottomCenter),
+                onAction = onAction
             )
+        }
+    }
+}
+
+@Composable
+private fun BackButton(
+    onAction: (PizzaDetailAction) -> Unit
+) {
+    Row {
+        Spacer(Modifier.width(16.dp))
+        PrimaryIconButton(
+            containerColor = TextSecondary8,
+            modifier = Modifier.size(32.dp),
+            onClick = { onAction(PizzaDetailAction.OnClickBackButton) },
+            icon = {
+                Icon(
+                    modifier = Modifier.size(16.dp),
+                    imageVector = ImageVector.vectorResource(R.drawable.arrow_left_icon),
+                    tint = MaterialTheme.colorScheme.onSurfaceVariant,
+                    contentDescription = null
+                )
+            }
+        )
+    }
+}
+
+@Composable
+private fun ImageContainer(
+    modifier: Modifier,
+    image: String
+) {
+    Box(
+        modifier
+            .background(MaterialTheme.colorScheme.background),
+        contentAlignment = Alignment.Center
+    ) {
+        AsyncImage(
+            model = image,
+            contentDescription = null,
+            modifier = Modifier.fillMaxSize(),
+            contentScale = ContentScale.Fit
+        )
+    }
+}
+
+@Composable
+private fun Name(name: String) {
+    Text(
+        text = name,
+        style = MaterialTheme.typography.title1Semibold,
+        modifier = Modifier
+            .padding(horizontal = 16.dp)
+            .padding(top = 20.dp)
+    )
+}
+
+@Composable
+private fun Ingredients(ingredients: String) {
+    Text(
+        text = ingredients,
+        style = MaterialTheme.typography.body3Regular.copy(
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        ),
+        modifier = Modifier.padding(horizontal = 16.dp)
+    )
+}
+
+@Composable
+private fun AddToCartButton(
+    modifier: Modifier,
+    totalPrice: String,
+    onAction: (PizzaDetailAction) -> Unit
+) {
+    PrimaryButton(
+        text = "Add to cart for $totalPrice",
+        onClick = { onAction(PizzaDetailAction.OnClickAddToCart) },
+        modifier = modifier
+    )
+}
+
+@Composable
+private fun Toppings(
+    gridState: LazyGridState,
+    toppings: List<ToppingUi>,
+    onAction: (PizzaDetailAction) -> Unit
+) {
+    Text(
+        text = "ADD EXTRA TOPPINGS",
+        style = MaterialTheme.typography.label2Semibold.copy(
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        ),
+        modifier = Modifier.padding(horizontal = 16.dp)
+    )
+    Spacer(Modifier.height(8.dp))
+    LazyVerticalGrid(
+        modifier = Modifier
+            .fillMaxWidth()
+            .bottomFadingEdge(
+                state = gridState,
+                height = 120.dp,
+                color = MaterialTheme.colorScheme.surface
+            ),
+        state = gridState,
+        columns = GridCells.Fixed(3),
+        contentPadding = PaddingValues(horizontal = 16.dp, vertical = 8.dp),
+        horizontalArrangement = Arrangement.spacedBy(8.dp),
+        verticalArrangement = Arrangement.spacedBy(8.dp)
+    ) {
+        items(
+            items = toppings,
+            key = { topping -> topping.id }
+        ) { topping ->
+            TopicCard(
+                modifier = Modifier.fillMaxWidth(),
+                onClick = { onAction(PizzaDetailAction.OnIncrementTopping(topping.id)) },
+                onClickDecreaseCountButton = {
+                    onAction(PizzaDetailAction.OnDecreaseTopping(topping.id))
+                },
+                onClickIncreaseCountButton = {
+                    onAction(PizzaDetailAction.OnIncrementTopping(topping.id))
+                },
+                topping = topping
+            )
+        }
+        item(span = { GridItemSpan(3) }) {
+            Spacer(Modifier.height(60.dp))
         }
     }
 }

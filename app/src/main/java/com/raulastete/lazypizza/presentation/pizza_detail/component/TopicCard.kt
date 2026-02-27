@@ -24,22 +24,16 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
+import com.raulastete.lazypizza.presentation.model.ToppingUi
 import com.raulastete.lazypizza.ui.component.Counter
 import com.raulastete.lazypizza.ui.theme.Outline
 import com.raulastete.lazypizza.ui.theme.Primary8
 import com.raulastete.lazypizza.ui.theme.body3Regular
 import com.raulastete.lazypizza.ui.theme.title2
 
-data class TopicDetails(
-    val image: String,
-    val name: String,
-    val unitPrice: String,
-    val count: Int = 0
-)
-
 @Composable
 fun TopicCard(
-    details: TopicDetails,
+    topping: ToppingUi,
     onClick: () -> Unit,
     onClickDecreaseCountButton: () -> Unit,
     onClickIncreaseCountButton: () -> Unit,
@@ -47,7 +41,7 @@ fun TopicCard(
 ) {
 
     val strokeColor: Color by animateColorAsState(
-        targetValue = if (details.count > 0) MaterialTheme.colorScheme.primary else Outline
+        targetValue = if (topping.count > 0) MaterialTheme.colorScheme.primary else Outline
     )
     Card(
         onClick = onClick,
@@ -64,11 +58,11 @@ fun TopicCard(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            ImageContainer(details.image)
+            ImageContainer(topping.image)
             Details(
-                name = details.name,
-                unitPrice = details.unitPrice,
-                count = details.count,
+                name = topping.name,
+                unitPrice = topping.unitPrice,
+                count = topping.count,
                 onClickDecreaseCountButton = onClickDecreaseCountButton,
                 onClickIncreaseCountButton = onClickIncreaseCountButton
             )
