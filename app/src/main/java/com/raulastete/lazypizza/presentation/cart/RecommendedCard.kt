@@ -25,20 +25,15 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import coil3.compose.AsyncImage
 import com.raulastete.lazypizza.R
+import com.raulastete.lazypizza.presentation.model.RecommendedProductUi
 import com.raulastete.lazypizza.ui.component.SecondaryIconButton
 import com.raulastete.lazypizza.ui.theme.LazyPizzaTheme
 import com.raulastete.lazypizza.ui.theme.body1Regular
 import com.raulastete.lazypizza.ui.theme.title1Semibold
 
-data class RecommendedProductDetails(
-    val image: String,
-    val name: String,
-    val unitPrice: String
-)
-
 @Composable
 fun RecommendedCard(
-    details: RecommendedProductDetails,
+    recommendedProduct: RecommendedProductUi,
     modifier: Modifier = Modifier,
     onAddButtonClick: () -> Unit
 ) {
@@ -59,15 +54,15 @@ fun RecommendedCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(120.dp),
-                image = details.image
+                image = recommendedProduct.image
             )
             Details(
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(82.dp)
                     .padding(12.dp),
-                name = details.name,
-                unitPrice = details.unitPrice,
+                name = recommendedProduct.name,
+                unitPrice = recommendedProduct.unitPrice,
                 onAddButtonClick = onAddButtonClick
             )
         }
@@ -138,7 +133,8 @@ private fun Details(
 private fun RecommendedCardPreview() {
     LazyPizzaTheme {
         RecommendedCard(
-            details = RecommendedProductDetails(
+            recommendedProduct = RecommendedProductUi(
+                id = "",
                 image = "",
                 name = "Margherita",
                 unitPrice = "$8.00"

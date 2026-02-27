@@ -72,11 +72,6 @@ private fun Details(
             count = details.count,
             onClickDeleteFromCartButton = onClickDeleteFromCartButton
         )
-        if (details.extras != null && details.extras.isNotEmpty()) {
-            Spacer(Modifier.height(4.dp))
-            Extras(extras = details.extras)
-            Spacer(Modifier.height(8.dp))
-        }
         Spacer(Modifier.weight(1f))
         Footer(
             count = details.count,
@@ -275,13 +270,7 @@ private fun CartCardPreview3() {
                 name = "Margherita",
                 unitPrice = "$8.99",
                 count = 0,
-                totalPrice = "$17.98",
-                extras = listOf(
-                    "1 x Tomato sauce",
-                    "2 x Mozzarella",
-                    "1 x Fresh basil",
-                    "1 x Olive oil"
-                )
+                totalPrice = "$17.98"
             ),
             modifier = Modifier.fillMaxWidth(),
             onClickAddToCartButton = { },
@@ -291,3 +280,11 @@ private fun CartCardPreview3() {
         )
     }
 }
+/**
+ *
+ *  if (details.extras != null && details.extras.isNotEmpty()) {
+ *             Spacer(Modifier.height(4.dp))
+ *             Extras(extras = details.extras)
+ *             Spacer(Modifier.height(8.dp))
+ *         }
+ */

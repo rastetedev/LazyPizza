@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.ui.component
+package com.raulastete.lazypizza.presentation.cart
 
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
@@ -24,36 +24,29 @@ import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.raulastete.lazypizza.R
+import com.raulastete.lazypizza.presentation.model.CartItemUi
+import com.raulastete.lazypizza.ui.component.ProductCardWrapper
 import com.raulastete.lazypizza.ui.theme.LazyPizzaTheme
 import com.raulastete.lazypizza.ui.theme.body1Medium
 import com.raulastete.lazypizza.ui.theme.body3Regular
 import com.raulastete.lazypizza.ui.theme.body4Regular
 import com.raulastete.lazypizza.ui.theme.title1Semibold
 
-data class CartDetails(
-    val image: String,
-    val name: String,
-    val unitPrice: String,
-    val totalPrice: String,
-    val count: Int = 0,
-    val extras: List<String>? = null
-)
-
 @Composable
 fun CartCard(
-    details: CartDetails,
+    cartItem: CartItemUi,
     modifier: Modifier,
     onClickAddToCartButton: () -> Unit,
     onClickDeleteFromCartButton: () -> Unit,
-    onClickDecreaseCountButton: () -> Unit = {},
-    onClickIncreaseCountButton: () -> Unit = {}
+    onClickDecreaseCountButton: () -> Unit,
+    onClickIncreaseCountButton: () -> Unit
 ) {
-    ItemCardWrapper(
+    ProductCardWrapper(
         modifier = modifier,
-        image = details.image
+        image = cartItem.image
     ) {
         Details(
-            details = details,
+            cartItem = cartItem,
             onClickAddToCartButton = onClickAddToCartButton,
             onClickDeleteFromCartButton = onClickDeleteFromCartButton,
             onClickDecreaseCountButton = onClickDecreaseCountButton,
@@ -64,7 +57,7 @@ fun CartCard(
 
 @Composable
 private fun Details(
-    details: CartDetails,
+    cartItem: CartItemUi,
     onClickAddToCartButton: () -> Unit,
     onClickDeleteFromCartButton: () -> Unit,
     onClickDecreaseCountButton: () -> Unit,
@@ -72,20 +65,20 @@ private fun Details(
 ) {
     Column(Modifier.fillMaxWidth()) {
         Header(
-            name = details.name,
-            count = details.count,
+            name = cartItem.name,
+            count = cartItem.count,
             onClickDeleteFromCartButton = onClickDeleteFromCartButton
         )
-        if (details.extras != null && details.extras.isNotEmpty()) {
+        if (cartItem.extras != null && cartItem.extras.isNotEmpty()) {
             Spacer(Modifier.height(4.dp))
-            Extras(extras = details.extras)
+            Extras(extras = cartItem.extras)
             Spacer(Modifier.height(8.dp))
         }
         Spacer(Modifier.weight(1f))
         Footer(
-            count = details.count,
-            unitPrice = details.unitPrice,
-            totalPrice = details.totalPrice,
+            count = cartItem.count,
+            unitPrice = cartItem.unitPrice,
+            totalPrice = cartItem.totalPrice,
             onClickAddToCartButton = onClickAddToCartButton,
             onClickDecreaseCountButton = onClickDecreaseCountButton,
             onClickIncreaseCountButton = onClickIncreaseCountButton
@@ -139,7 +132,7 @@ private fun DeleteFromCartButton(
             targetOffsetX = { it }
         ) + fadeOut()
     ) {
-        SecondaryIconButton(
+        _root_ide_package_.com.raulastete.lazypizza.ui.component.SecondaryIconButton(
             icon = ImageVector.vectorResource(R.drawable.trash_icon),
             tint = MaterialTheme.colorScheme.primary,
             modifier = Modifier.size(22.dp),
@@ -167,7 +160,7 @@ private fun Footer(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Counter(
+                _root_ide_package_.com.raulastete.lazypizza.ui.component.Counter(
                     count = count,
                     onClickDecreaseCountButton = onClickDecreaseCountButton,
                     onClickIncreaseCountButton = onClickIncreaseCountButton
@@ -198,7 +191,7 @@ private fun Footer(
 private fun AddToCartButton(
     onClick: () -> Unit
 ) {
-    SecondaryTextButton(
+    _root_ide_package_.com.raulastete.lazypizza.ui.component.SecondaryTextButton(
         text = stringResource(R.string.add_to_cart),
         onClick = onClick
     )
@@ -229,7 +222,8 @@ private fun PricesInfo(
 private fun CartCardPreview1() {
     LazyPizzaTheme {
         CartCard(
-            details = CartDetails(
+            cartItem = CartItemUi(
+                id = "",
                 image = "",
                 name = "Margherita",
                 unitPrice = "$8.99",
@@ -246,32 +240,12 @@ private fun CartCardPreview1() {
 }
 
 @Composable
-@Preview(name = "Without count")
-private fun CartCardPreview2() {
-    LazyPizzaTheme {
-        CartCard(
-            details = CartDetails(
-                image = "",
-                name = "Margherita",
-                unitPrice = "$8.99",
-                count = 0,
-                totalPrice = "$17.98"
-            ),
-            modifier = Modifier.fillMaxWidth(),
-            onClickAddToCartButton = { },
-            onClickDeleteFromCartButton = { },
-            onClickDecreaseCountButton = { },
-            onClickIncreaseCountButton = { }
-        )
-    }
-}
-
-@Composable
 @Preview(name = "With extras")
 private fun CartCardPreview3() {
     LazyPizzaTheme {
         CartCard(
-            details = CartDetails(
+            cartItem = CartItemUi(
+                id = "",
                 image = "",
                 name = "Margherita",
                 unitPrice = "$8.99",

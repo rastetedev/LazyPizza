@@ -7,6 +7,5 @@ data class ComplementFoodUi(
     val name: String,
     val unitPrice: String,
     val totalPrice: String,
-    val count: Int = 0,
-    val extras: List<String>? = null
+    val count: Int = 0
 ) : ProductUi

@@ -4,6 +4,7 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import com.raulastete.lazypizza.presentation.cart.CartScreen
 import com.raulastete.lazypizza.presentation.home.HomeScreen
 import com.raulastete.lazypizza.presentation.pizza_detail.PizzaDetailScreen
 import kotlinx.serialization.Serializable
@@ -12,9 +13,12 @@ import kotlinx.serialization.Serializable
 sealed interface NavRoute {
     @Serializable
     data object Home : NavRoute
-    
+
     @Serializable
     data class PizzaDetail(val productId: String) : NavRoute
+
+    @Serializable
+    data object Cart : NavRoute
 }
 
 @Composable
@@ -34,6 +38,14 @@ fun AppNavigation() {
         }
         composable<NavRoute.PizzaDetail> {
             PizzaDetailScreen(
+                onBack = {
+                    navController.popBackStack()
+                }
+            )
+        }
+
+        composable<NavRoute.Cart> {
+            CartScreen(
                 onBack = {
                     navController.popBackStack()
                 }
