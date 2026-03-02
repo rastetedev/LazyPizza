@@ -2,61 +2,36 @@ package com.raulastete.lazypizza.presentation.cart
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.raulastete.lazypizza.domain.CartItem
+import com.raulastete.lazypizza.domain.CartRepository
 import com.raulastete.lazypizza.domain.ProductRepository
 import com.raulastete.lazypizza.presentation.model.CartItemUi
 import com.raulastete.lazypizza.presentation.model.RecommendedProductUi
 import com.raulastete.lazypizza.ui.util.formatCurrency
 import kotlinx.coroutines.flow.*
+import kotlinx.coroutines.launch
 import java.math.BigDecimal
 
 class CartViewModel(
-    productRepository: ProductRepository
+    private val cartRepository: CartRepository,
+    private val productRepository: ProductRepository
 ) : ViewModel() {
 
-    private val _cartItems = MutableStateFlow<List<CartItemUi>>(emptyList())
-    private val _isLoading = MutableStateFlow(true)
-
-    init {
-        // Mock data for initial layout testing
-        _cartItems.value = listOf(
-            CartItemUi(
-                id = "1",
-                name = "Margherita",
-                image = "",
-                unitPrice = "$10.99",
-                totalPrice = "$21.98",
-                count = 2,
-                extras = listOf("1 x Extra Cheese", "1 x Pepperoni")
-            ),
-            CartItemUi(
-                id = "2",
-                name = "Pepsi",
-                image = "",
-                unitPrice = "$1.99",
-                totalPrice = "$3.98",
-                count = 2
-            ),
-            CartItemUi(
-                id = "3",
-                name = "Cookies Ice Cream",
-                image = "",
-                unitPrice = "$1.49",
-                totalPrice = "$1.49",
-                count = 1
-            )
-        )
-        _isLoading.value = false
-    }
-
     val uiState: StateFlow<CartUiState> = combine(
-        _cartItems,
-        productRepository.getProductsByCategory(), // Using this to get some recommended products
-        _isLoading
-    ) { cartItems, productsByCategory, isLoading ->
-        
-        val recommended = productsByCategory.values.flatten()
+        cartRepository.getCartItems(),
+        productRepository.getProductsByCategory()
+    ) { cartItems, productsByCategory ->
+
+        val complementProducts = productsByCategory
+            .filterKeys { !it.name.contains("pizza", ignoreCase = true) }
+            .values
+            .flatten()
+
+        val cartProductIds = cartItems.map { it.product.id }.toSet()
+        val recommended = complementProducts
+            .filter { it.id !in cartProductIds }
             .take(5)
-            .map { 
+            .map {
                 RecommendedProductUi(
                     id = it.id,
                     name = it.name,
@@ -66,44 +41,90 @@ class CartViewModel(
             }
 
         val totalAmount = cartItems.sumOf { item ->
-            // In a real app we would store BigDecimal in CartItemUi or fetch from domain
-            val price = item.totalPrice.replace("$", "").toBigDecimalOrNull() ?: BigDecimal.ZERO
-            price
+            val itemPrice = item.product.unitPrice.multiply(BigDecimal(item.quantity))
+            val toppingsPrice = item.extras?.entries?.sumOf { (topping, count) ->
+                topping.unitPrice.multiply(BigDecimal(count))
+            } ?: BigDecimal.ZERO
+            itemPrice.add(toppingsPrice)
         }
 
         CartUiState(
-            cartItems = cartItems,
+            cartItems = cartItems.map { item ->
+                val toppingsInfo = item.extras?.entries?.map { (topping, count) ->
+                    "$count x ${topping.name}"
+                } ?: emptyList()
+
+                val itemTotal = item.product.unitPrice.multiply(BigDecimal(item.quantity))
+                val toppingsTotal = item.extras?.entries?.sumOf { (topping, count) ->
+                    topping.unitPrice.multiply(BigDecimal(count))
+                } ?: BigDecimal.ZERO
+
+                CartItemUi(
+                    id = item.id,
+                    name = item.product.name,
+                    image = item.product.imageUrl,
+                    unitPrice = item.product.unitPrice.formatCurrency(),
+                    totalPrice = itemTotal.add(toppingsTotal).formatCurrency(),
+                    count = item.quantity,
+                    extras = toppingsInfo
+                )
+            },
             recommendedProducts = recommended,
             totalPrice = totalAmount.formatCurrency(),
-            isLoading = isLoading
+            isLoading = false
         )
     }
-    .stateIn(
-        scope = viewModelScope,
-        started = SharingStarted.WhileSubscribed(5000),
-        initialValue = CartUiState()
-    )
+        .stateIn(
+            scope = viewModelScope,
+            started = SharingStarted.WhileSubscribed(5000),
+            initialValue = CartUiState(isLoading = true)
+        )
 
     fun onAction(action: CartAction) {
-        when (action) {
-            is CartAction.OnIncrementQuantity -> {
-                _cartItems.update { items ->
-                    items.map { 
-                        if (it.id == action.productId) it.copy(count = it.count + 1) else it
+        viewModelScope.launch {
+            when (action) {
+                is CartAction.OnIncrementQuantity -> {
+                    val items = cartRepository.getCartItems().first()
+                    items.find { it.id == action.productId }?.let {
+                        cartRepository.addOrUpdateItem(it.copy(quantity = it.quantity + 1))
                     }
                 }
-            }
-            is CartAction.OnDecreaseQuantity -> {
-                _cartItems.update { items ->
-                    items.map { 
-                        if (it.id == action.productId && it.count > 1) it.copy(count = it.count - 1) else it
+
+                is CartAction.OnDecreaseQuantity -> {
+                    val items = cartRepository.getCartItems().first()
+                    items.find { it.id == action.productId }?.let {
+                        if (it.quantity > 1) {
+                            cartRepository.addOrUpdateItem(it.copy(quantity = it.quantity - 1))
+                        } else {
+                            cartRepository.deleteItem(it.id)
+                        }
                     }
                 }
+
+                is CartAction.OnRemoveFromCart -> {
+                    cartRepository.deleteItem(action.productId)
+                }
+
+                is CartAction.OnClickProceedToCheckout -> {
+
+                }
+
+                is CartAction.OnAddToCartRecommended -> {
+                    val product = productRepository.getProductsByCategory().first().values.flatten()
+                        .find { it.id == action.productId }
+                    product?.let {
+                        cartRepository.addOrUpdateItem(
+                            CartItem(
+                                id = it.id,
+                                product = it,
+                                quantity = 1
+                            )
+                        )
+                    }
+                }
+
+                else -> {}
             }
-            is CartAction.OnRemoveFromCart -> {
-                _cartItems.update { it.filter { item -> item.id != action.productId } }
-            }
-            else -> {}
         }
     }
 }

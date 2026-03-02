@@ -33,6 +33,9 @@ fun AppNavigation() {
             HomeScreen(
                 onNavigateToPizzaDetail = { productId ->
                     navController.navigate(NavRoute.PizzaDetail(productId))
+                },
+                onNavigateToCart = {
+                    navController.navigate(NavRoute.Cart)
                 }
             )
         }

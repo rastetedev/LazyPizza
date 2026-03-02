@@ -97,7 +97,8 @@ private fun CartScreenContent(
                         cartItem = item,
                         modifier = Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 16.dp),
+                            .padding(horizontal = 16.dp)
+                            .animateItem(),
                         onClickAddToCartButton = { },
                         onClickDeleteFromCartButton = {
                             onAction(CartAction.OnRemoveFromCart(item.id))
@@ -153,6 +154,7 @@ private fun RecommendedSection(
                 key = { it.id }
             ) { product ->
                 RecommendedCard(
+                    modifier = Modifier.animateItem(),
                     recommendedProduct = product,
                     onAddButtonClick = { onAction(CartAction.OnAddToCartRecommended(product.id)) }
                 )

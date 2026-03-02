@@ -1,12 +1,14 @@
-package com.raulastete.lazypizza.data
+package com.raulastete.lazypizza.data.repository
 
 import com.google.firebase.Firebase
 import com.google.firebase.database.DataSnapshot
 import com.google.firebase.database.DatabaseError
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.database
+import com.raulastete.lazypizza.data.dto.CategoryDto
+import com.raulastete.lazypizza.data.dto.ProductDto
+import com.raulastete.lazypizza.data.dto.ToppingDto
 import com.raulastete.lazypizza.domain.Category
-import com.raulastete.lazypizza.domain.Category.Companion.PIZZA_CATEGORY_DEFAULT
 import com.raulastete.lazypizza.domain.Product
 import com.raulastete.lazypizza.domain.ProductRepository
 import com.raulastete.lazypizza.domain.Topping
@@ -16,7 +18,7 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.tasks.await
 
-class ProductFirebaseRepository : ProductRepository {
+class DefaultProductRepository : ProductRepository {
 
     private val database = Firebase.database
 
@@ -105,7 +107,7 @@ class ProductFirebaseRepository : ProductRepository {
             name = productDto.name,
             description = productDto.description,
             unitPrice = productDto.price.toBigDecimal(),
-            category = PIZZA_CATEGORY_DEFAULT
+            category = Category.Companion.PIZZA_CATEGORY_DEFAULT
         )
     }
 

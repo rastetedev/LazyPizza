@@ -1,4 +1,4 @@
-package com.raulastete.lazypizza.data
+package com.raulastete.lazypizza.data.dto
 
 data class CategoryDto(
     val key: String = "",

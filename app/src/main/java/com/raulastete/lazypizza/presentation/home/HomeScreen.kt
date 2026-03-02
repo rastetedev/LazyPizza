@@ -60,7 +60,8 @@ import org.koin.androidx.compose.koinViewModel
 @Composable
 fun HomeScreen(
     viewModel: HomeViewModel = koinViewModel(),
-    onNavigateToPizzaDetail: (String) -> Unit
+    onNavigateToPizzaDetail: (String) -> Unit,
+    onNavigateToCart: () -> Unit,
 ) {
     val uiState by viewModel.uiState.collectAsStateWithLifecycle()
 
@@ -69,6 +70,8 @@ fun HomeScreen(
         onAction = { action ->
             if (action is HomeAction.OnClickPizzaCard) {
                 onNavigateToPizzaDetail(action.pizzaId)
+            } else if (action is HomeAction.OnClickLogoutButton) {
+                onNavigateToCart()
             } else {
                 viewModel.onAction(action)
             }
