@@ -7,6 +7,5 @@ data class Product(
     val imageUrl: String,
     val name: String,
     val description: String?,
-    val unitPrice: BigDecimal,
-    val category: Category
+    val unitPrice: BigDecimal
 )

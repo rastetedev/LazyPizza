@@ -26,7 +26,7 @@ class DefaultProductRepository : ProductRepository {
     private val productsReference = database.getReference("products")
     private val toppingsReference = database.getReference("toppings")
 
-    override fun getProductsByCategory(): Flow<Map<Category, List<Product>>> {
+    override fun getProductsByCategory(): Flow<List<Category>> {
         val productsFlow = callbackFlow {
             val listener = object : ValueEventListener {
                 override fun onDataChange(snapshot: DataSnapshot) {
@@ -58,9 +58,10 @@ class DefaultProductRepository : ProductRepository {
                     }
                     trySend(categories.map {
                         Category(
-                            it.key,
-                            it.name,
-                            it.displayOrder.toShort()
+                            id = it.key,
+                            name = it.name,
+                            displayOrder = it.displayOrder.toShort(),
+                            products = emptyList()
                         )
                     }).isSuccess
                 }
@@ -74,30 +75,24 @@ class DefaultProductRepository : ProductRepository {
         }
 
         return categoriesFlow.combine(productsFlow) { categories, products ->
-            products.groupBy { it.category }
-                .mapNotNull { entry ->
-                    val category = categories.find { it.id == entry.key }
-                    if (category != null) {
-                        val values = entry.value.map { product ->
-                            Product(
-                                id = product.key,
-                                imageUrl = product.imageUrl,
-                                name = product.name,
-                                description = product.description,
-                                unitPrice = product.price.toBigDecimal(),
-                                category = category
-                            )
-                        }
-                        category to values
-                    } else {
-                        null
+            categories.map { category ->
+                val categoryProducts = products
+                    .filter { it.category == category.id }
+                    .map { productDto ->
+                        Product(
+                            id = productDto.key,
+                            imageUrl = productDto.imageUrl,
+                            name = productDto.name,
+                            description = productDto.description,
+                            unitPrice = productDto.price.toBigDecimal(),
+                        )
                     }
-                }
-                .sortedBy { it.first.displayOrder }.toMap()
+                category.copy(products = categoryProducts)
+            }.sortedBy { it.displayOrder }
         }
     }
 
-    override suspend fun getProductById(productId: String): Product? {
+    override suspend fun getPizzaById(productId: String): Product? {
         val snapshot = productsReference.child(productId).get().await()
         val productDto = snapshot.getValue(ProductDto::class.java) ?: return null
 
@@ -106,8 +101,7 @@ class DefaultProductRepository : ProductRepository {
             imageUrl = productDto.imageUrl,
             name = productDto.name,
             description = productDto.description,
-            unitPrice = productDto.price.toBigDecimal(),
-            category = Category.Companion.PIZZA_CATEGORY_DEFAULT
+            unitPrice = productDto.price.toBigDecimal()
         )
     }
 

@@ -6,9 +6,9 @@ import com.raulastete.lazypizza.data.repository.DefaultProductRepository
 import com.raulastete.lazypizza.data.room.AppDatabase
 import com.raulastete.lazypizza.domain.CartRepository
 import com.raulastete.lazypizza.domain.ProductRepository
-import com.raulastete.lazypizza.presentation.cart.CartViewModel
-import com.raulastete.lazypizza.presentation.home.HomeViewModel
-import com.raulastete.lazypizza.presentation.pizza_detail.PizzaDetailViewModel
+import com.raulastete.lazypizza.presentation.screens.cart.CartViewModel
+import com.raulastete.lazypizza.presentation.screens.home.HomeViewModel
+import com.raulastete.lazypizza.presentation.screens.pizza_detail.PizzaDetailViewModel
 import org.koin.android.ext.koin.androidContext
 import org.koin.core.module.dsl.viewModelOf
 import org.koin.dsl.module
@@ -22,8 +22,7 @@ val appModule = module {
     }
     single<CartRepository> {
         DefaultCartRepository(
-            cartDao = get(),
-            productRepository = get()
+            cartDao = get()
         )
     }
     single<AppDatabase> {

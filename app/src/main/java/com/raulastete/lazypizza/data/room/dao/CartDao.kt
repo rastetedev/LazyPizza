@@ -10,7 +10,7 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface CartDao {
-    @Query("SELECT * FROM cart_items")
+    @Query("SELECT * FROM cart_items ORDER BY addedAt ASC")
     fun getAllItems(): Flow<List<CartItemEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
@@ -19,8 +19,11 @@ interface CartDao {
     @Update
     suspend fun updateItem(item: CartItemEntity)
 
-    @Query("DELETE FROM cart_items WHERE id = :itemId")
+    @Query("DELETE FROM cart_items WHERE localId = :itemId")
     suspend fun deleteItem(itemId: String)
+
+    @Query("DELETE FROM cart_items WHERE productId = :productId")
+    suspend fun deleteItemFromProduct(productId: String)
 
     @Query("DELETE FROM cart_items")
     suspend fun clearCart()

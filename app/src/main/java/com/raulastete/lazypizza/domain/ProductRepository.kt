@@ -4,9 +4,9 @@ import kotlinx.coroutines.flow.Flow
 
 interface ProductRepository {
 
-    fun getProductsByCategory(): Flow<Map<Category, List<Product>>>
+    fun getProductsByCategory(): Flow<List<Category>>
 
-    suspend fun getProductById(productId: String): Product?
+    suspend fun getPizzaById(productId: String): Product?
 
     fun getToppings(): Flow<List<Topping>>
 }

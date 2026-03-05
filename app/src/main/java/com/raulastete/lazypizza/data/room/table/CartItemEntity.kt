@@ -3,22 +3,20 @@ package com.raulastete.lazypizza.data.room.table
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.raulastete.lazypizza.domain.CartItem
-import com.raulastete.lazypizza.domain.Category
 import com.raulastete.lazypizza.domain.Extra
-import com.raulastete.lazypizza.domain.Product
 import kotlinx.serialization.Serializable
-import kotlin.collections.mapKeys
 
 @Entity(tableName = "cart_items")
 data class CartItemEntity(
-    @PrimaryKey val id: String,
+    @PrimaryKey(autoGenerate = false) val localId: String,
     val productId: String,
     val name: String,
     val image: String,
     val unitPrice: Double,
     val quantity: Int,
     val extras: Map<ExtraEntity, Int>? = null,
-    val totalPrice: Double
+    val totalPrice: Double,
+    val addedAt: Long
 )
 
 @Serializable
@@ -29,14 +27,15 @@ data class ExtraEntity(
 
 fun CartItem.toEntity(): CartItemEntity {
     return CartItemEntity(
-        id = id,
-        productId = product.id,
-        name = product.name,
-        image = product.imageUrl,
-        unitPrice = product.unitPrice.toDouble(),
+        localId = id,
+        productId = productId,
+        name = productName,
+        image = productImageUrl,
+        unitPrice = productUnitPrice.toDouble(),
         quantity = quantity,
         extras = extras?.toEntity(),
-        totalPrice = totalPrice.toDouble()
+        totalPrice = totalPrice.toDouble(),
+        addedAt = addedAt
     )
 }
 
@@ -51,17 +50,14 @@ fun Map<Extra, Int>.toEntity(): Map<ExtraEntity, Int> {
 
 fun CartItemEntity.toDomain(): CartItem {
     return CartItem(
-        id = id,
-        product = Product(
-            id = productId,
-            name = name,
-            imageUrl = image,
-            unitPrice = unitPrice.toBigDecimal(),
-            description = null,
-            category = Category("", "", 0) // Placeholder
-        ),
+        id = localId,
+        productId = productId,
+        productName = name,
+        productImageUrl = image,
+        productUnitPrice = unitPrice.toBigDecimal(),
         quantity = quantity,
-        extras = extras?.toDomain()
+        extras = extras?.toDomain(),
+        addedAt = addedAt
     )
 }
 
