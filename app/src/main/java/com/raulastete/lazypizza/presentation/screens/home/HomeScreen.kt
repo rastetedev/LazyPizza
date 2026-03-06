@@ -47,6 +47,7 @@ import com.raulastete.lazypizza.presentation.model.ComplementFoodUi
 import com.raulastete.lazypizza.presentation.model.PizzaUi
 import com.raulastete.lazypizza.presentation.model.ProductUi
 import com.raulastete.lazypizza.presentation.component.PrimaryIconButton
+import com.raulastete.lazypizza.presentation.component.SkeletonBox
 import com.raulastete.lazypizza.presentation.screens.home.component.ComplementFoodCard
 import com.raulastete.lazypizza.presentation.screens.home.component.PizzaCard
 import com.raulastete.lazypizza.presentation.theme.Outline
@@ -103,16 +104,62 @@ private fun HomeScreenContent(
                 .padding(it),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            SearchBar(
-                modifier = Modifier.fillMaxWidth(),
-                query = uiState.searchQuery,
-                onAction = onAction
-            )
-            CategoryChips(categories = uiState.categories)
-            ProductsByCategory(
-                productsByCategory = uiState.productsByCategory,
-                onAction = onAction
-            )
+
+            if (uiState.isLoading) {
+                HomeSkeleton()
+            } else {
+                SearchBar(
+                    modifier = Modifier.fillMaxWidth(),
+                    query = uiState.searchQuery,
+                    onAction = onAction
+                )
+                CategoryChips(categories = uiState.categories)
+                ProductsByCategory(
+                    productsByCategory = uiState.productsByCategory,
+                    onAction = onAction
+                )
+            }
+        }
+    }
+}
+
+@Composable
+private fun HomeSkeleton() {
+    Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
+        SkeletonBox(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(horizontal = 16.dp)
+                .height(48.dp),
+            shape = RoundedCornerShape(50f)
+        )
+        // Categories Shimmer
+        Row(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
+            repeat(4) {
+                SkeletonBox(
+                    modifier = Modifier.size(width = 80.dp, height = 32.dp),
+                    shape = RoundedCornerShape(8.dp)
+                )
+            }
+        }
+
+        // Products Shimmer
+        Column(
+            modifier = Modifier.padding(horizontal = 16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            SkeletonBox(modifier = Modifier.size(width = 120.dp, height = 20.dp))
+            repeat(3) {
+                SkeletonBox(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .height(120.dp),
+                    shape = RoundedCornerShape(12.dp)
+                )
+            }
         }
     }
 }

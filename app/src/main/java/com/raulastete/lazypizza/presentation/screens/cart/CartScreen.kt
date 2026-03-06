@@ -4,13 +4,18 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.lazy.rememberLazyListState
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CenterAlignedTopAppBar
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -27,6 +32,7 @@ import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import com.raulastete.lazypizza.presentation.model.CartItemUi
 import com.raulastete.lazypizza.presentation.model.RecommendedProductUi
 import com.raulastete.lazypizza.presentation.component.PrimaryButton
+import com.raulastete.lazypizza.presentation.component.SkeletonBox
 import com.raulastete.lazypizza.presentation.theme.LazyPizzaTheme
 import com.raulastete.lazypizza.presentation.theme.body1Medium
 import com.raulastete.lazypizza.presentation.theme.label2Semibold
@@ -80,54 +86,87 @@ private fun CartScreenContent(
                 .fillMaxSize()
                 .padding(paddingValues)
         ) {
-            LazyColumn(
-                state = listState,
-                modifier = Modifier
-                    .fillMaxSize()
-                    .bottomFadingEdge(
-                        state = listState,
-                        height = 100.dp,
-                        color = MaterialTheme.colorScheme.background
-                    ),
-                contentPadding = PaddingValues(bottom = 100.dp),
-                verticalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                items(uiState.cartItems, key = { it.id }) { item ->
-                    CartCard(
-                        cartItem = item,
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(horizontal = 16.dp)
-                            .animateItem(),
-                        onClickAddToCartButton = { },
-                        onClickDeleteFromCartButton = {
-                            onAction(CartAction.OnRemoveFromCart(item.id))
-                        },
-                        onClickDecreaseCountButton = {
-                            onAction(CartAction.OnDecreaseQuantity(item.id))
-                        },
-                        onClickIncreaseCountButton = {
-                            onAction(CartAction.OnIncrementQuantity(item.id))
-                        }
-                    )
+            if (uiState.isLoading) {
+                CartSkeleton()
+            } else {
+                LazyColumn(
+                    state = listState,
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .bottomFadingEdge(
+                            state = listState,
+                            height = 100.dp,
+                            color = MaterialTheme.colorScheme.background
+                        ),
+                    contentPadding = PaddingValues(bottom = 100.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
+                ) {
+                    items(uiState.cartItems, key = { it.id }) { item ->
+                        CartCard(
+                            cartItem = item,
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(horizontal = 16.dp)
+                                .animateItem(),
+                            onClickAddToCartButton = { },
+                            onClickDeleteFromCartButton = {
+                                onAction(CartAction.OnRemoveFromCart(item.id))
+                            },
+                            onClickDecreaseCountButton = {
+                                onAction(CartAction.OnDecreaseQuantity(item.id))
+                            },
+                            onClickIncreaseCountButton = {
+                                onAction(CartAction.OnIncrementQuantity(item.id))
+                            }
+                        )
+                    }
+
+                    item(key = "recommended_section") {
+                        RecommendedSection(
+                            recommendedProducts = uiState.recommendedProducts,
+                            onAction = onAction
+                        )
+                    }
                 }
 
-                item(key = "recommended_section") {
-                    RecommendedSection(
-                        recommendedProducts = uiState.recommendedProducts,
-                        onAction = onAction
-                    )
-                }
+                CheckoutButton(
+                    totalPrice = uiState.totalPrice,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(16.dp)
+                        .align(Alignment.BottomCenter),
+                    onAction = onAction
+                )
             }
+        }
+    }
+}
 
-            CheckoutButton(
-                totalPrice = uiState.totalPrice,
+@Composable
+private fun CartSkeleton() {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
+    ) {
+        repeat(3) {
+            SkeletonBox(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .padding(16.dp)
-                    .align(Alignment.BottomCenter),
-                onAction = onAction
+                    .height(100.dp),
+                shape = RoundedCornerShape(12.dp)
             )
+        }
+        Spacer(modifier = Modifier.height(16.dp))
+        SkeletonBox(modifier = Modifier.size(width = 200.dp, height = 20.dp))
+        Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
+            repeat(3) {
+                SkeletonBox(
+                    modifier = Modifier.size(width = 140.dp, height = 180.dp),
+                    shape = RoundedCornerShape(12.dp)
+                )
+            }
         }
     }
 }

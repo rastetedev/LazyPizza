@@ -42,6 +42,7 @@ import com.raulastete.lazypizza.R
 import com.raulastete.lazypizza.presentation.model.ToppingUi
 import com.raulastete.lazypizza.presentation.component.PrimaryButton
 import com.raulastete.lazypizza.presentation.component.PrimaryIconButton
+import com.raulastete.lazypizza.presentation.component.SkeletonBox
 import com.raulastete.lazypizza.presentation.screens.pizza_detail.component.TopicCard
 import com.raulastete.lazypizza.presentation.theme.TextSecondary8
 import com.raulastete.lazypizza.presentation.theme.body3Regular
@@ -95,42 +96,79 @@ private fun PizzaDetailContent(
                 .fillMaxSize()
                 .padding(it)
         ) {
-            Column {
-                ImageContainer(
+            if (uiState.isLoading) {
+                PizzaDetailSkeleton()
+            } else {
+                Column {
+                    ImageContainer(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .weight(3f),
+                        image = uiState.pizzaImage
+                    )
+
+                    Column(
+                        Modifier
+                            .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
+                            .fillMaxWidth()
+                            .weight(7f)
+                            .background(MaterialTheme.colorScheme.surface)
+                    ) {
+                        Name(name = uiState.pizzaName)
+                        Spacer(Modifier.height(4.dp))
+                        Ingredients(ingredients = uiState.ingredientsText)
+                        Spacer(Modifier.height(16.dp))
+                        Toppings(
+                            gridState = gridState,
+                            toppings = uiState.toppings,
+                            onAction = onAction
+                        )
+                    }
+                }
+
+                AddToCartButton(
+                    totalPrice = uiState.totalPrice,
                     modifier = Modifier
                         .fillMaxWidth()
-                        .weight(3f),
-                    image = uiState.pizzaImage
+                        .padding(horizontal = 16.dp)
+                        .padding(bottom = 16.dp)
+                        .align(Alignment.BottomCenter),
+                    onAction = onAction
                 )
+            }
+        }
+    }
+}
 
-                Column(
-                    Modifier
-                        .clip(RoundedCornerShape(topStart = 12.dp, topEnd = 12.dp))
-                        .fillMaxWidth()
-                        .weight(7f)
-                        .background(MaterialTheme.colorScheme.surface)
-                ) {
-                    Name(name = uiState.pizzaName)
-                    Spacer(Modifier.height(4.dp))
-                    Ingredients(ingredients = uiState.ingredientsText)
-                    Spacer(Modifier.height(16.dp))
-                    Toppings(
-                        gridState = gridState,
-                        toppings = uiState.toppings,
-                        onAction = onAction
+@Composable
+private fun PizzaDetailSkeleton() {
+    Column(modifier = Modifier.fillMaxSize()) {
+        SkeletonBox(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(3f)
+        )
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .weight(7f)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            SkeletonBox(modifier = Modifier.size(width = 200.dp, height = 24.dp))
+            SkeletonBox(modifier = Modifier.size(width = 280.dp, height = 16.dp))
+            Spacer(modifier = Modifier.height(16.dp))
+            SkeletonBox(modifier = Modifier.size(width = 150.dp, height = 18.dp))
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                repeat(3) {
+                    SkeletonBox(
+                        modifier = Modifier
+                            .weight(1f)
+                            .height(100.dp),
+                        shape = RoundedCornerShape(12.dp)
                     )
                 }
             }
-
-            AddToCartButton(
-                totalPrice = uiState.totalPrice,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp)
-                    .padding(bottom = 16.dp)
-                    .align(Alignment.BottomCenter),
-                onAction = onAction
-            )
         }
     }
 }

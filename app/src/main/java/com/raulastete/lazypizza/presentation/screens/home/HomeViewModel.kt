@@ -12,7 +12,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import kotlin.uuid.ExperimentalUuidApi
@@ -32,10 +31,11 @@ class HomeViewModel(
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptyMap()
+            initialValue = null // Cambiado a null para detectar carga inicial
         )
 
     private val _filteredProducts = combine(_baseProducts, _searchQuery) { products, query ->
+        if (products == null) return@combine null
         if (query.isBlank()) {
             products
         } else {
@@ -50,23 +50,24 @@ class HomeViewModel(
         _searchQuery,
         cartRepository.getCartItems()
     ) { filtered, query, cartItems ->
-        HomeUiState(
-            categories = filtered.keys.map {
-                it.name.lowercase().replaceFirstChar { char -> char.uppercase() }
-            },
-            productsByCategory = filtered.map { (category, products) ->
-                category.name.uppercase() to products.map { product ->
-                    val cartItem = cartItems.find { it.productId == product.id }
-                    product.toUi(count = cartItem?.quantity ?: 0, categoryId = category.id)
-                }
-            }.toMap(),
-            searchQuery = query,
-            isLoading = false
-        )
-    }
-        .onStart {
-            if (_baseProducts.value.isEmpty()) emit(HomeUiState(isLoading = true))
+        if (filtered == null) {
+            HomeUiState(isLoading = true)
+        } else {
+            HomeUiState(
+                categories = filtered.keys.map {
+                    it.name.lowercase().replaceFirstChar { char -> char.uppercase() }
+                },
+                productsByCategory = filtered.map { (category, products) ->
+                    category.name.uppercase() to products.map { product ->
+                        val cartItem = cartItems.find { it.productId == product.id }
+                        product.toUi(count = cartItem?.quantity ?: 0, categoryId = category.id)
+                    }
+                }.toMap(),
+                searchQuery = query,
+                isLoading = false
+            )
         }
+    }
         .stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5000),
@@ -89,7 +90,7 @@ class HomeViewModel(
     @OptIn(ExperimentalUuidApi::class)
     private fun onAddToCart(productId: String) {
         viewModelScope.launch {
-            val product = _baseProducts.value.values.flatten().find { it.id == productId }
+            val product = _baseProducts.value?.values?.flatten()?.find { it.id == productId }
             product?.let {
                 cartRepository.addOrUpdateItem(
                     CartItem(
